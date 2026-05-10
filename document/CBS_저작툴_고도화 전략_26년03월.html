@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBS 저작툴 고도화 전략</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --primary: #2B3A67;
+    --accent: #496DDB;
+    --accent-light: #E8EDFB;
+    --text: #2D2D2D;
+    --text-light: #6B7280;
+    --bg: #F8F9FC;
+    --white: #FFFFFF;
+    --gradient: linear-gradient(135deg, #2B3A67 0%, #496DDB 100%);
+    --gradient-accent: linear-gradient(135deg, #496DDB 0%, #7B9CF7 100%);
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #1a1a2e;
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .slide-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all;
+  }
+
+  .slide.prev {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* Navigation */
+  .nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    background: rgba(43, 58, 103, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 1000;
+  }
+
+  .nav-bar button {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .nav-bar button:hover { background: rgba(255,255,255,0.25); }
+  .nav-bar button:disabled { opacity: 0.3; cursor: default; }
+
+  .page-indicator {
+    color: rgba(255,255,255,0.8);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--gradient-accent);
+    transition: width 0.4s ease;
+    z-index: 1001;
+  }
+
+  /* Page Header */
+  .page-header {
+    padding: 28px 56px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  .page-header .page-num {
+    background: var(--gradient);
+    color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .page-header h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .page-body {
+    padding: 20px 56px 60px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* === Cover Slide === */
+  .slide-cover {
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+  }
+
+  .cover-content { max-width: 800px; padding: 40px; }
+
+  .cover-logo {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 12px;
+  }
+
+  .cover-title {
+    font-size: 50px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 32px;
+  }
+
+  .cover-subtitle {
+    font-size: 22px;
+    font-weight: 300;
+    opacity: 0.85;
+    line-height: 1.6;
+    margin-bottom: 48px;
+  }
+
+  .cover-divider {
+    width: 80px;
+    height: 3px;
+    background: rgba(255,255,255,0.4);
+    margin: 0 auto 32px;
+  }
+
+  .cover-date {
+    font-size: 14px;
+    opacity: 0.6;
+    font-weight: 400;
+  }
+
+  /* === TOC === */
+  .toc-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 24px 26px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border-left: 4px solid var(--accent);
+  }
+
+  .toc-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(73,109,219,0.15);
+  }
+
+  .toc-num {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .toc-text {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .toc-desc {
+    font-size: 13.5px;
+    color: #6B7280;
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .toc-appendix {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 22px;
+    background: #F3F4F6;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-left: 4px solid #9CA3AF;
+  }
+
+  .toc-appendix:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .toc-appendix .toc-num {
+    width: 30px;
+    height: 30px;
+    font-size: 11px;
+    background: #9CA3AF;
+    color: white;
+  }
+
+  .toc-appendix .toc-text {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: #6B7280;
+  }
+
+  /* === Content Cards === */
+  .content-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .content-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .content-card p, .content-card li {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .content-card ul { padding-left: 20px; }
+  .content-card ul li { margin-bottom: 4px; }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .badge-blue { background: var(--accent-light); color: var(--accent); }
+  .badge-green { background: #E6F9F0; color: #16A34A; }
+  .badge-orange { background: #FFF3E0; color: #E65100; }
+
+  /* Image */
+  .img-frame {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid #E5E7EB;
+  }
+
+  .img-frame img {
+    width: 100%;
+    display: block;
+  }
+
+  /* Grid */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Highlight box */
+  .highlight-box {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 22px;
+    margin: 14px 0;
+  }
+
+  .highlight-box p {
+    font-size: 15px;
+    color: var(--primary);
+    line-height: 1.6;
+  }
+
+  /* Pain Card */
+  .pain-card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .pain-card h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .pain-card p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .pain-strength { color: #16A34A; }
+  .pain-weak { color: #DC2626; }
+
+  /* Strategy card */
+  .strategy-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-top: 4px solid var(--accent);
+  }
+
+  .strategy-card h3 {
+    color: var(--accent);
+    font-size: 17px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .strategy-card p {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* Step badge */
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gradient);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  /* Swiper */
+  .swiper-wrapper-custom {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #F1F3F9;
+  }
+
+  .swiper-track {
+    display: flex;
+    transition: transform 0.4s ease;
+  }
+
+  .swiper-slide-item {
+    min-width: 100%;
+    padding: 12px;
+  }
+
+  .swiper-slide-item img {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  .swiper-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px 0 6px;
+  }
+
+  .swiper-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: white;
+    color: var(--accent);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .swiper-btn:hover {
+    background: var(--accent);
+    color: white;
+  }
+
+  .swiper-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .swiper-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #CBD5E1;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .swiper-dot.active {
+    background: var(--accent);
+    width: 24px;
+    border-radius: 4px;
+  }
+
+  /* Comparison Table */
+  .comparison-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    font-size: 14.5px;
+  }
+
+  .comparison-table thead th {
+    background: var(--primary);
+    color: white;
+    padding: 14px 18px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+
+  .comparison-table thead th:first-child {
+    text-align: left;
+  }
+
+  .comparison-table tbody td {
+    padding: 13px 18px;
+    border-bottom: 1px solid #EEF0F4;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 1.5;
+  }
+
+  .comparison-table tbody td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--primary);
+    background: #F8F9FC;
+  }
+
+  .comparison-table tbody tr:last-child td { border-bottom: none; }
+  .comparison-table tbody tr:hover { background: #FAFBFE; }
+
+  .highlight-col { background: rgba(73, 109, 219, 0.06); }
+
+  .check { color: #16A34A; font-weight: 700; }
+  .cross { color: #DC2626; font-weight: 700; }
+
+  /* Effect cards */
+  .effect-card {
+    background: white;
+    border-radius: 14px;
+    padding: 32px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .effect-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 16px;
+  }
+
+  .effect-card h4 {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+
+  .effect-card p {
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--text-light);
+  }
+
+  /* Flow steps */
+  .flow-row {
+    display: flex;
+    align-items: stretch;
+    gap: 28px;
+  }
+
+  .flow-step {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    position: relative;
+  }
+
+  .flow-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 10px solid var(--accent);
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    z-index: 1;
+  }
+
+  .flow-step .num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--gradient-accent);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+  }
+
+  .flow-step h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+
+  .flow-step p {
+    font-size: 12.5px;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  /* Expect box */
+  .expect-box {
+    background: linear-gradient(135deg, #E6F9F0 0%, #F0FFF6 100%);
+    border-left: 4px solid #16A34A;
+    border-radius: 0 10px 10px 0;
+    padding: 14px 22px;
+  }
+
+  .expect-box h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #16A34A;
+    margin-bottom: 4px;
+  }
+
+  .expect-box p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #166534;
+  }
+
+  /* Bench header */
+  .bench-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .bench-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    color: white;
+  }
+
+  /* Tool chips */
+  .tool-chip {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 18px 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-left: 4px solid var(--accent);
+  }
+
+  .tool-chip h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+  }
+
+  .tool-chip p {
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.5;
+  }
+
+  /* Summary highlight */
+  .summary-highlight {
+    background: var(--gradient);
+    color: white;
+    border-radius: 14px;
+    padding: 24px 32px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .summary-highlight h3 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .summary-highlight p {
+    font-size: 15px;
+    opacity: 0.85;
+  }
+
+  /* Insight box */
+  .insight-box {
+    background: linear-gradient(135deg, #EDE9FE 0%, #F5F3FF 100%);
+    border-left: 4px solid #7C3AED;
+    border-radius: 0 12px 12px 0;
+    padding: 16px 24px;
+  }
+
+  .insight-box h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #7C3AED;
+    margin-bottom: 4px;
+  }
+
+  .insight-box p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #4C1D95;
+  }
+
+  /* Timeline */
+  .timeline-card {
+    flex: 1;
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-top: 4px solid var(--accent);
+  }
+
+  .timeline-label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .timeline-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+
+  .timeline-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-light);
+  }
+
+  /* Keyboard hint */
+  .keyboard-hint {
+    position: fixed;
+    bottom: 64px;
+    right: 32px;
+    background: rgba(43, 58, 103, 0.8);
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    z-index: 999;
+    opacity: 0;
+    animation: fadeInHint 1s 2s forwards;
+  }
+
+  @keyframes fadeInHint { to { opacity: 1; } }
+
+  .slide::-webkit-scrollbar { width: 0; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slide-container" id="slideContainer">
+
+<!-- ====== PAGE 1: 표지 ====== -->
+<div class="slide slide-cover active" data-index="0">
+  <div class="cover-content">
+    <div class="cover-logo">Visang Education &middot; CBS</div>
+    <h1 class="cover-title">CBS 저작툴 고도화 전략</h1>
+    <div class="cover-divider"></div>
+    <p class="cover-subtitle">어떤 콘텐츠든 3분 안에<br>CBS에서 제작하고 관리할 수 있게 한다.</p>
+    <p class="cover-date">Contents Bank System &middot; 2026</p>
+  </div>
+</div>
+
+<!-- ====== PAGE 2: 목차 ====== -->
+<div class="slide" data-index="1">
+  <div class="page-header">
+    <div class="page-num">2</div>
+    <h2>목차</h2>
+  </div>
+  <div class="page-body" style="display:flex;align-items:center;">
+    <ul class="toc-list">
+      <li class="toc-item" onclick="goToSlide(2)">
+        <div class="toc-num">1</div>
+        <div>
+          <div class="toc-text">CBS 저작툴 현황 (As-is)</div>
+          <div class="toc-desc">범용 저작툴 · 동적 콘텐츠 저작툴 · iBook 편집기</div>
+        </div>
+      </li>
+      <li class="toc-item" onclick="goToSlide(5)">
+        <div class="toc-num">2</div>
+        <div>
+          <div class="toc-text">현재 서비스의 Pain Point 분석</div>
+          <div class="toc-desc">현행 저작환경의 한계 및 개선 필요성</div>
+        </div>
+      </li>
+      <li class="toc-item" onclick="goToSlide(6)">
+        <div class="toc-num">3</div>
+        <div>
+          <div class="toc-text">타사 벤치마킹</div>
+          <div class="toc-desc">Canva · 미리캔버스 · Genspark.ai</div>
+        </div>
+      </li>
+      <li class="toc-item" onclick="goToSlide(7)">
+        <div class="toc-num">4</div>
+        <div>
+          <div class="toc-text">고도화 전략 (To-be)</div>
+          <div class="toc-desc">벡터 DB 연계 · 자연어 기반 편집 UI</div>
+        </div>
+      </li>
+      <li class="toc-item" onclick="goToSlide(11)">
+        <div class="toc-num">5</div>
+        <div>
+          <div class="toc-text">기대효과 (궁극적인 지향점)</div>
+          <div class="toc-desc">생산성 향상 · 에듀테크 마켓 진입</div>
+        </div>
+      </li>
+      <li class="toc-appendix" onclick="goToSlide(12)">
+        <div class="toc-num">A</div>
+        <div class="toc-text">Appendix. 구축 상세 플랜</div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ====== PAGE 3: CBS 저작툴 현황 ====== -->
+<div class="slide" data-index="2">
+  <div class="page-header">
+    <div class="page-num">3</div>
+    <h2>CBS 저작툴 현황</h2>
+  </div>
+  <div class="page-body">
+    <div class="content-card" style="margin-bottom:20px;">
+      <p style="font-size:16.5px; line-height:1.7;">비상교육 CBS에는 콘텐츠 유형과 저작 방식에 따라<br><strong>3가지 타입의 저작툴</strong>을 탑재하여 <strong>하이브리드형 저작환경</strong>을 구축함</p>
+    </div>
+    <div style="display:flex;gap:16px;margin-bottom:20px;">
+      <div class="tool-chip">
+        <h4>범용 저작툴</h4>
+        <p>교과급 및 과목별 개념 / 문항 / 활동 콘텐츠를 저작</p>
+      </div>
+      <div class="tool-chip" style="border-left-color:#7B9CF7;">
+        <h4>동적 콘텐츠 저작툴</h4>
+        <p>트리거-액션 기반의 복잡도 높은 조작형 콘텐츠를 저작</p>
+      </div>
+      <div class="tool-chip" style="border-left-color:#A78BFA;">
+        <h4>iBook 편집기</h4>
+        <p>eBook 편집에 최적화된 전용 편집 기능 제공</p>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="img-frame"><img src="이미지_범용 저작툴.png" alt="범용 저작툴"></div>
+      <div class="img-frame"><img src="이미지_모션에디터.png" alt="동적 콘텐츠 저작툴"></div>
+      <div class="img-frame"><img src="이미지_ibook편집기.png" alt="iBook 편집기"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 4: 범용 저작툴 상세 ====== -->
+<div class="slide" data-index="3">
+  <div class="page-header">
+    <div class="page-num">4</div>
+    <h2>CBS 저작툴 현황 &rsaquo; 범용 저작툴</h2>
+  </div>
+  <div class="page-body">
+    <div class="grid-2" style="height:100%;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="content-card">
+          <h3><span class="badge badge-blue">안정적 운영</span> 콘텐츠 제작 &amp; 관리</h3>
+          <p>비상교육 내 다양한 브랜드에서 제공되는<br><strong>개념/문항/활동 콘텐츠</strong>를 안정적으로 제작하고 관리함</p>
+        </div>
+        <div class="content-card">
+          <h3><span class="badge badge-green">메타정보</span> 교육과정 표준체계 태깅</h3>
+          <p>모든 콘텐츠는 교육부의 교육과정 표준체계에 따라 <strong>정교하게 태깅</strong>됨<br><small style="color:var(--text-light);">교육과정 / 교과과정 / 평가영역 / 학습맵 / 난이도 / 해시태그</small></p>
+        </div>
+        <div class="content-card">
+          <h3><span class="badge badge-blue">AI 엔진</span> 자동화 기능 탑재</h3>
+          <ul>
+            <li><strong>OCR 디지털라이징</strong> &mdash; 페이퍼 기반 문항 자동 변환</li>
+            <li><strong>유사문항 생성</strong> &mdash; 진단 및 추천학습 지원</li>
+            <li><strong>힌트/해설 자동생성</strong> &mdash; 문항별 학습 보조</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="swiper-wrapper-custom" id="swiperPage4" style="height:100%;">
+          <div class="swiper-track" id="swiperPage4Track" style="height:calc(100% - 44px);">
+            <div class="swiper-slide-item"><img src="이미지_범용 저작툴.png" alt="범용 저작툴"></div>
+            <div class="swiper-slide-item"><img src="이미지_메타정보.png" alt="메타정보"></div>
+            <div class="swiper-slide-item"><img src="이미지_유사문항.png" alt="유사문항"></div>
+            <div class="swiper-slide-item"><img src="이미지_힌트 및 해설.png" alt="힌트 및 해설"></div>
+          </div>
+          <div class="swiper-controls">
+            <button class="swiper-btn" onclick="swiperPrev('Page4')">&#8249;</button>
+            <div class="swiper-dots" id="swiperPage4Dots"></div>
+            <button class="swiper-btn" onclick="swiperNext('Page4')">&#8250;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 5: 동적 콘텐츠 저작툴 상세 ====== -->
+<div class="slide" data-index="4">
+  <div class="page-header">
+    <div class="page-num">5</div>
+    <h2>CBS 저작툴 현황 &rsaquo; 동적 콘텐츠 저작툴</h2>
+  </div>
+  <div class="page-body">
+    <div class="grid-2">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="content-card">
+          <h3>트리거-액션 기반 조작형 콘텐츠 저작</h3>
+          <p>복잡한 코딩 없이 <strong>트리거-액션 기반</strong>(예: 버튼 클릭 시 모션 실행)의<br>직관적인 로직으로 복잡도 높은 조작형 콘텐츠를 생산하기 위해 구축된 저작툴임</p>
+        </div>
+        <div class="content-card">
+          <h3><span class="badge badge-green">1차 구축 완료</span> 25년 11월</h3>
+          <ul style="font-size:15.5px;">
+            <li>오브젝트 생성 및 배치</li>
+            <li>애니메이션 및 모션 적용</li>
+            <li>미리보기 뷰어 및 내보내기</li>
+          </ul>
+        </div>
+        <div class="highlight-box">
+          <p><strong>구축 배경:</strong> 조작형 콘텐츠의 <strong>외주 의존도가 높고</strong>,<br>사후 유지보수에 많은 공수가 드는 문제점을 해결하기 위해 구축됨</p>
+        </div>
+      </div>
+      <div>
+        <div class="img-frame"><img src="이미지_모션에디터.png" alt="모션에디터"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 6: Pain Point ====== -->
+<div class="slide" data-index="5">
+  <div class="page-header">
+    <div class="page-num">6</div>
+    <h2>현재 서비스의 Pain Point 분석</h2>
+  </div>
+  <div class="page-body">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="grid-2" style="gap:14px;">
+        <div class="pain-card" style="border-top:4px solid var(--accent);">
+          <h3 style="color:var(--accent);">1) 범용 저작툴</h3>
+          <p><span class="pain-strength"><strong>&#10003; 강점:</strong></span> 교과급 및 과목별 광범위한 템플릿의 콘텐츠를 <strong>빠르게 양산하는 데 최적화</strong>됨</p>
+          <p style="margin-top:8px;"><span class="pain-weak"><strong>&#10007; Pain:</strong></span> 너무 많은 기능을 수행하다 보니 입문자가 플랫폼에 온보딩하여 <strong>전체 기능을 파악하는 데 높은 학습 비용</strong>이 발생함</p>
+        </div>
+        <div class="pain-card" style="border-top:4px solid #7B9CF7;">
+          <h3 style="color:#7B9CF7;">2) 동적 콘텐츠 저작툴</h3>
+          <p><span class="pain-strength"><strong>&#10003; 강점:</strong></span> 별도의 코딩 없이 콘텐츠 저작자가 <strong>트리거-액션 기반의 조작형 콘텐츠를 생산하고 편집</strong>하는 데 최적화됨</p>
+          <p style="margin-top:8px;"><span class="pain-weak"><strong>&#10007; Pain:</strong></span> 객체 및 모션을 생성하는 <strong>UI가 입문자에게 다소 어렵게 느껴질 수 있음</strong></p>
+        </div>
+      </div>
+      <div class="pain-card" style="border-top:4px solid #F59E0B;">
+        <h3 style="color:#F59E0B;">3) AX 트렌드 대응 필요</h3>
+        <p>AX 트렌드에 맞춰 손쉽게 콘텐츠를 제작하고 기존 콘텐츠를 <strong>재활용할 수 있는 방안을 마련</strong>하여 경쟁력을 제고해야 함</p>
+      </div>
+      <div class="insight-box">
+        <h4>Insight</h4>
+        <p><strong>'빈 화면'에서 시작하는 기존 방식에서 탈피</strong>하여, 기 구축된 방대한 콘텐츠를 손쉽게 재활용하고 즉각적으로 재생산할 수 있는 <strong>지능형 방안 도입이 필수</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 7: 타사 벤치마킹 ====== -->
+<div class="slide" data-index="6">
+  <div class="page-header">
+    <div class="page-num">7</div>
+    <h2>타사 벤치마킹</h2>
+  </div>
+  <div class="page-body" style="display:flex;flex-direction:column;height:calc(100vh - 130px);">
+    <!-- 벤치마킹 탭 버튼 -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-shrink:0;">
+      <button class="bench-tab active" onclick="switchBench(0)" id="benchTab0" style="flex:1;padding:12px 16px;border:2px solid var(--accent);border-radius:10px;background:var(--accent);color:white;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;justify-content:center;">
+        <span style="width:28px;height:28px;border-radius:8px;background:#7B2FF2;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:800;">C</span>
+        Canva
+      </button>
+      <button class="bench-tab" onclick="switchBench(1)" id="benchTab1" style="flex:1;padding:12px 16px;border:2px solid #E5E7EB;border-radius:10px;background:white;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;justify-content:center;">
+        <span style="width:28px;height:28px;border-radius:8px;background:#00C9A7;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:800;">M</span>
+        미리캔버스
+      </button>
+      <button class="bench-tab" onclick="switchBench(2)" id="benchTab2" style="flex:1;padding:12px 16px;border:2px solid #E5E7EB;border-radius:10px;background:white;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;justify-content:center;">
+        <span style="width:28px;height:28px;border-radius:8px;background:#3B82F6;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:800;">G</span>
+        Genspark.ai
+      </button>
+    </div>
+
+    <!-- 벤치마킹 콘텐츠 패널 -->
+    <div style="flex:1;position:relative;overflow:hidden;">
+      <!-- Canva -->
+      <div class="bench-panel" id="benchPanel0" style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:1;transition:opacity 0.3s;">
+        <div class="grid-2" style="gap:20px;height:100%;">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+              <span class="badge badge-green">입력값 기반 추천 콘텐츠 제공</span>
+            </div>
+            <div class="content-card" style="padding:18px 22px;">
+              <h3 style="font-size:16px;">AI 저작 프로세스</h3>
+              <p style="font-size:15px;">프롬프트 입력 &middot; PDF업로드 &middot; 옵션값(분량&middot;디자인&middot;용도 등) 입력<br>&rarr; AI생성 콘텐츠 개요 확인 &rarr; 산출물 확인</p>
+            </div>
+            <div class="content-card" style="padding:18px 22px;border-top:3px solid #16A34A;">
+              <h3 style="font-size:16px;color:#16A34A;">주요 특징</h3>
+              <ul style="font-size:15px;">
+                <li>입력값에 기반한 추천 콘텐츠 제공</li>
+                <li>타사 대비 AI 산출물(초벌 콘텐츠)의 <strong>퀄리티나 다양성이 높지 않음</strong></li>
+                <li>편집화면에서 <strong>프롬프트 기반 편집이 불가</strong>함</li>
+              </ul>
+            </div>
+          </div>
+          <div class="swiper-wrapper-custom" id="swiperCanva" style="height:100%;">
+            <div class="swiper-track" id="swiperCanvaTrack" style="height:calc(100% - 44px);">
+              <div class="swiper-slide-item"><img src="이미지_캔바1.webp" alt="캔바1"></div>
+              <div class="swiper-slide-item"><img src="이미지_캔바2.webp" alt="캔바2"></div>
+              <div class="swiper-slide-item"><img src="이미지_캔바3.webp" alt="캔바3"></div>
+              <div class="swiper-slide-item"><img src="이미지_캔바4.webp" alt="캔바4"></div>
+            </div>
+            <div class="swiper-controls">
+              <button class="swiper-btn" onclick="swiperPrev('Canva')">&#8249;</button>
+              <div class="swiper-dots" id="swiperCanvaDots"></div>
+              <button class="swiper-btn" onclick="swiperNext('Canva')">&#8250;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 미리캔버스 -->
+      <div class="bench-panel" id="benchPanel1" style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;pointer-events:none;transition:opacity 0.3s;">
+        <div class="grid-2" style="gap:20px;height:100%;">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+              <span class="badge badge-green">기본 프롬프트 설정 &middot; 추천 콘텐츠 &middot; PPT 레이아웃</span>
+            </div>
+            <div class="content-card" style="padding:18px 22px;">
+              <h3 style="font-size:16px;">AI 저작 프로세스</h3>
+              <p style="font-size:15px;">프롬프트 입력 &middot; 옵션값(페이지수, 목적, 청자, 말투 등) 입력<br>&rarr; AI 생성 콘텐츠 개요확인 &rarr; 추천 템플릿 선택 &rarr; 산출물 확인</p>
+            </div>
+            <div class="content-card" style="padding:18px 22px;border-top:3px solid #16A34A;">
+              <h3 style="font-size:16px;color:#16A34A;">주요 특징</h3>
+              <ul style="font-size:15px;">
+                <li>사용자 편의에 맞춘 <strong>기본 프롬프트 설정</strong> 제공</li>
+                <li>입력값에 기반한 <strong>추천 콘텐츠</strong> 제공</li>
+                <li>다양한 <strong>PPT 레이아웃</strong> 제공</li>
+              </ul>
+            </div>
+          </div>
+          <div class="swiper-wrapper-custom" id="swiperMiri" style="height:100%;">
+            <div class="swiper-track" id="swiperMiriTrack" style="height:calc(100% - 44px);">
+              <div class="swiper-slide-item"><img src="이미지_미리캔버스1.webp" alt="미리캔버스1"></div>
+              <div class="swiper-slide-item"><img src="이미지_미리캔버스2.webp" alt="미리캔버스2"></div>
+              <div class="swiper-slide-item"><img src="이미지_미리캔버스3.webp" alt="미리캔버스3"></div>
+              <div class="swiper-slide-item"><img src="이미지_미리캔버스4.webp" alt="미리캔버스4"></div>
+            </div>
+            <div class="swiper-controls">
+              <button class="swiper-btn" onclick="swiperPrev('Miri')">&#8249;</button>
+              <div class="swiper-dots" id="swiperMiriDots"></div>
+              <button class="swiper-btn" onclick="swiperNext('Miri')">&#8250;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Genspark -->
+      <div class="bench-panel" id="benchPanel2" style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;pointer-events:none;transition:opacity 0.3s;">
+        <div class="grid-2" style="gap:20px;height:100%;">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+              <span class="badge badge-blue">다양한 AI 편집 옵션</span>
+            </div>
+            <div class="content-card" style="padding:18px 22px;">
+              <h3 style="font-size:16px;">AI 저작 프로세스</h3>
+              <p style="font-size:15px;">프롬프트 입력 &rarr; AI 생성 산출물 확인 및 편집</p>
+            </div>
+            <div class="content-card" style="padding:18px 22px;border-top:3px solid #3B82F6;">
+              <h3 style="font-size:16px;color:#3B82F6;">주요 특징</h3>
+              <ul style="font-size:15px;">
+                <li>AI 생성 콘텐츠에 대한 <strong>팩트 체크 기능</strong> 제공</li>
+                <li><strong>AI/프롬프트/수동 편집</strong> 등 다양한 옵션 제공</li>
+                <li>프롬프트 기반 편집과 수동 편집 모두 지원</li>
+              </ul>
+            </div>
+          </div>
+          <div class="swiper-wrapper-custom" id="swiperGen" style="height:100%;">
+            <div class="swiper-track" id="swiperGenTrack" style="height:calc(100% - 44px);">
+              <div class="swiper-slide-item"><img src="이미지_젠스팍1.webp" alt="젠스팍1"></div>
+              <div class="swiper-slide-item"><img src="이미지_젠스팍2.webp" alt="젠스팍2"></div>
+              <div class="swiper-slide-item"><img src="이미지_젠스팍3.webp" alt="젠스팍3"></div>
+              <div class="swiper-slide-item"><img src="이미지_젠스팍_AI편집.webp" alt="젠스팍 AI편집"></div>
+              <div class="swiper-slide-item"><img src="이미지_젠스팍_수동편집.webp" alt="젠스팍 수동편집"></div>
+            </div>
+            <div class="swiper-controls">
+              <button class="swiper-btn" onclick="swiperPrev('Gen')">&#8249;</button>
+              <div class="swiper-dots" id="swiperGenDots"></div>
+              <button class="swiper-btn" onclick="swiperNext('Gen')">&#8250;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 8: 고도화 전략 Summary ====== -->
+<div class="slide" data-index="7">
+  <div class="page-header">
+    <div class="page-num">8</div>
+    <h2>고도화 전략 (To-be)</h2>
+  </div>
+  <div class="page-body">
+    <div class="summary-highlight">
+      <h3>AI 기반 저작 프로세스 혁신</h3>
+      <p>벡터 DB + 자연어 프롬프트로 누구나 쉽고 빠르게 콘텐츠를 완성</p>
+    </div>
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="strategy-card">
+        <div class="step-badge">Strategy 1</div>
+        <h3>벡터 DB 연계 초벌 콘텐츠 제안</h3>
+        <p>CBS의 방대한 DB를 벡터화한 V사이트와 연계하여,<br><strong>AI가 추론한 최적의 초벌 콘텐츠</strong>를 자동 제안함</p>
+        <div class="highlight-box" style="margin-top:12px;margin-bottom:0;">
+          <p><strong>벡터 DB란?</strong> 비정형 데이터를 벡터(임베딩)로 저장해<br>의미 기반 검색과 유사성 분석을 빠르게 수행하는 데이터베이스</p>
+        </div>
+      </div>
+      <div class="strategy-card">
+        <div class="step-badge">Strategy 2</div>
+        <h3>자연어 기반 편집 UI 구축</h3>
+        <p>자연어 프롬프트 기반으로 콘텐츠를 생성하고<br><strong>편집까지 한 번에</strong> 할 수 있는 사용자 친화적인 UI를 구축함</p>
+      </div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step">
+        <div class="num">1</div>
+        <h4>메타정보 설정</h4>
+        <p>템플릿 유형, 난이도,<br>교과, 학년 선택</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">2</div>
+        <h4>프롬프트 입력</h4>
+        <p>원하는 콘텐츠<br>방향 직접 입력</p>
+      </div>
+      <div class="flow-step" style="background:var(--accent);border:2px solid var(--accent);">
+        <div class="num" style="background:white;color:var(--accent);">3</div>
+        <h4 style="color:white;">AI 초벌 생성</h4>
+        <p style="color:rgba(255,255,255,0.85);">벡터 DB 기반<br>최적 콘텐츠 추천</p>
+      </div>
+      <div class="flow-step" style="background:var(--accent);border:2px solid var(--accent);">
+        <div class="num" style="background:white;color:var(--accent);">4</div>
+        <h4 style="color:white;">대화형 편집</h4>
+        <p style="color:rgba(255,255,255,0.85);">AI Assistance로<br>빠른 수정 및 보완</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">5</div>
+        <h4>완성 및 내보내기</h4>
+        <p>최종 검수 후<br>CBS에 등록</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <a href="https://visang.vercel.app/#share-motion-editor" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--gradient);color:white;border-radius:8px;text-decoration:none;font-weight:600;font-size:12.5px;white-space:nowrap;">동적 저작툴 바로가기 &rarr;</a>
+      <a href="https://joo-vs.github.io/260305/" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--gradient-accent);color:white;border-radius:8px;text-decoration:none;font-weight:600;font-size:12.5px;white-space:nowrap;">범용 저작툴 바로가기 &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 9: Step 1 상세 ====== -->
+<div class="slide" data-index="8">
+  <div class="page-header">
+    <div class="page-num">9</div>
+    <h2>고도화 전략 &rsaquo; Step 1. 설정값 기반 초벌 콘텐츠 생성</h2>
+  </div>
+  <div class="page-body">
+    <div class="grid-2" style="margin-bottom:16px;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="content-card">
+          <h3>저작 시작 화면 개편</h3>
+          <p>저작툴 첫 화면에서 CBS 메타정보 옵션값을 선택하고 <strong>프롬프트를 직접 입력</strong>할 수 있도록 함</p>
+          <ul style="margin-top:8px;">
+            <li>템플릿 유형 / 난이도 / 교과 / 학년 / 학교급</li>
+          </ul>
+        </div>
+        <div class="content-card">
+          <h3>AI 추론 기반 콘텐츠 추천</h3>
+          <p>CBS 벡터 DB를 기반으로 AI가 추론하여<br>가장 정확한 <strong>콘텐츠(혹은 템플릿)을 선제적으로 추천</strong>하는 방식을 도입함</p>
+        </div>
+      </div>
+      <div>
+        <div class="swiper-wrapper-custom" id="swiperStep1" style="height:100%;">
+          <div class="swiper-track" id="swiperStep1Track" style="height:calc(100% - 44px);">
+            <div class="swiper-slide-item"><img src="이미지_고도화1.png" alt="고도화 Step1-1"></div>
+            <div class="swiper-slide-item"><img src="이미지_고도화2.png" alt="고도화 Step1-2"></div>
+          </div>
+          <div class="swiper-controls">
+            <button class="swiper-btn" onclick="swiperPrev('Step1')">&#8249;</button>
+            <div class="swiper-dots" id="swiperStep1Dots"></div>
+            <button class="swiper-btn" onclick="swiperNext('Step1')">&#8250;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="expect-box">
+      <h4>기대 효과</h4>
+      <p><strong>1)</strong> '빈 화면에 대한 공포'를 해소하고, 입문자의 진입 장벽을 완화함<br><strong>2)</strong> 정교하게 선별된 DB를 제공하여 교육자료의 신뢰성을 확보하고, 익숙한 레이아웃에서 편집을 시작할 수 있음</p>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 10: Step 2 상세 ====== -->
+<div class="slide" data-index="9">
+  <div class="page-header">
+    <div class="page-num">10</div>
+    <h2>고도화 전략 &rsaquo; Step 2. 대화 기반 편집 옵션 제공</h2>
+  </div>
+  <div class="page-body" style="display:flex;flex-direction:column;">
+    <div class="grid-2" style="flex:1;min-height:0;margin-bottom:10px;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="content-card" style="border-top:3px solid var(--accent);padding:12px 18px;">
+          <h3 style="font-size:14.5px;margin-bottom:4px;">대화 기반 편집</h3>
+          <p style="font-size:13.5px;">화면 이동 없이 초벌 콘텐츠에 대한 편집을 <strong>기존 저작 플로우 내에서 이어서 할 수 있도록</strong> AI Assistance 기능을 제공함</p>
+          <ul style="margin-top:4px;font-size:12.5px;">
+            <li><strong>동적 저작툴:</strong> 객체 및 액션 생성 메뉴에 AI 챗봇 제공</li>
+            <li><strong>범용 저작툴:</strong> AI가 키워드 형식으로 커스터마이징 제안</li>
+          </ul>
+        </div>
+        <div class="content-card" style="border-top:3px solid #7B9CF7;padding:12px 18px;">
+          <h3 style="font-size:14.5px;margin-bottom:4px;">AI 자동 편집</h3>
+          <p style="font-size:13.5px;">레이아웃, 오탈자 등을 <strong>자동 검수</strong>하여 콘텐츠 품질을 보장함</p>
+        </div>
+        <div class="content-card" style="border-top:3px solid #A78BFA;padding:12px 18px;">
+          <h3 style="font-size:14.5px;margin-bottom:4px;">고급 편집 기능</h3>
+          <p style="font-size:13.5px;">기존 저작 방식을 그대로 제공하여 <strong>수동으로 정교한 편집</strong>이 가능하도록 함</p>
+        </div>
+      </div>
+      <div>
+        <div class="swiper-wrapper-custom" id="swiperStep2" style="height:100%;">
+          <div class="swiper-track" id="swiperStep2Track" style="height:calc(100% - 44px);">
+            <div class="swiper-slide-item"><img src="이미지_고도화3.png" alt="고도화 Step2-1"></div>
+            <div class="swiper-slide-item"><img src="이미지_고도화4.png" alt="고도화 Step2-2"></div>
+            <div class="swiper-slide-item"><img src="이미지_고도화5.png" alt="고도화 Step2-3"></div>
+          </div>
+          <div class="swiper-controls">
+            <button class="swiper-btn" onclick="swiperPrev('Step2')">&#8249;</button>
+            <div class="swiper-dots" id="swiperStep2Dots"></div>
+            <button class="swiper-btn" onclick="swiperNext('Step2')">&#8250;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:calc(50% - 10px);flex-shrink:0;">
+      <div class="expect-box" style="margin:0;padding:12px 18px;">
+        <h4 style="font-size:14px;">기대 효과</h4>
+        <p style="font-size:13.5px;">다양한 편집 옵션(대화형 / AI 자동 / 고급 수동)을 제공하여 <strong>저작자의 숙련도에 관계없이 최적의 편집 경험</strong>을 보장함</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 11: 비교분석 표 ====== -->
+<div class="slide" data-index="10">
+  <div class="page-header">
+    <div class="page-num">11</div>
+    <h2>범용 저작툴의 한계와 자사 고도화 방향의 차별성</h2>
+  </div>
+  <div class="page-body" style="display:flex;flex-direction:column;justify-content:center;">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th style="width:16%;"></th>
+          <th style="background:#496DDB;width:21%;">자사 CBS (To-Be)</th>
+          <th style="width:21%;">Canva</th>
+          <th style="width:21%;">미리캔버스</th>
+          <th style="width:21%;">Genspark.ai</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AI 초벌 생성</td>
+          <td class="highlight-col"><strong>Vector DB 기반 콘텐츠<br>교재 맞춤형 초벌</strong></td>
+          <td>단순 개요 생성</td>
+          <td>슬라이드 구조 자동 생성</td>
+          <td>슬라이드 구조 자동 생성</td>
+        </tr>
+        <tr>
+          <td>대화형 편집</td>
+          <td class="highlight-col"><strong>인터랙션 생성 포함<br>측면 AI 패널 제공</strong></td>
+          <td class="cross">X</td>
+          <td class="cross">X</td>
+          <td>AI 편집 슬라이드 단위</td>
+        </tr>
+        <tr>
+          <td>인터랙션 요소</td>
+          <td class="highlight-col"><strong>트리거-액션 기반<br>인터랙션 콘텐츠 저작 가능</strong></td>
+          <td class="cross">X</td>
+          <td class="cross">X</td>
+          <td class="cross">X</td>
+        </tr>
+        <tr>
+          <td>에듀테크 적합성</td>
+          <td class="highlight-col"><strong>교과 및 B2B/B2G<br>직접 진입 가능</strong></td>
+          <td>범용 PPT 위주</td>
+          <td>교육용 강점 있음<br>(수동 기능 중심)</td>
+          <td>교육용 강점 있으나<br>(범용 사이트로서 다소 이질감)</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="highlight-box" style="margin-top:20px;">
+      <p><strong>Summary:</strong> 타사 대비 CBS 고도화의 핵심 차별점은<br><strong>인터랙티브 콘텐츠 저작</strong>, <strong>교육과정 표준 메타 태깅</strong>, <strong>벡터 DB 기반 의미 검색</strong>으로, 교육 콘텐츠 전문 저작 플랫폼으로서의 고유 경쟁력을 확보함</p>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 12: 기대효과 ====== -->
+<div class="slide" data-index="11">
+  <div class="page-header">
+    <div class="page-num">12</div>
+    <h2>기대효과 (궁극적인 지향점)</h2>
+  </div>
+  <div class="page-body" style="display:flex;flex-direction:column;justify-content:center;gap:28px;">
+    <div class="grid-2" style="gap:28px;">
+      <div class="effect-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="effect-icon" style="background:#E8EDFB;color:var(--accent);font-size:36px;width:72px;height:72px;">&#9881;</div>
+        <h4>고효율 인하우스 생산체계</h4>
+        <p><strong>기획부터 산출물 관리까지</strong> 단일 플랫폼에서 완결하는 생산 체계를 구축하여,<br>외주 의존 없이 인하우스에서 고품질 콘텐츠를 빠르게 생산하고 관리함</p>
+      </div>
+      <div class="effect-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="effect-icon" style="background:#E6F9F0;color:#16A34A;font-size:36px;width:72px;height:72px;">&#127891;</div>
+        <h4>저작 전문 플랫폼으로의 도약</h4>
+        <p>비전문가(교사 등)도 쉽게 다루는 UI 구축으로 내부 활용을 넘어<br><strong>공교육 에듀테크 마켓(B2B / B2G) 직접 진입의 교두보</strong>를 마련함</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 13: 구축 상세 플랜 ====== -->
+<div class="slide" data-index="12">
+  <div class="page-header">
+    <div class="page-num">13</div>
+    <h2>구축 상세 플랜</h2>
+  </div>
+  <div class="page-body" style="overflow-y:auto;">
+    <p class="section-label">AI 기반 콘텐츠 에디터 고도화 로드맵</p>
+    <div style="overflow-x:auto;">
+      <table class="comparison-table" style="font-size:12.5px;">
+        <thead>
+          <tr>
+            <th>기간</th>
+            <th>단계</th>
+            <th>Epic ID</th>
+            <th>고도화 영역</th>
+            <th>목적 요약</th>
+            <th>핵심 내용</th>
+            <th>단계 목표</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026년 3월</td>
+            <td>1단계</td>
+            <td>EP-01</td>
+            <td>AI Assistant UI/UX 설계</td>
+            <td>AI 인터페이스 기반 구축</td>
+            <td>사이드바 프롬프트 UI, 키워드 제안 UI</td>
+            <td>AI 인터페이스 진입점 확보</td>
+          </tr>
+          <tr>
+            <td>2026년 3월</td>
+            <td>1단계</td>
+            <td>EP-02</td>
+            <td>대화 관리 시스템</td>
+            <td>대화 기반 생성 구조 구축</td>
+            <td>대화 이력 저장, 컨텍스트 유지, 세션 관리</td>
+            <td>AI 작업 흐름 유지</td>
+          </tr>
+          <tr>
+            <td>2026년 3월</td>
+            <td>1단계</td>
+            <td>EP-03</td>
+            <td>신규 객체 추가 방식 설계</td>
+            <td>객체 생성 구조 표준화</td>
+            <td>객체 생성 파이프라인, 객체 스키마 정의</td>
+            <td>객체 생성 구조 확립</td>
+          </tr>
+          <tr style="background:#F8F9FC;">
+            <td>2026년 4월</td>
+            <td>2단계</td>
+            <td>EP-04</td>
+            <td>AI 콘텐츠 생성 엔진 구축</td>
+            <td>AI 생성 실행 구조 구축</td>
+            <td>프롬프트 파싱, 의도 분석, 명령 실행</td>
+            <td>AI 생성 기능 구현</td>
+          </tr>
+          <tr style="background:#F8F9FC;">
+            <td>2026년 4월</td>
+            <td>2단계</td>
+            <td>EP-05</td>
+            <td>CBS 데이터 연동</td>
+            <td>동적 콘텐츠 생성 지원</td>
+            <td>DB 연동 API, 객체 삽입 로직</td>
+            <td>데이터 기반 콘텐츠 생성</td>
+          </tr>
+          <tr style="background:#F8F9FC;">
+            <td>2026년 4월</td>
+            <td>2단계</td>
+            <td>EP-06</td>
+            <td>JS Function 고도화</td>
+            <td>실행 구조 표준화</td>
+            <td>함수 인터페이스 표준화, 파라미터 구조화</td>
+            <td>실행 기반 안정화</td>
+          </tr>
+          <tr>
+            <td>2026년 5월</td>
+            <td>3단계</td>
+            <td>EP-07</td>
+            <td>액션 시스템 LLM 연동 (1차)</td>
+            <td>인터랙션 생성 지원</td>
+            <td>자연어 &rarr; 트리거/액션 매핑</td>
+            <td>인터랙션 생성 가능</td>
+          </tr>
+          <tr>
+            <td>2026년 5월</td>
+            <td>3단계</td>
+            <td>EP-08</td>
+            <td>AI 엔진 고도화</td>
+            <td>생성 품질 향상</td>
+            <td>수정, 재생성, 피드백 반영</td>
+            <td>생성 안정성 확보</td>
+          </tr>
+          <tr style="background:#F8F9FC;">
+            <td>2026년 6월</td>
+            <td>4단계</td>
+            <td>EP-10</td>
+            <td>편집 화면 UI/UX 통합</td>
+            <td>생성 및 편집 환경 통합</td>
+            <td>AI 패널 + 편집 패널 통합</td>
+            <td>통합 제작 환경 구축</td>
+          </tr>
+          <tr style="background:#F8F9FC;">
+            <td>2026년 6월</td>
+            <td>4단계</td>
+            <td>EP-11</td>
+            <td>액션 시스템 고도화 (2차)</td>
+            <td>고급 인터랙션 지원</td>
+            <td>조건부 액션, 시퀀스 액션</td>
+            <td>고급 인터랙션 생성</td>
+          </tr>
+          <tr>
+            <td>2026년 7월</td>
+            <td>5단계</td>
+            <td>EP-13</td>
+            <td>편집 UX 개선</td>
+            <td>제작 효율 향상</td>
+            <td>단축키, 자동완성, 스마트 제안</td>
+            <td>제작 속도 향상</td>
+          </tr>
+          <tr>
+            <td>2026년 7월</td>
+            <td>5단계</td>
+            <td>EP-14</td>
+            <td>AI 응답 최적화</td>
+            <td>응답 성능 개선</td>
+            <td>캐싱, 스트리밍 응답, 프롬프트 최적화</td>
+            <td>응답 속도 개선</td>
+          </tr>
+          <tr>
+            <td>2026년 7월</td>
+            <td>5단계</td>
+            <td>EP-15</td>
+            <td>에러 핸들링 고도화</td>
+            <td>시스템 안정성 확보</td>
+            <td>롤백, 복구, 오류 안내</td>
+            <td>안정적인 사용 환경 확보</td>
+          </tr>
+          <tr style="background:#F8F9FC;">
+            <td>2026년 8월</td>
+            <td>6단계</td>
+            <td>EP-16</td>
+            <td>시스템 통합 테스트</td>
+            <td>서비스 검증</td>
+            <td>E2E 테스트, 성능 테스트</td>
+            <td>전체 시스템 검증</td>
+          </tr>
+          <tr style="background:#F8F9FC;">
+            <td>2026년 8월</td>
+            <td>6단계</td>
+            <td>EP-17</td>
+            <td>문서화 및 교육 자료</td>
+            <td>사용자 온보딩</td>
+            <td>사용자 가이드, 튜토리얼, 문서</td>
+            <td>사용자 교육 준비</td>
+          </tr>
+          <tr style="background:#F8F9FC;">
+            <td>2026년 8월</td>
+            <td>6단계</td>
+            <td>EP-18</td>
+            <td>운영 모니터링 구축</td>
+            <td>운영 환경 구축</td>
+            <td>로깅, 모니터링, 알림 시스템</td>
+            <td>서비스 운영 준비</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- end slide-container -->
+
+<!-- Navigation Bar -->
+<div class="nav-bar">
+  <button id="prevBtn" onclick="prevSlide()" disabled>&larr; 이전</button>
+  <span class="page-indicator"><span id="currentPage">1</span> / <span id="totalPages">13</span></span>
+  <button id="nextBtn" onclick="nextSlide()">다음 &rarr;</button>
+</div>
+
+<div class="keyboard-hint">← → 방향키로 이동</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function updateSlide() {
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i === current) s.classList.add('active');
+      else if (i < current) s.classList.add('prev');
+    });
+    document.getElementById('currentPage').textContent = current + 1;
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === total - 1;
+    document.getElementById('progressBar').style.width = ((current + 1) / total * 100) + '%';
+  }
+
+  function nextSlide() { if (current < total - 1) { current++; updateSlide(); } }
+  function prevSlide() { if (current > 0) { current--; updateSlide(); } }
+  function goToSlide(index) { if (index >= 0 && index < total) { current = index; updateSlide(); } }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  });
+
+  // Swiper
+  const swipers = {};
+
+  function initSwiper(name, count) {
+    swipers[name] = { current: 0, count };
+    const dotsContainer = document.getElementById(`swiper${name}Dots`);
+    if (!dotsContainer) return;
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'swiper-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => swiperGoTo(name, i);
+      dotsContainer.appendChild(dot);
+    }
+  }
+
+  function swiperGoTo(name, index) {
+    const s = swipers[name];
+    s.current = index;
+    const track = document.getElementById(`swiper${name}Track`);
+    track.style.transform = `translateX(-${index * 100}%)`;
+    const dots = document.getElementById(`swiper${name}Dots`).children;
+    Array.from(dots).forEach((d, i) => {
+      d.className = 'swiper-dot' + (i === index ? ' active' : '');
+    });
+  }
+
+  function swiperNext(name) { const s = swipers[name]; swiperGoTo(name, (s.current + 1) % s.count); }
+  function swiperPrev(name) { const s = swipers[name]; swiperGoTo(name, (s.current - 1 + s.count) % s.count); }
+
+  // Benchmark tab switching
+  let currentBench = 0;
+  function switchBench(index) {
+    document.getElementById(`benchPanel${currentBench}`).style.opacity = '0';
+    document.getElementById(`benchPanel${currentBench}`).style.pointerEvents = 'none';
+    document.getElementById(`benchTab${currentBench}`).style.background = 'white';
+    document.getElementById(`benchTab${currentBench}`).style.color = 'var(--text)';
+    document.getElementById(`benchTab${currentBench}`).style.borderColor = '#E5E7EB';
+
+    currentBench = index;
+    document.getElementById(`benchPanel${currentBench}`).style.opacity = '1';
+    document.getElementById(`benchPanel${currentBench}`).style.pointerEvents = 'all';
+    document.getElementById(`benchTab${currentBench}`).style.background = 'var(--accent)';
+    document.getElementById(`benchTab${currentBench}`).style.color = 'white';
+    document.getElementById(`benchTab${currentBench}`).style.borderColor = 'var(--accent)';
+  }
+
+  // Initialize all swipers
+  initSwiper('Page4', 4);
+  initSwiper('Canva', 4);
+  initSwiper('Miri', 4);
+  initSwiper('Gen', 5);
+  initSwiper('Step1', 2);
+  initSwiper('Step2', 3);
+
+  updateSlide();
+</script>
+
+</body>
+</html>

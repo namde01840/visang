@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBS Tools</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: transparent;
+            color: #333;
+        }
+
+        /* Content Wrapper - 메인 콘텐츠 영역 안에 들어가는 컨테이너 */
+        .cbs-tools-wrapper {
+            padding: 32px 36px 40px;
+            max-width: 100%;
+        }
+
+        /* Top Header Bar */
+        .top-header-bar {
+            width: 100%;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .top-header-bar img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 30px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .page-desc {
+            font-size: 16px;
+            color: #888;
+            font-weight: 400;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+
+        /* Cards Container */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        /* Card */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 22px 20px;
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .card:hover {
+            border-color: #c7d2e0;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 4px;
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0;
+            color: #fff;
+        }
+
+        .card-icon.ai { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+        .card-icon.design { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+        .card-icon.optimize { background: linear-gradient(135deg, #059669, #34d399); }
+        .card-icon.deploy { background: linear-gradient(135deg, #d97706, #fbbf24); }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .card-subtitle {
+            font-size: 11.5px;
+            color: #aaa;
+            font-weight: 400;
+            margin-left: 47px;
+            margin-bottom: 14px;
+        }
+
+        .card-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin-bottom: 12px;
+        }
+
+        /* Menu Items */
+        .menu-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .menu-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 400;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        /* Active menu item (with URL) */
+        .menu-item.active {
+            color: #1e40af;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .menu-item.active:hover {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .menu-item.active .menu-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #3b82f6;
+            flex-shrink: 0;
+            box-shadow: 0 0 4px rgba(59, 130, 246, 0.35);
+        }
+
+        .menu-item.active .menu-arrow {
+            margin-left: auto;
+            font-size: 13px;
+            color: #3b82f6;
+            opacity: 0;
+            transform: translateX(-4px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .menu-item.active:hover .menu-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Disabled menu item (no URL) */
+        .menu-item.disabled {
+            color: #bfc6d0;
+            cursor: default;
+        }
+
+        .menu-item.disabled .menu-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #dde1e6;
+            flex-shrink: 0;
+        }
+
+        /* Coming Soon Tooltip */
+        .menu-item.disabled .tooltip {
+            position: absolute;
+            top: 100%;
+            left: 60%;
+            margin-top: 2px;
+            transform: scale(0.92);
+            background: #b0b8c4;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 5px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 10;
+        }
+
+        .menu-item.disabled:hover .tooltip {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .menu-item.disabled:hover {
+            background: #fafbfc;
+        }
+
+        /* Footer Notice */
+        .footer-notice {
+            margin-top: 24px;
+            padding: 18px 22px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .footer-notice p {
+            font-size: 12.5px;
+            color: #6b7280;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .footer-notice p + p {
+            margin-top: 6px;
+        }
+
+        .footer-notice .link-btn {
+            display: inline-block;
+            background: #3b82f6;
+            color: #ffffff;
+            font-size: 11.5px;
+            font-weight: 500;
+            padding: 3px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 6px;
+            transition: background 0.2s;
+        }
+
+        .footer-notice .link-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Responsive - 콘텐츠 영역이 좁아질 경우 */
+        @media (max-width: 680px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 헤더 바 -->
+    <div class="top-header-bar">
+        <img src="header.png" alt="비상교육 콘텐츠 은행 헤더">
+    </div>
+
+    <div class="cbs-tools-wrapper">
+
+        <!-- Page Title (기존 CBS 플랫폼 타이틀 영역 스타일) -->
+        <div class="page-title">비상교육 CBS 체험관</div>
+        <div class="page-desc">CBS의 주요 기능을 직접 체험해보고, 유관 업무에 활용해보세요!</div>
+
+        <!-- Cards -->
+        <div class="cards-container">
+
+            <!-- Category 1: AI & Digitalizing -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon ai">&#x2728;</div>
+                    <div class="card-title">AI &amp; Digitalizing</div>
+                </div>
+                <div class="card-subtitle">AI 콘텐츠 생성 및 변환</div>
+                <div class="card-divider"></div>
+                <ul class="menu-list">
+                    <li>
+                        <a class="menu-item active" href="#ai-illustration" onclick="handleMenuClick(event, 'ai-illustration')">
+                            <span class="menu-dot"></span>
+                            AI 삽화 및 이미지 생성툴
+                            <span class="menu-arrow">&#8594;</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="menu-item active" href="#ai-english-text" onclick="handleMenuClick(event, 'ai-english-text')">
+                            <span class="menu-dot"></span>
+                            AI 영어 지문 생성 및 난이도 변경 툴
+                            <span class="menu-arrow">&#8594;</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="menu-item active" href="#ai-english-question" onclick="handleMenuClick(event, 'ai-english-question')">
+                            <span class="menu-dot"></span>
+                            AI 영어 문항 생성툴
+                            <span class="menu-arrow">&#8594;</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            OCR/텍스트 추출툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            AI 문제은행
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            POD 서비스
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Category 2: Design -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon design">&#x1F3A8;</div>
+                    <div class="card-title">Contents Creation Tool</div>
+                </div>
+                <div class="card-subtitle">콘텐츠 제작의 시작점</div>
+                <div class="card-divider"></div>
+                <ul class="menu-list">
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            개념/문항/활동 콘텐츠 저작툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            동적 콘텐츠 저작툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            i-Book 저작툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            매쓰캔버스 저작툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Category 3: Optimization -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon optimize">&#x2705;</div>
+                    <div class="card-title">Optimization</div>
+                </div>
+                <div class="card-subtitle">콘텐츠 품질 검증 및 최적화</div>
+                <div class="card-divider"></div>
+                <ul class="menu-list">
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            콘텐츠 오류 검사툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            메타데이터 정합성 검증툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            콘텐츠 파일 리소스 최적화 검증툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Category 4: Deploy & Management -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon deploy">&#x1F680;</div>
+                    <div class="card-title">Deploy &amp; Management</div>
+                </div>
+                <div class="card-subtitle">플랫폼으로의 배포 및 관리</div>
+                <div class="card-divider"></div>
+                <ul class="menu-list">
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            콘텐츠 유형 별 배포툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            공통 및 브랜드 별 메타데이터 관리툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            텍스트 및 멀티미디어 DB 관리툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="menu-item disabled">
+                            <span class="menu-dot"></span>
+                            PDF 기출 시험지 관리툴
+                            <span class="tooltip">Coming Soon</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Footer Notice -->
+        <div class="footer-notice">
+            <p>CBS의 주요 기능은 매월 지속적으로 업데이트 될 예정입니다. 많은 관심 부탁 드립니다.</p>
+            <p>오픈된 체험 기능에 대한 문의 사항은 아래 채널로 접수 부탁 드립니다. 담당자가 확인하여 빠르게 회신 드리겠습니다. <a class="link-btn" href="https://teams.microsoft.com/l/channel/19%3AcWSddU6skjVMPSJ_YP_c3EVdLvZdvvfFOThg5RvQZ6A1%40thread.tacv2/10.%5BCBS%20%EC%B2%B4%ED%97%98%EA%B4%80%5D%20%EC%B2%B4%ED%97%98%EC%9A%A9%20%EA%B8%B0%EB%8A%A5%EC%97%90%20%EB%8C%80%ED%95%9C%20%EB%AC%B8%EC%9D%98%EC%82%AC%ED%95%AD?groupId=4e5259dd-7374-4904-8fea-fdeb283af0f4&tenantId=f2d1b529-a719-4ee5-9b25-d772ec2b0db5&ngc=true&allowXTenantAccess=true" target="_blank">바로가기</a></p>
+        </div>
+
+    </div>
+
+    <script>
+        // URL 매핑 - 실제 URL로 교체 필요
+        const urlMap = {
+            'ai-illustration': '#',       // 실제 URL로 교체
+            'ai-english-text': '#',        // 실제 URL로 교체
+            'ai-english-question': '#',    // 실제 URL로 교체
+        };
+
+        function handleMenuClick(event, menuId) {
+            event.preventDefault();
+            const url = urlMap[menuId];
+            if (url && url !== '#') {
+                window.open(url, '_blank');
+            } else {
+                alert('해당 툴 페이지로 이동합니다.\n(실제 URL 연결 후 동작합니다)');
+            }
+        }
+    </script>
+
+</body>
+</html>

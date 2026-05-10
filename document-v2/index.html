@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBS 저작툴 고도화 전략 - 일반교사 대상 BM 전환</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --primary: #2B3A67;
+    --accent: #496DDB;
+    --accent-light: #E8EDFB;
+    --text: #2D2D2D;
+    --text-light: #6B7280;
+    --bg: #F8F9FC;
+    --white: #FFFFFF;
+    --gradient: linear-gradient(135deg, #2B3A67 0%, #496DDB 100%);
+    --gradient-accent: linear-gradient(135deg, #496DDB 0%, #7B9CF7 100%);
+    --orange: #E8732A;
+    --green: #22A06B;
+    --red: #E34935;
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #1a1a2e;
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .slide-container { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+  .slide {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    opacity: 0; transform: translateX(60px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none; background: var(--bg); overflow: hidden;
+    max-height: 100vh;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+  .slide.prev { opacity: 0; transform: translateX(-60px); }
+
+  /* Nav */
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 52px;
+    background: rgba(43, 58, 103, 0.95); backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; z-index: 1000;
+  }
+  .nav-bar button {
+    background: rgba(255,255,255,0.15); border: none; color: white;
+    padding: 8px 20px; border-radius: 6px; cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 500; transition: background 0.2s;
+  }
+  .nav-bar button:hover { background: rgba(255,255,255,0.25); }
+  .nav-bar button:disabled { opacity: 0.3; cursor: default; }
+  .page-indicator { color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 500; }
+  .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gradient-accent); transition: width 0.4s ease; z-index: 1001; }
+
+  /* Page Header - 넘버링 제거 */
+  .page-header { padding: 24px 56px 0; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .page-header h2 { font-size: 26px; font-weight: 700; color: var(--primary); line-height: 1.3; }
+  .page-header .page-sub { font-size: 14px; color: var(--text-light); font-weight: 400; margin-left: 4px; }
+  .page-body { padding: 28px 56px 56px; flex: 1; overflow: hidden; min-height: 0; }
+
+  /* Cover */
+  .slide-cover {
+    background: var(--gradient); display: flex; align-items: center;
+    justify-content: center; text-align: center; color: white;
+  }
+  .cover-content { max-width: 850px; padding: 40px; }
+  .cover-logo { font-size: 15px; font-weight: 500; letter-spacing: 4px; text-transform: uppercase; opacity: 0.7; margin-bottom: 12px; }
+  .cover-title { font-size: 46px; font-weight: 900; line-height: 1.35; margin-bottom: 24px; }
+  .cover-subtitle { font-size: 20px; font-weight: 300; opacity: 0.85; line-height: 1.6; margin-bottom: 40px; }
+  .cover-divider { width: 80px; height: 3px; background: rgba(255,255,255,0.4); margin: 0 auto 28px; }
+  .cover-date { font-size: 14px; opacity: 0.6; font-weight: 400; }
+
+  /* Section Divider */
+  .slide-divider { background: var(--gradient); display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
+  .divider-content { max-width: 700px; }
+  .divider-number { font-size: 72px; font-weight: 900; opacity: 0.2; margin-bottom: -10px; }
+  .divider-title { font-size: 36px; font-weight: 700; line-height: 1.4; margin-bottom: 16px; }
+  .divider-subtitle { font-size: 17px; font-weight: 300; opacity: 0.7; line-height: 1.6; }
+
+  /* TOC */
+  .toc-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  .toc-list li {
+    display: flex; align-items: flex-start; gap: 18px; padding: 18px 28px;
+    background: var(--white); border-radius: 12px; border-left: 4px solid var(--accent);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .toc-list li:hover { transform: translateX(6px); box-shadow: 0 4px 16px rgba(73,109,219,0.12); }
+  .toc-num {
+    width: 34px; height: 34px; background: var(--gradient); color: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; margin-top: 2px;
+  }
+  .toc-text { font-size: 16px; font-weight: 500; color: var(--primary); }
+  .toc-sub { font-size: 13px; color: var(--text-light); margin-top: 3px; line-height: 1.5; }
+
+  /* Cards */
+  .card {
+    background: var(--white); border-radius: 14px; padding: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.04);
+  }
+  .card-accent { border-top: 3px solid var(--accent); }
+  .card-orange { border-top: 3px solid var(--orange); }
+  .card-green { border-top: 3px solid var(--green); }
+  .card h3 { font-size: 17px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
+  .card p, .card li { font-size: 15px; line-height: 1.7; color: var(--text); }
+  .card ul { padding-left: 16px; margin-top: 4px; }
+  .card ul li { margin-bottom: 3px; }
+
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+  .tag-blue { background: var(--accent-light); color: var(--accent); }
+  .tag-orange { background: #FFF3E8; color: var(--orange); }
+  .tag-green { background: #E6F9F0; color: var(--green); }
+  .tag-red { background: #FDECEB; color: var(--red); }
+
+  .img-container { border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.06); }
+  .img-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* Compare Table */
+  .compare-table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.06); font-size: 15px;
+  }
+  .compare-table thead th { background: var(--primary); color: white; padding: 14px 16px; font-weight: 600; text-align: center; font-size: 15px; }
+  .compare-table tbody td { padding: 14px 16px; border-bottom: 1px solid #EEF0F4; vertical-align: middle; line-height: 1.7; text-align: center; }
+  .compare-table tbody tr:last-child td { border-bottom: none; }
+  .compare-table tbody tr:nth-child(even) { background: #FAFBFE; }
+  .compare-table .highlight-cell { background: #EBF0FF !important; font-weight: 500; color: var(--accent); }
+  .compare-table .item-cell { font-weight: 600; color: var(--primary); text-align: center; vertical-align: middle; }
+
+  /* Swipe inner container */
+  .swipe-container { position: relative; overflow: hidden; flex: 1; }
+  .swipe-track { display: flex; transition: transform 0.4s ease; height: 100%; }
+  .swipe-panel { min-width: 100%; padding: 0; }
+  .swipe-nav { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+  .swipe-dot {
+    width: 10px; height: 10px; border-radius: 50%; background: #D1D5DB; cursor: pointer;
+    border: none; transition: all 0.3s;
+  }
+  .swipe-dot.active { background: var(--accent); width: 28px; border-radius: 5px; }
+
+  /* Tab */
+  .tab-bar { display: flex; gap: 4px; background: #E5E7EB; border-radius: 10px; padding: 4px; margin-bottom: 14px; }
+  .tab-btn {
+    flex: 1; padding: 10px 12px; border: none; border-radius: 8px; font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer; background: transparent; color: var(--text-light);
+    transition: all 0.3s;
+  }
+  .tab-btn.active { background: var(--white); color: var(--accent); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Stage cards */
+  .stage-card {
+    background: var(--white); border-radius: 14px; padding: 18px 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 4px solid; margin-bottom: 10px;
+  }
+  .stage-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .stage-card p, .stage-card li { font-size: 15px; line-height: 1.7; }
+  .stage-card ul { padding-left: 16px; margin-top: 4px; }
+
+  /* Strategy page layout */
+  .strategy-page { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; height: 100%; }
+  .strategy-left { display: flex; flex-direction: column; gap: 10px; }
+  .strategy-right { display: flex; flex-direction: column; gap: 10px; }
+
+  /* Highlight box */
+  .highlight-box {
+    background: linear-gradient(135deg, #2B3A67 0%, #496DDB 100%);
+    color: white; border-radius: 12px; padding: 18px 24px;
+  }
+  .highlight-box p { font-size: 15px; line-height: 1.7; font-weight: 400; }
+  .highlight-box strong { font-weight: 700; }
+
+  /* Conclusion banner */
+  .conclusion-banner {
+    background: linear-gradient(135deg, #496DDB 0%, #7B9CF7 100%);
+    color: white; border-radius: 14px; padding: 20px 28px; text-align: center;
+  }
+  .conclusion-banner h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: white; }
+  .conclusion-banner p { font-size: 15px; opacity: 0.9; line-height: 1.7; }
+
+  /* Pain Solution */
+  .ps-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+  .pain-box { background: #FFF6F5; border-radius: 10px; padding: 14px 18px; border-left: 3px solid var(--red); }
+  .solution-box { background: #F0F7FF; border-radius: 10px; padding: 14px 18px; border-left: 3px solid var(--accent); }
+  .pain-box h4, .solution-box h4 { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+  .pain-box h4 { color: var(--red); }
+  .solution-box h4 { color: var(--accent); }
+  .pain-box p, .solution-box p { font-size: 14px; line-height: 1.6; }
+
+  /* Effect list */
+  .effect-list { display: flex; flex-direction: column; gap: 10px; }
+  .effect-item { display: flex; gap: 14px; align-items: flex-start; background: var(--white); border-radius: 12px; padding: 14px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .effect-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .effect-text h4 { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 3px; }
+  .effect-text p { font-size: 14px; color: var(--text-light); line-height: 1.6; }
+
+  /* Link button */
+  .link-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    text-decoration: none; color: white; background: var(--accent);
+    transition: background 0.2s; margin-top: 8px;
+  }
+  .link-btn:hover { background: var(--primary); }
+
+  /* Image gallery */
+  .img-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .img-gallery img { width: 100%; border-radius: 8px; border: 1px solid rgba(0,0,0,0.08); }
+
+  /* Utility */
+  .text-sm { font-size: 15px; line-height: 1.7; color: var(--text); }
+  .text-xs { font-size: 13px; line-height: 1.6; color: var(--text-light); }
+  .mt-6 { margin-top: 6px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-10 { margin-top: 10px; }
+  .mt-12 { margin-top: 12px; }
+  .mt-14 { margin-top: 14px; }
+  .mt-16 { margin-top: 16px; }
+  .mb-6 { margin-bottom: 6px; }
+  .mb-8 { margin-bottom: 8px; }
+  .fw-700 { font-weight: 700; }
+
+  /* KPI Table */
+  .kpi-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.06); font-size: 15px; }
+  .kpi-table thead th { background: var(--primary); color: white; padding: 14px 16px; font-weight: 600; text-align: center; }
+  .kpi-table tbody td { padding: 13px 16px; border-bottom: 1px solid #EEF0F4; text-align: center; line-height: 1.6; vertical-align: middle; }
+  .kpi-table tbody tr:last-child td { border-bottom: none; }
+  .kpi-table tbody tr:nth-child(even) { background: #FAFBFE; }
+  .kpi-table .kpi-label { font-weight: 600; color: var(--primary); text-align: left; }
+
+  /* Strategy detail card for 전략 pages */
+  .strat-card {
+    background: var(--white); border-radius: 14px; padding: 20px 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 4px solid var(--accent);
+  }
+  .strat-card h3 { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+  .strat-section { margin-top: 10px; }
+  .strat-section h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .strat-section p { font-size: 15px; line-height: 1.7; color: var(--text); }
+
+  /* Badge */
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-blue { background: var(--accent-light); color: var(--accent); }
+  .badge-green { background: #E6F9F0; color: #16A34A; }
+  .badge-orange { background: #FFF3E0; color: #E65100; }
+
+  /* Swiper */
+  .swiper-wrapper-custom { position: relative; overflow: hidden; border-radius: 12px; background: #F1F3F9; }
+  .swiper-track { display: flex; transition: transform 0.4s ease; }
+  .swiper-slide-item { min-width: 100%; padding: 12px; }
+  .swiper-slide-item img { width: 100%; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+  .swiper-controls { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 8px 0 6px; }
+  .swiper-btn {
+    width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--accent);
+    background: white; color: var(--accent); font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .swiper-btn:hover { background: var(--accent); color: white; }
+  .swiper-dots { display: flex; gap: 6px; }
+  .swiper-dot-item { width: 8px; height: 8px; border-radius: 50%; background: #CBD5E1; transition: all 0.3s; cursor: pointer; border: none; }
+  .swiper-dot-item.active { background: var(--accent); width: 24px; border-radius: 4px; }
+
+  /* Grid helpers */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+  /* Full height flex */
+  .flex-col { display: flex; flex-direction: column; }
+  .flex-1 { flex: 1; }
+  .gap-10 { gap: 10px; }
+  .gap-12 { gap: 12px; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="slide-container" id="slideContainer">
+
+  <!-- ===== SLIDE 1: 표지 ===== -->
+  <div class="slide slide-cover active" data-index="0">
+    <div class="cover-content">
+      <div class="cover-logo">VISANG EDUCATION &middot; CBS PLATFORM</div>
+      <p class="cover-subtitle" style="margin-bottom: 20px;">
+        캔바보다 10배 빠르고 쉬운, 교육 특화 콘텐츠 플랫폼
+      </p>
+      <h1 class="cover-title">비상교육 저작 플랫폼 고도화 전략</h1>
+      <div class="cover-divider"></div>
+      <p class="cover-date">2026.03 &middot; CBS기획운영Cell</p>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 2: 목차 ===== -->
+  <div class="slide" data-index="1">
+    <div class="page-header">
+      <h2>목차</h2>
+    </div>
+    <div class="page-body">
+      <ul class="toc-list">
+        <li>
+          <div class="toc-num">1</div>
+          <div>
+            <div class="toc-text">자사 서비스 현황 분석</div>
+            <div class="toc-sub">CBS 저작툴 구축 현황 및 주요 기능</div>
+          </div>
+        </li>
+        <li>
+          <div class="toc-num">2</div>
+          <div>
+            <div class="toc-text">교육 특화 저작 플랫폼의 필요성</div>
+            <div class="toc-sub">왜 비상교육은 교사들에게 저작 플랫폼을 제공해야 하는가?<br>그렇다면 교사들이 원하는 저작 플랫폼은 어떤 모양인가?</div>
+          </div>
+        </li>
+        <li>
+          <div class="toc-num">3</div>
+          <div>
+            <div class="toc-text">고도화 전략 수립</div>
+            <div class="toc-sub">AI 초벌 콘텐츠 제작 / 인터렉티브 콘텐츠 / 데이터 피드백</div>
+          </div>
+        </li>
+        <li>
+          <div class="toc-num">4</div>
+          <div>
+            <div class="toc-text">시장 점유 시나리오 및 2026년 KPI</div>
+            <div class="toc-sub">침투 → 확장 → 수익화 3단계 전략 / KPI 가이드라인</div>
+          </div>
+        </li>
+        <li style="border-left-color: var(--text-light); opacity: 0.7;">
+          <div class="toc-num" style="background: #6B7280;">A</div>
+          <div>
+            <div class="toc-text">Appendix</div>
+            <div class="toc-sub">타사 벤치마킹 / 저작툴 &amp; LLM 연동 아키텍처</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 3: 간지 - 자사 서비스 ===== -->
+  <div class="slide slide-divider" data-index="2">
+    <div class="divider-content">
+      <div class="divider-number">01</div>
+      <h2 class="divider-title">자사 서비스 현황 분석</h2>
+      <p class="divider-subtitle">CBS 저작툴 구축현황 및 주요 기능</p>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 4: CBS 저작툴 현황 ===== -->
+  <div class="slide" data-index="3">
+    <div class="page-header">
+      <h2>CBS 저작툴 현황</h2>
+    </div>
+    <div class="page-body" style="display:flex;flex-direction:column;height:calc(100vh - 130px);">
+      <!-- 상단: 개요 -->
+      <div style="flex-shrink:0;">
+        <div style="background:var(--white); border-radius:12px; padding:14px 22px; box-shadow:0 2px 8px rgba(0,0,0,0.04); margin-bottom:14px;">
+          <p style="font-size:15px; color:var(--text); line-height:1.7;">CBS 저작툴은 콘텐츠 유형 및 저작방식에 따라 <strong style="color:var(--accent);">2가지 타입의 저작툴</strong>을 탑재하여 <strong>하이브리드형 저작환경</strong>을 구축했으며,<br>비상 내부에서는 이를 활용해 다양한 브랜드의 개념/문항/활동 콘텐츠를 안정적으로 제작하고 관리하고 있습니다.</p>
+        </div>
+      </div>
+
+      <!-- 하단: 범용/동적 탭 + 좌우 스와이프 상세 -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-shrink:0;">
+        <button class="tool-detail-tab active" onclick="switchToolTab(0)" id="toolTab0" style="flex:1;padding:10px 14px;border:2px solid var(--accent);border-radius:10px;background:var(--accent);color:white;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;justify-content:center;">
+          범용 저작툴
+        </button>
+        <button class="tool-detail-tab" onclick="switchToolTab(1)" id="toolTab1" style="flex:1;padding:10px 14px;border:2px solid #E5E7EB;border-radius:10px;background:white;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;justify-content:center;">
+          동적 콘텐츠 저작툴
+        </button>
+      </div>
+
+      <div style="flex:1;position:relative;overflow:hidden;">
+        <!-- 범용 저작툴 패널 -->
+        <div class="tool-panel" id="toolPanel0" style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:1;transition:opacity 0.3s;">
+          <div class="grid-2" style="gap:18px;height:100%;">
+            <div style="display:flex;flex-direction:column;gap:10px;overflow:auto;">
+              <div style="background:var(--white);border-radius:12px;padding:16px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                <h3 style="font-size:16px;font-weight:700;color:var(--primary);margin-bottom:6px;"><span class="badge badge-green" style="margin-right:6px;">메타정보</span> 교육과정 표준체계 태깅</h3>
+                <p style="font-size:15px;line-height:1.7;">모든 콘텐츠는 교육부의 교육과정 표준체계에 따라 <strong>정교하게 태깅</strong>됨</p>
+                <p style="font-size:13px;color:var(--text-light);margin-top:2px;">교육과정 / 교과과정 / 평가영역 / 학습맵 / 난이도 / 해시태그</p>
+              </div>
+              <div style="background:var(--white);border-radius:12px;padding:16px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                <h3 style="font-size:16px;font-weight:700;color:var(--primary);margin-bottom:6px;"><span class="badge badge-blue" style="margin-right:6px;">AI 엔진</span> 자동화 기능 탑재</h3>
+                <ul style="font-size:15px;line-height:1.7;padding-left:16px;">
+                  <li><strong>OCR 디지털라이징</strong> — 페이퍼 기반 문항 자동 변환</li>
+                  <li><strong>유사문항 생성</strong> — 진단 및 추천학습 지원</li>
+                  <li><strong>힌트/해설 자동생성</strong> — 문항별 학습 보조</li>
+                </ul>
+              </div>
+              <a class="link-btn" href="https://cbs-editor.vsaidt.com/index.html?brand_id=3&user_id=64&user_uid=namde01840&create=y&token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYW1kZTAxODQwIiwicm9sZSI6IlJPTEVfVklFVyIsImV4cCI6MTc3MzM5MTcxM30.cZ0pcISwEdJFW8oLUfBl7OEIkfGBa_DO-01ngMpsm4o" target="_blank" style="align-self:flex-start;">&#9654; 바로가기</a>
+            </div>
+            <div class="swiper-wrapper-custom" id="swiperTool1" style="height:100%;">
+              <div class="swiper-track" id="swiperTool1Track" style="height:calc(100% - 44px);">
+                <div class="swiper-slide-item"><img src="이미지_범용 저작툴.png" alt="범용 저작툴"></div>
+                <div class="swiper-slide-item"><img src="이미지_메타정보.png" alt="메타정보"></div>
+                <div class="swiper-slide-item"><img src="이미지_유사문항.png" alt="유사문항"></div>
+                <div class="swiper-slide-item"><img src="이미지_힌트 및 해설.png" alt="힌트 및 해설"></div>
+              </div>
+              <div class="swiper-controls">
+                <button class="swiper-btn" onclick="swiperPrev('Tool1')">&#8249;</button>
+                <div class="swiper-dots" id="swiperTool1Dots"></div>
+                <button class="swiper-btn" onclick="swiperNext('Tool1')">&#8250;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 동적 콘텐츠 저작툴 패널 -->
+        <div class="tool-panel" id="toolPanel1" style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;pointer-events:none;transition:opacity 0.3s;">
+          <div class="grid-2" style="gap:18px;height:100%;">
+            <div style="display:flex;flex-direction:column;gap:10px;overflow:auto;">
+              <div style="background:var(--white);border-radius:12px;padding:16px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                <h3 style="font-size:16px;font-weight:700;color:var(--primary);margin-bottom:6px;"><span class="badge badge-green" style="margin-right:6px;">1차 구축 완료</span> 25년 11월</h3>
+                <ul style="font-size:15px;line-height:1.7;padding-left:16px;">
+                  <li>오브젝트 생성 및 배치</li>
+                  <li>애니메이션 및 모션 적용</li>
+                  <li>미리보기 뷰어 및 내보내기</li>
+                </ul>
+              </div>
+              <div style="background:linear-gradient(135deg, #2B3A67 0%, #496DDB 100%);color:white;border-radius:12px;padding:16px 20px;">
+                <p style="font-size:15px;line-height:1.7;font-weight:400;"><strong>구축 배경:</strong> 조작형 콘텐츠의 <strong>외주 의존도가 높고</strong>, 사후 유지보수에 많은 공수가 드는 문제점을 해결하기 위한 목적으로 구축됨</p>
+              </div>
+              <a class="link-btn" style="background:var(--orange);align-self:flex-start;" href="https://t2-motion-editor.vsaidt.com/editor?brand_id=1&user_id=64&user_uid=namde01840&token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYW1kZTAxODQwIiwicm9sZSI6IlJPTEVfVklFVyIsImV4cCI6MTc3NDA3NjQyN30.LJkzHs2elr0UXr2_A4fLMz6ceT4mF7ZmAmuLP4-CTHg" target="_blank">&#9654; 바로가기</a>
+            </div>
+            <div class="img-container" style="height:100%;border-radius:12px;">
+              <img src="이미지_모션에디터.png" alt="모션에디터" style="object-fit:contain;background:white;padding:8px;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 5: 간지 - 고도화 필요성 ===== -->
+  <div class="slide slide-divider" data-index="4">
+    <div class="divider-content">
+      <div class="divider-number">02</div>
+      <h2 class="divider-title">교육 특화 저작 플랫폼의<br>필요성</h2>
+      <p class="divider-subtitle">왜 비상교육은 교사들에게 저작 플랫폼을 제공해야 하는가?<br>그렇다면 교사들이 원하는 저작 플랫폼은 어떤 모양인가?</p>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 6: 글로벌 저작 플랫폼 시장 동향 ===== -->
+  <div class="slide" data-index="5">
+    <div class="page-header">
+      <h2>비상이 저작 플랫폼 서비스를 구축해야하는 이유 <span class="page-sub">(글로벌 저작 플랫폼 시장 동향)</span></h2>
+    </div>
+    <div class="page-body" style="display:flex;flex-direction:column;height:calc(100vh - 130px);">
+      <div style="flex:1;width:100%;max-width:1200px;overflow:hidden;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);align-self:center;min-height:0;">
+        <img src="시장동향.png" alt="글로벌 저작 플랫폼 시장 동향" style="width:100%;display:block;margin-top:-10%;">
+      </div>
+      <div style="display:flex;gap:12px;margin-top:14px;flex-shrink:0;">
+        <div style="flex:1;background:var(--white);border-radius:12px;padding:14px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.05);border-top:3px solid var(--accent);text-align:center;">
+          <p style="font-size:15px;font-weight:700;color:var(--primary);line-height:1.6;">공교육 시장 선점을 위한 선제 대응</p>
+        </div>
+        <div style="flex:1;background:var(--white);border-radius:12px;padding:14px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.05);border-top:3px solid var(--orange);text-align:center;">
+          <p style="font-size:15px;font-weight:700;color:var(--primary);line-height:1.6;">신규 BM을 통한 수익모델로의 전환</p>
+        </div>
+        <div style="flex:1;background:var(--white);border-radius:12px;padding:14px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.05);border-top:3px solid var(--green);text-align:center;">
+          <p style="font-size:15px;font-weight:700;color:var(--primary);line-height:1.6;">자체 교육AI(LLM서비스) 고도화에 기여</p>
+        </div>
+      </div>
+      <!-- 주석 영역 -->
+      <div style="margin-top:10px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;">
+        <p style="font-size:11px;color:#9CA3AF;line-height:1.5;">
+          <sup>[1]</sup>Canva MAU 1.8억 &nbsp; <sup>[2]</sup>Canva for Education 6,000만 &nbsp; <sup>[3]</sup>Figma 유료 500만 &nbsp; <sup>[4]</sup>미리캔버스 1,000만 &nbsp; <sup>[5]</sup>AI 저작시장 CAGR 25~30% &nbsp; <sup>[6]</sup>교사 주당 10시간+
+        </p>
+        <button onclick="document.getElementById('footnoteDetail').style.display = document.getElementById('footnoteDetail').style.display === 'none' ? 'block' : 'none';" style="background:none;border:1px solid #D1D5DB;border-radius:6px;padding:4px 12px;font-size:11px;color:#6B7280;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;flex-shrink:0;margin-left:10px;transition:background 0.2s;" onmouseover="this.style.background='#F3F4F6';" onmouseout="this.style.background='none';">출처 상세보기 &#9660;</button>
+      </div>
+      <div id="footnoteDetail" style="display:none;margin-top:6px;flex-shrink:0;background:#F9FAFB;border:1px solid #E5E7EB;border-radius:10px;padding:12px 16px;max-height:160px;overflow-y:auto;">
+        <p style="font-size:10px;color:#6B7280;line-height:1.7;margin:0;">
+          <strong>[1]</strong> Canva Newsroom, 'Annual Performance Report 2024-2025' / Reuters &amp; Bloomberg 기업 가치 분석 리포트<br>
+          <strong>[2]</strong> Canva for Education, 'Global Impact Report 2025' / BETT &amp; ISTE 글로벌 컨퍼런스 발표 자료<br>
+          <strong>[3]</strong> TechCrunch &amp; Business Insider, 'Figma Independent Growth Strategy' 분석 / Figma Config 2025 User Data<br>
+          <strong>[4]</strong> 미리캔버스(IT&amp;) 공식 보도자료 및 교사 커뮤니티(인디스쿨 등) 내 저작도구 활용 현황 설문 데이터<br>
+          <strong>[5]</strong> Gartner, '2025 Strategic Technology Trends' / Grand View Research, 'AI-based Content Creation Market Outlook'<br>
+          <strong>[6]</strong> KERIS(한국교육학술정보원), '교사의 디지털 전환 실태 및 요구 분석 리포트(2024-2025)'
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 8: 교사가 원하는 저작 플랫폼 ===== -->
+  <div class="slide" data-index="6">
+    <div class="page-header">
+      <h2>교사들이 원하는 저작 플랫폼의 모습</h2>
+    </div>
+    <div class="page-body" style="display:flex;align-items:center;justify-content:center;height:calc(100vh - 130px);">
+      <div style="width:100%;max-width:1200px;overflow:hidden;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);">
+        <img src="교사니즈파악.png" alt="교사 니즈 파악" style="width:100%;display:block;margin-top:-12%;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 11: 비교분석표 ===== -->
+  <div class="slide" data-index="7">
+    <div class="page-header">
+      <h2>자사 고도화 방향 vs 타사 비교 분석</h2>
+    </div>
+    <div class="page-body" style="display:flex;flex-direction:column;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th style="width:16%;">비교 항목</th>
+            <th style="width:42%;">타사 (Canva / 미리캔버스 / Genspark)</th>
+            <th style="width:42%;border:3px solid var(--accent);">자사 CBS (To-Be)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item-cell">핵심 가치</td>
+            <td>시각적 디자인의 제작 편의성</td>
+            <td class="highlight-cell" style="border-left:3px solid var(--accent);border-right:3px solid var(--accent);">교육과정 연계 및 학습 효과성 보장</td>
+          </tr>
+          <tr>
+            <td class="item-cell">보유 콘텐츠</td>
+            <td>일반 스톡 이미지, 폰트 위주의 콘텐츠</td>
+            <td class="highlight-cell" style="border-left:3px solid var(--accent);border-right:3px solid var(--accent);">교육과정 기반의 메타 태깅된 학습 콘텐츠</td>
+          </tr>
+          <tr>
+            <td class="item-cell">인터랙션 요소</td>
+            <td>슬라이드 자료 위주의 정적 콘텐츠</td>
+            <td class="highlight-cell" style="border-left:3px solid var(--accent);border-right:3px solid var(--accent);">인터랙티브한 요소가 있는 동적 콘텐츠</td>
+          </tr>
+          <tr>
+            <td class="item-cell">사용 목적<br><small style="color:var(--text-light);font-weight:400;">(에듀테크 적합성)</small></td>
+            <td>홍보물, 발표자료 제작에 적합</td>
+            <td class="highlight-cell" style="border-left:3px solid var(--accent);border-right:3px solid var(--accent);border-bottom:3px solid var(--accent);">수업 설계, 평가, 개별화 학습자료 제작에 적합</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:14px;background:linear-gradient(135deg, #496DDB 0%, #7B9CF7 100%);color:white;border-radius:12px;padding:16px 24px;text-align:center;">
+        <p style="font-size:15px;font-weight:700;line-height:1.6;"><strong>Summary</strong> &mdash; 자사 저작 플랫폼은 교육 콘텐츠 활용 및 제작에 최적화된 독보적인 경쟁력 수립 가능</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 12: 간지 - 고도화 전략 ===== -->
+  <div class="slide slide-divider" data-index="8">
+    <div class="divider-content">
+      <div class="divider-number">03</div>
+      <h2 class="divider-title">자사 저작 플랫폼<br>고도화 전략 수립</h2>
+      <p class="divider-subtitle">AI 원클릭 초벌 콘텐츠 · 인터렉티브 콘텐츠 · 학습 데이터 피드백</p>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 13: 고도화 전략 통합 ===== -->
+  <div class="slide" data-index="9">
+    <div class="page-header">
+      <h2>고도화 전략 상세</h2>
+    </div>
+    <div class="page-body" style="display:flex;flex-direction:column;height:calc(100vh - 130px);">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;flex-shrink:0;">
+        <a href="https://visang.vercel.app/#share-motion-editor-v2" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--gradient-accent);color:white;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 2px 8px rgba(73,109,219,0.3);transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 14px rgba(73,109,219,0.4)';" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(73,109,219,0.3)';">&#9654; 데모페이지 바로가기</a>
+      </div>
+      <div style="width:100%;max-width:1200px;overflow:hidden;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);flex:1;min-height:0;align-self:center;">
+        <img src="고도화전략.png" alt="고도화 전략 상세" style="width:100%;display:block;margin-top:-5.5%;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 14: 간지 - 시장 점유 & KPI ===== -->
+  <div class="slide slide-divider" data-index="10">
+    <div class="divider-content">
+      <div class="divider-number">04</div>
+      <h2 class="divider-title">시장 점유 시나리오<br>및 2026년 KPI</h2>
+      <p class="divider-subtitle">침투 → 확장 → 수익화 3단계 전략 / KPI 가이드라인</p>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 15: 시장 점유 시나리오 ===== -->
+  <div class="slide" data-index="11">
+    <div class="page-header">
+      <h2>시장 점유 시나리오 - 3단계 전략</h2>
+    </div>
+    <div class="page-body" style="display:flex;flex-direction:column;height:calc(100vh - 130px);">
+      <div style="flex:1;width:100%;max-width:1200px;overflow:hidden;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);align-self:center;min-height:0;">
+        <img src="시장점유전략2.png" alt="시장 점유 3단계 로드맵" style="width:100%;display:block;margin-top:-8%;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== KPI 가이드라인 ===== -->
+  <div class="slide" data-index="12">
+    <div class="page-header">
+      <h2>2026년 KPI 가이드라인</h2>
+    </div>
+    <div class="page-body" style="display:flex;flex-direction:column;">
+      <table class="kpi-table" style="font-size:15px;">
+        <thead>
+          <tr>
+            <th style="width:15%;">구분</th>
+            <th style="width:22%;">지표 (Metric)</th>
+            <th style="width:33%;">보수적 목표 (1순위)</th>
+            <th style="width:30%;">공격적 목표</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="kpi-label">유저 확보</td>
+            <td>누적 가입 교사 수</td>
+            <td><strong>1,000명</strong> (전체 유저의 약 10%)</td>
+            <td style="color:var(--accent); font-weight:500;">15,000명</td>
+          </tr>
+          <tr>
+            <td class="kpi-label">업무 효율</td>
+            <td>평균 수업 자료 제작 시간</td>
+            <td><strong>기존 대비 50% 단축</strong> (60분 &rarr; 30분)</td>
+            <td style="color:var(--accent); font-weight:500;">기존 대비 70% 단축</td>
+          </tr>
+          <tr>
+            <td class="kpi-label">플랫폼 안착</td>
+            <td>주간 활성 사용자(WAU)</td>
+            <td><strong>가입자의 15%</strong> (주 1회 이상 접속)</td>
+            <td style="color:var(--accent); font-weight:500;">가입자의 35%</td>
+          </tr>
+          <tr>
+            <td class="kpi-label">에셋 활용</td>
+            <td>비상 독점 에셋 호출 건수</td>
+            <td><strong>인당 월평균 10건</strong></td>
+            <td style="color:var(--accent); font-weight:500;">인당 월평균 25건</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== 끝 ===== -->
+  <div class="slide slide-cover" data-index="13">
+    <div class="cover-content">
+      <div class="cover-logo">VISANG EDUCATION &middot; CBS PLATFORM</div>
+      <h1 class="cover-title" style="font-size: 42px;">감사합니다</h1>
+      <p class="cover-subtitle" style="font-size: 18px;">
+        비상교육 저작 플랫폼 고도화 전략<br>
+        일반교사 대상 BM 전환 보고
+      </p>
+      <div class="cover-divider"></div>
+      <p class="cover-date">2026.03 &middot; CBS기획운영Cell</p>
+    </div>
+  </div>
+
+  <!-- ===== Appendix 간지 ===== -->
+  <div class="slide slide-divider" data-index="14">
+    <div class="divider-content">
+      <div class="divider-number">A</div>
+      <h2 class="divider-title">Appendix</h2>
+      <p class="divider-subtitle">타사 벤치마킹 / 저작툴 &amp; LLM 연동 아키텍처</p>
+    </div>
+  </div>
+
+  <!-- ===== Appendix(1): 저작툴 & LLM 연동 아키텍처 ===== -->
+  <div class="slide" data-index="15">
+    <div class="page-header">
+      <h2>CBS 저작툴 &amp; LLM 실시간 연동 아키텍처</h2>
+    </div>
+    <div class="page-body" style="display:flex;flex-direction:column;height:calc(100vh - 130px);">
+      <div style="display:flex;gap:12px;margin-bottom:10px;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:8px;background:var(--white);border-radius:10px;padding:10px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border-left:3px solid var(--accent);">
+          <span style="font-size:13px;font-weight:700;color:var(--accent);">1차 기술검증 완료일정</span>
+          <span style="font-size:14px;color:var(--text);font-weight:600;">~3/23(월)</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--white);border-radius:10px;padding:10px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border-left:3px solid var(--orange);">
+          <span style="font-size:13px;font-weight:700;color:var(--orange);">1차 기술검증 범위</span>
+          <span style="font-size:14px;color:var(--text);">LLM을 통한 객체 및 액션 생성/편집 콘트롤 가능여부</span>
+        </div>
+      </div>
+      <div style="flex:1;width:100%;max-width:1200px;overflow:hidden;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1);align-self:center;min-height:0;">
+        <img src="기술검토.png" alt="CBS 저작툴 LLM 연동 아키텍처" style="width:100%;display:block;margin-top:-9.5%;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Appendix(2): 타사 벤치마킹 ===== -->
+  <div class="slide" data-index="16">
+    <div class="page-header">
+      <h2>타사 벤치마킹</h2>
+    </div>
+    <div class="page-body" style="display:flex;flex-direction:column;height:calc(100vh - 130px);">
+      <!-- 벤치마킹 탭 버튼 -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-shrink:0;">
+        <button class="bench-tab active" onclick="switchBench(0)" id="benchTab0" style="flex:1;padding:12px 16px;border:2px solid var(--accent);border-radius:10px;background:var(--accent);color:white;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;justify-content:center;">
+          <span style="width:28px;height:28px;border-radius:8px;background:#7B2FF2;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:800;">C</span>
+          Canva
+        </button>
+        <button class="bench-tab" onclick="switchBench(1)" id="benchTab1" style="flex:1;padding:12px 16px;border:2px solid #E5E7EB;border-radius:10px;background:white;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;justify-content:center;">
+          <span style="width:28px;height:28px;border-radius:8px;background:#00C9A7;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:800;">M</span>
+          미리캔버스
+        </button>
+        <button class="bench-tab" onclick="switchBench(2)" id="benchTab2" style="flex:1;padding:12px 16px;border:2px solid #E5E7EB;border-radius:10px;background:white;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px;justify-content:center;">
+          <span style="width:28px;height:28px;border-radius:8px;background:#3B82F6;display:flex;align-items:center;justify-content:center;font-size:13px;color:white;font-weight:800;">G</span>
+          Genspark.ai
+        </button>
+      </div>
+
+      <!-- 벤치마킹 콘텐츠 패널 -->
+      <div style="flex:1;position:relative;overflow:hidden;">
+        <!-- Canva -->
+        <div class="bench-panel" id="benchPanel0" style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:1;transition:opacity 0.3s;">
+          <div class="grid-2" style="gap:20px;height:100%;">
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <span class="badge badge-orange">입력값 기반 추천 콘텐츠 제공</span>
+              </div>
+              <div class="content-card" style="background:var(--white);border-radius:14px;padding:18px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                <h3 style="font-size:17px;font-weight:700;color:var(--primary);margin-bottom:8px;">AI 저작 프로세스</h3>
+                <p style="font-size:15px;line-height:1.7;">프롬프트 입력 &middot; PDF업로드 &middot; 옵션값(분량&middot;디자인&middot;용도 등) 입력<br>&rarr; AI생성 콘텐츠 개요 확인 &rarr; 산출물 확인</p>
+              </div>
+              <div style="background:var(--white);border-radius:14px;padding:18px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.05);border-top:3px solid #16A34A;">
+                <h3 style="font-size:17px;font-weight:700;color:#16A34A;margin-bottom:8px;">주요 특징</h3>
+                <ul style="font-size:15px;line-height:1.7;padding-left:16px;">
+                  <li>입력값에 기반한 <strong>추천 콘텐츠</strong> 제공</li>
+                  <li>타사 대비 AI 산출물(초벌 콘텐츠)의 <strong>퀄리티나 다양성이 높지 않음</strong></li>
+                  <li>편집화면에서 <strong>프롬프트 기반 편집이 불가함</strong></li>
+                </ul>
+              </div>
+            </div>
+            <div class="swiper-wrapper-custom" id="swiperCanva" style="height:100%;">
+              <div class="swiper-track" id="swiperCanvaTrack" style="height:calc(100% - 44px);">
+                <div class="swiper-slide-item"><img src="이미지_캔바1.webp" alt="캔바1"></div>
+                <div class="swiper-slide-item"><img src="이미지_캔바2.webp" alt="캔바2"></div>
+                <div class="swiper-slide-item"><img src="이미지_캔바3.webp" alt="캔바3"></div>
+                <div class="swiper-slide-item"><img src="이미지_캔바4.webp" alt="캔바4"></div>
+              </div>
+              <div class="swiper-controls">
+                <button class="swiper-btn" onclick="swiperPrev('Canva')">&#8249;</button>
+                <div class="swiper-dots" id="swiperCanvaDots"></div>
+                <button class="swiper-btn" onclick="swiperNext('Canva')">&#8250;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 미리캔버스 -->
+        <div class="bench-panel" id="benchPanel1" style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;pointer-events:none;transition:opacity 0.3s;">
+          <div class="grid-2" style="gap:20px;height:100%;">
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <span class="badge badge-green">기본 프롬프트 설정 &middot; 추천 콘텐츠 &middot; PPT 레이아웃</span>
+              </div>
+              <div style="background:var(--white);border-radius:14px;padding:18px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                <h3 style="font-size:17px;font-weight:700;color:var(--primary);margin-bottom:8px;">AI 저작 프로세스</h3>
+                <p style="font-size:15px;line-height:1.7;">프롬프트 입력 &middot; 옵션값(페이지수, 목적, 청자, 말투 등) 입력<br>&rarr; AI 생성 콘텐츠 개요확인 &rarr; 추천 템플릿 선택 &rarr; 산출물 확인</p>
+              </div>
+              <div style="background:var(--white);border-radius:14px;padding:18px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.05);border-top:3px solid #16A34A;">
+                <h3 style="font-size:17px;font-weight:700;color:#16A34A;margin-bottom:8px;">주요 특징</h3>
+                <ul style="font-size:15px;line-height:1.7;padding-left:16px;">
+                  <li>사용자 편의에 맞춘 <strong>기본 프롬프트 설정</strong> 제공</li>
+                  <li>입력값에 기반한 <strong>추천 콘텐츠</strong> 제공</li>
+                  <li>다양한 <strong>PPT 레이아웃</strong> 제공</li>
+                </ul>
+              </div>
+            </div>
+            <div class="swiper-wrapper-custom" id="swiperMiri" style="height:100%;">
+              <div class="swiper-track" id="swiperMiriTrack" style="height:calc(100% - 44px);">
+                <div class="swiper-slide-item"><img src="이미지_미리캔버스1.webp" alt="미리캔버스1"></div>
+                <div class="swiper-slide-item"><img src="이미지_미리캔버스2.webp" alt="미리캔버스2"></div>
+                <div class="swiper-slide-item"><img src="이미지_미리캔버스3.webp" alt="미리캔버스3"></div>
+                <div class="swiper-slide-item"><img src="이미지_미리캔버스4.webp" alt="미리캔버스4"></div>
+              </div>
+              <div class="swiper-controls">
+                <button class="swiper-btn" onclick="swiperPrev('Miri')">&#8249;</button>
+                <div class="swiper-dots" id="swiperMiriDots"></div>
+                <button class="swiper-btn" onclick="swiperNext('Miri')">&#8250;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Genspark -->
+        <div class="bench-panel" id="benchPanel2" style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;pointer-events:none;transition:opacity 0.3s;">
+          <div class="grid-2" style="gap:20px;height:100%;">
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                <span class="badge badge-blue">다양한 AI 편집 옵션</span>
+              </div>
+              <div style="background:var(--white);border-radius:14px;padding:18px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                <h3 style="font-size:17px;font-weight:700;color:var(--primary);margin-bottom:8px;">AI 저작 프로세스</h3>
+                <p style="font-size:15px;line-height:1.7;">프롬프트 입력 &rarr; AI 생성 산출물 확인 및 편집</p>
+              </div>
+              <div style="background:var(--white);border-radius:14px;padding:18px 22px;box-shadow:0 2px 10px rgba(0,0,0,0.05);border-top:3px solid #3B82F6;">
+                <h3 style="font-size:17px;font-weight:700;color:#3B82F6;margin-bottom:8px;">주요 특징</h3>
+                <ul style="font-size:15px;line-height:1.7;padding-left:16px;">
+                  <li>AI 생성 콘텐츠에 대한 <strong>팩트 체크 기능</strong> 제공</li>
+                  <li><strong>AI/프롬프트/수동 편집</strong> 등 다양한 옵션 제공</li>
+                  <li>프롬프트 기반 편집과 수동 편집 모두 지원</li>
+                </ul>
+              </div>
+            </div>
+            <div class="swiper-wrapper-custom" id="swiperGen" style="height:100%;">
+              <div class="swiper-track" id="swiperGenTrack" style="height:calc(100% - 44px);">
+                <div class="swiper-slide-item"><img src="이미지_젠스팍1.webp" alt="젠스팍1"></div>
+                <div class="swiper-slide-item"><img src="이미지_젠스팍2.webp" alt="젠스팍2"></div>
+                <div class="swiper-slide-item"><img src="이미지_젠스팍3.webp" alt="젠스팍3"></div>
+                <div class="swiper-slide-item"><img src="이미지_젠스팍_AI편집.webp" alt="젠스팍 AI편집"></div>
+                <div class="swiper-slide-item"><img src="이미지_젠스팍_수동편집.webp" alt="젠스팍 수동편집"></div>
+              </div>
+              <div class="swiper-controls">
+                <button class="swiper-btn" onclick="swiperPrev('Gen')">&#8249;</button>
+                <div class="swiper-dots" id="swiperGenDots"></div>
+                <button class="swiper-btn" onclick="swiperNext('Gen')">&#8250;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button id="prevBtn" onclick="navigate(-1)" disabled>&#9664; 이전</button>
+  <span class="page-indicator" id="pageIndicator">1 / 17</span>
+  <button id="nextBtn" onclick="navigate(1)">다음 &#9654;</button>
+</div>
+
+<script>
+  // === Slide Navigation ===
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let currentSlide = 0;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove('active', 'prev');
+      if (i === index) slide.classList.add('active');
+      else if (i < index) slide.classList.add('prev');
+    });
+    document.getElementById('prevBtn').disabled = index === 0;
+    document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+    document.getElementById('pageIndicator').textContent = `${index + 1} / ${totalSlides}`;
+    document.getElementById('progressBar').style.width = `${((index + 1) / totalSlides) * 100}%`;
+  }
+
+  function navigate(dir) {
+    const n = currentSlide + dir;
+    if (n >= 0 && n < totalSlides) { currentSlide = n; showSlide(currentSlide); }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); navigate(1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); navigate(-1); }
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) navigate(diff > 0 ? 1 : -1);
+  });
+
+  showSlide(0);
+
+  // === Inner Swipe ===
+  const swipeStates = {};
+
+  function goSwipe(containerId, index) {
+    const container = document.getElementById(containerId);
+    const track = container.querySelector('.swipe-track');
+    const nav = document.getElementById(containerId + 'Nav');
+    track.style.transform = `translateX(-${index * 100}%)`;
+    swipeStates[containerId] = index;
+    nav.querySelectorAll('.swipe-dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+  }
+
+  // Inner swipe touch
+  document.querySelectorAll('.swipe-container').forEach(container => {
+    let startX = 0;
+    const id = container.id;
+    const panelCount = container.querySelectorAll('.swipe-panel').length;
+
+    container.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; e.stopPropagation(); }, { passive: true });
+    container.addEventListener('touchend', (e) => {
+      const diff = startX - e.changedTouches[0].clientX;
+      const cur = swipeStates[id] || 0;
+      if (diff > 40 && cur < panelCount - 1) goSwipe(id, cur + 1);
+      else if (diff < -40 && cur > 0) goSwipe(id, cur - 1);
+      e.stopPropagation();
+    }, { passive: true });
+  });
+
+  // === Swiper ===
+  const swipers = {};
+
+  function initSwiper(name, count) {
+    swipers[name] = { current: 0, count };
+    const dotsContainer = document.getElementById(`swiper${name}Dots`);
+    if (!dotsContainer) return;
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'swiper-dot-item' + (i === 0 ? ' active' : '');
+      dot.onclick = () => swiperGoTo(name, i);
+      dotsContainer.appendChild(dot);
+    }
+  }
+
+  function swiperGoTo(name, index) {
+    const s = swipers[name];
+    s.current = index;
+    const track = document.getElementById(`swiper${name}Track`);
+    track.style.transform = `translateX(-${index * 100}%)`;
+    const dots = document.getElementById(`swiper${name}Dots`).children;
+    Array.from(dots).forEach((d, i) => {
+      d.className = 'swiper-dot-item' + (i === index ? ' active' : '');
+    });
+  }
+
+  function swiperNext(name) { const s = swipers[name]; swiperGoTo(name, (s.current + 1) % s.count); }
+  function swiperPrev(name) { const s = swipers[name]; swiperGoTo(name, (s.current - 1 + s.count) % s.count); }
+
+  // === Benchmark Tab ===
+  let currentBench = 0;
+  function switchBench(index) {
+    document.getElementById(`benchPanel${currentBench}`).style.opacity = '0';
+    document.getElementById(`benchPanel${currentBench}`).style.pointerEvents = 'none';
+    document.getElementById(`benchTab${currentBench}`).style.background = 'white';
+    document.getElementById(`benchTab${currentBench}`).style.color = 'var(--text)';
+    document.getElementById(`benchTab${currentBench}`).style.borderColor = '#E5E7EB';
+
+    currentBench = index;
+    document.getElementById(`benchPanel${currentBench}`).style.opacity = '1';
+    document.getElementById(`benchPanel${currentBench}`).style.pointerEvents = 'all';
+    document.getElementById(`benchTab${currentBench}`).style.background = 'var(--accent)';
+    document.getElementById(`benchTab${currentBench}`).style.color = 'white';
+    document.getElementById(`benchTab${currentBench}`).style.borderColor = 'var(--accent)';
+  }
+
+  // === Tool Detail Tab (Slide 4) ===
+  let currentTool = 0;
+  function switchToolTab(index) {
+    document.getElementById(`toolPanel${currentTool}`).style.opacity = '0';
+    document.getElementById(`toolPanel${currentTool}`).style.pointerEvents = 'none';
+    document.getElementById(`toolTab${currentTool}`).style.background = 'white';
+    document.getElementById(`toolTab${currentTool}`).style.color = 'var(--text)';
+    document.getElementById(`toolTab${currentTool}`).style.borderColor = '#E5E7EB';
+
+    currentTool = index;
+    document.getElementById(`toolPanel${currentTool}`).style.opacity = '1';
+    document.getElementById(`toolPanel${currentTool}`).style.pointerEvents = 'all';
+    document.getElementById(`toolTab${currentTool}`).style.background = 'var(--accent)';
+    document.getElementById(`toolTab${currentTool}`).style.color = 'white';
+    document.getElementById(`toolTab${currentTool}`).style.borderColor = 'var(--accent)';
+  }
+
+  // Initialize swipers
+  initSwiper('Tool1', 4);
+  initSwiper('Canva', 4);
+  initSwiper('Miri', 4);
+  initSwiper('Gen', 5);
+</script>
+
+</body>
+</html>

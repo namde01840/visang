@@ -1,0 +1,15 @@
+# 내부 자료 (외부 공유 제외)
+*.xlsx
+*.md
+*.txt
+레퍼런스.png
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node / Vercel (혹시 향후 사용 시)
+node_modules/
+.vercel/
