@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CBS 저작툴 현황과 저작툴 통합 고도화 필요성 보고</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#f6f8fb;
+    --surface:#ffffff;
+    --line:#e3e7ee;
+    --line-strong:#cdd2db;
+    --ink:#15181f;
+    --ink-2:#363b48;
+    --muted:#5b6271;
+    --muted-2:#9aa0ad;
+    --brand:#1d4ed8;
+    --brand-50:#eef2ff;
+    --brand-100:#e0e7ff;
+    --accent:#0f766e;
+    --warn:#b45309;
+    --danger:#b91c1c;
+    --green:#15803d;
+    --tag-bg:#eef2ff;
+    --shadow:0 1px 2px rgba(15,23,42,.04),0 4px 16px rgba(15,23,42,.05);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,'Segoe UI',sans-serif;line-height:1.7;letter-spacing:-0.01em;-webkit-font-smoothing:antialiased;font-size:16.5px}
+  a{color:var(--brand);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code,pre,.mono{font-family:'JetBrains Mono',ui-monospace,Consolas,monospace}
+
+  /* Layout */
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 28px 120px}
+  header.cover{
+    background:linear-gradient(135deg,#0b1437 0%,#1d4ed8 60%,#3b82f6 100%);
+    color:#fff;border-radius:20px;padding:60px 52px;margin-bottom:52px;
+    box-shadow:0 10px 40px rgba(29,78,216,.15);
+    position:relative;overflow:hidden;
+  }
+  header.cover::after{
+    content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;
+    background:radial-gradient(circle,rgba(255,255,255,.18) 0%,rgba(255,255,255,0) 70%);
+  }
+  .cover-eyebrow{
+    display:inline-block;font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:#bfdbfe;margin-bottom:18px;
+  }
+  .cover h1{font-size:42px;line-height:1.3;margin:0 0 18px;font-weight:800;letter-spacing:-0.025em}
+  .cover h1 .em{color:#fde68a}
+  .cover .lede{font-size:18.5px;line-height:1.75;color:#dbeafe;margin:0}
+  .cover-meta{display:flex;flex-wrap:wrap;gap:18px;margin-top:34px;font-size:14px;color:#bfdbfe}
+  .cover-meta .meta-item{display:flex;align-items:center;gap:6px}
+  .cover-meta .dot{width:4px;height:4px;border-radius:50%;background:#93c5fd}
+
+  /* Sections */
+  section{margin-bottom:68px;scroll-margin-top:24px}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:26px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+  .section-head h2{font-size:28px;font-weight:800;margin:0;letter-spacing:-0.02em}
+  .section-head .num{font-family:'JetBrains Mono';font-size:14px;color:var(--muted);font-weight:600}
+  .lead-text{color:var(--ink-2);font-size:17px;margin:0 0 26px;line-height:1.75}
+
+  /* Cards */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:30px;box-shadow:var(--shadow)}
+  .card + .card{margin-top:20px}
+  .card h3{font-size:19.5px;font-weight:700;margin:0 0 16px;letter-spacing:-0.01em}
+  .card h3 .tag{
+    display:inline-block;font-size:12px;font-weight:700;color:var(--brand);background:var(--brand-50);
+    padding:4px 9px;border-radius:6px;margin-right:9px;vertical-align:middle;letter-spacing:.04em
+  }
+  .card p{font-size:15.5px;color:var(--ink-2);line-height:1.75}
+
+  /* Grid */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .grid-5 .pillar{padding:22px 18px}
+  .grid-5 .pillar h4{font-size:15.5px;padding-right:38px;margin-bottom:10px}
+  .grid-5 .pillar p{font-size:13.5px;line-height:1.65}
+  .grid-5 .pillar .num{font-size:30px;top:14px;right:16px}
+  @media (max-width:1100px){.grid-5{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:900px){
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .grid-5{grid-template-columns:repeat(2,1fr)}
+    .cover{padding:36px 24px}
+    .cover h1{font-size:28px}
+    .wrap{padding:24px 16px 80px}
+  }
+  @media (max-width:600px){.grid-5{grid-template-columns:1fr}}
+
+  /* Tool feature card */
+  .tool{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+  .tool .thumb{
+    aspect-ratio:16/9;
+    background:linear-gradient(135deg,#f1f4fa 0%,#e7edf6 100%);
+    display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line);overflow:hidden;
+    padding:18px;
+  }
+  .tool .thumb img{
+    max-width:100%;max-height:100%;
+    object-fit:contain;
+    border-radius:6px;
+    box-shadow:0 2px 12px rgba(15,23,42,.10);
+    background:#fff;
+  }
+  .tool .body{padding:22px 24px}
+  .tool h3{font-size:18px;font-weight:700;margin:0 0 9px;letter-spacing:-0.01em}
+  .tool .badge{display:inline-block;font-size:12px;font-weight:700;color:#fff;padding:4px 10px;border-radius:5px;margin-bottom:11px;letter-spacing:.04em}
+  .b-dyn{background:#1d4ed8}
+  .b-stt{background:#0f766e}
+  .b-mat{background:#7c3aed}
+  .b-ibk{background:#be185d}
+  .tool ul{margin:8px 0 0;padding-left:18px;color:var(--ink-2);font-size:15px;line-height:1.7}
+  .tool ul li{margin-bottom:6px}
+  .tool .brand-line{margin-top:16px;font-size:13.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:12px}
+
+  /* KPI cards */
+  .kpi{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow)}
+  .kpi .label{font-size:13.5px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+  .kpi .value{font-size:32px;font-weight:800;color:var(--ink);letter-spacing:-0.02em}
+  .kpi .value .unit{font-size:16px;font-weight:600;color:var(--muted);margin-left:2px}
+  .kpi .delta{font-size:13px;color:var(--muted-2)}
+  .kpi.warn .value{color:var(--danger)}
+  .kpi.good .value{color:var(--green)}
+
+  /* Table */
+  table.dt{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14.5px}
+  table.dt th,table.dt td{padding:13px 15px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+  table.dt th{background:#f3f6fc;font-weight:700;color:var(--ink-2);font-size:13.5px;letter-spacing:.02em}
+  table.dt td.num{text-align:right;font-family:'JetBrains Mono';font-weight:600}
+  table.dt tr.total{background:#fffbeb;font-weight:700}
+  table.dt tr.total td{border-bottom:none}
+  table.dt tr:last-child td{border-bottom:none}
+
+  /* Issue distribution */
+  .issue-row{display:flex;align-items:center;gap:14px;padding:10px 0}
+  .issue-row .nm{width:170px;font-size:15px;font-weight:600}
+  .issue-row .bar{flex:1;background:#f3f6fc;height:22px;border-radius:6px;overflow:visible;display:flex;align-items:center}
+  .issue-row .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-size:12.5px;font-weight:700;flex-shrink:0;overflow:hidden}
+  .issue-row .bar-out{padding-left:8px;font-size:13px;font-weight:700;color:#15181f;white-space:nowrap}
+  .c-light{background:#f59e0b}
+  .c-cont{background:#1d4ed8}
+  .c-view{background:#0f766e}
+  .c-infra{background:#a855f7}
+  .c-tool{background:#ef4444}
+
+  /* Workflow */
+  .wf-block{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 26px 30px;box-shadow:var(--shadow)}
+  .wf-block + .wf-block{margin-top:20px}
+  .wf-title{display:flex;align-items:center;gap:11px;margin-bottom:18px}
+  .wf-tag{font-size:12.5px;font-weight:700;color:#fff;padding:5px 11px;border-radius:6px;letter-spacing:.04em}
+  .wf-tag.cur{background:#9ca3af}
+  .wf-tag.imp{background:#15803d}
+  .wf-title h3{margin:0;font-size:18.5px;font-weight:700}
+  .wf-title .meta{font-size:14px;color:var(--muted);margin-left:auto}
+  .wf-steps{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
+  .wf-step{flex:1;min-width:140px;background:#f6f8fb;border:1px solid var(--line);border-radius:10px;padding:14px 15px;position:relative}
+  .wf-step.imp{background:#ecfdf5;border-color:#bbf7d0}
+  .wf-step.warn{background:#fff7ed;border-color:#fed7aa}
+  .wf-step .step-no{font-family:'JetBrains Mono';font-size:11.5px;color:var(--muted);font-weight:700}
+  .wf-step .step-name{font-size:14.5px;font-weight:700;margin-top:3px}
+  .wf-step .step-time{font-size:12.5px;color:var(--muted);margin-top:5px}
+  .wf-step.imp .step-time{color:#15803d;font-weight:600}
+  .wf-step.warn .step-time{color:#b45309;font-weight:600}
+  .wf-foot{margin-top:16px;font-size:14px;color:var(--ink-2);background:#f3f6fc;padding:12px 16px;border-radius:8px;border-left:3px solid var(--ink-2);line-height:1.75}
+  .wf-block.improved .wf-foot{background:#ecfdf5;border-left-color:#15803d;color:#14532d}
+
+  /* Comparison stats */
+  .compare-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+  .cmp{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px}
+  .cmp .label{font-size:13px;color:var(--muted);font-weight:600}
+  .cmp .vals{display:flex;align-items:baseline;gap:8px;margin-top:7px}
+  .cmp .from{font-size:15px;color:var(--muted-2);text-decoration:line-through}
+  .cmp .arrow{color:var(--muted-2);font-size:12px}
+  .cmp .to{font-size:22px;font-weight:800;color:var(--green);letter-spacing:-0.01em}
+
+  /* Chart container */
+  .chart-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:30px;box-shadow:var(--shadow)}
+  .chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .chart-head h3{margin:0;font-size:18.5px;font-weight:700}
+  .chart-head .legend-note{font-size:13.5px;color:var(--muted)}
+  .chart-wrap{position:relative;height:400px}
+  .chart-foot{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+  .ch-stat{background:#f6f8fb;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .ch-stat .label{font-size:13px;color:var(--muted);font-weight:600}
+  .ch-stat .value{font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-top:4px}
+  .ch-stat .value.green{color:var(--green)}
+  .ch-stat .value.red{color:var(--danger)}
+
+  /* Callout */
+  .callout{border-left:4px solid var(--brand);background:var(--brand-50);padding:18px 22px;border-radius:8px;margin:22px 0}
+  .callout.warn{border-left-color:var(--warn);background:#fffbeb}
+  .callout.green{border-left-color:var(--green);background:#ecfdf5}
+  .callout > strong{display:block;margin-bottom:5px;font-size:15px}
+  .callout p strong{display:inline}
+  .callout p{margin:0;font-size:15px;color:var(--ink-2);line-height:1.7}
+
+  /* Strategy Pillars */
+  .pillar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:var(--shadow);position:relative}
+  .pillar .num{position:absolute;top:18px;right:22px;font-family:'JetBrains Mono';font-size:38px;font-weight:800;color:#e3e7ee;letter-spacing:-0.04em}
+  .pillar h4{font-size:16.5px;font-weight:700;margin:0 0 11px;padding-right:50px}
+  .pillar p{margin:0;font-size:14.5px;color:var(--ink-2);line-height:1.7}
+
+  /* === Synergy Flow (강조 시각화) === */
+  .synergy{
+    background:linear-gradient(135deg,#0b1437 0%,#1e3a8a 100%);
+    color:#fff;border-radius:18px;padding:44px 40px;margin-top:24px;
+    box-shadow:0 10px 40px rgba(29,78,216,.18);
+    position:relative;overflow:hidden;
+  }
+  .synergy::after{
+    content:"";position:absolute;left:-100px;bottom:-100px;width:340px;height:340px;
+    background:radial-gradient(circle,rgba(253,230,138,.12) 0%,rgba(253,230,138,0) 70%);
+  }
+  .synergy h3{font-size:22px;font-weight:800;margin:0 0 8px;letter-spacing:-0.02em}
+  .synergy h3 .em{color:#fde68a}
+  .synergy .syn-lede{font-size:15.5px;color:#cbd5e1;margin:0 0 28px;line-height:1.75}
+  .syn-flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;position:relative;z-index:1}
+  .syn-node{
+    flex:1;min-width:160px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;padding:18px 16px 20px;
+    backdrop-filter:blur(4px);
+    text-align:center;position:relative;
+  }
+  .syn-node .syn-step{font-family:'JetBrains Mono';font-size:11.5px;color:#fde68a;font-weight:700;letter-spacing:.08em}
+  .syn-node .syn-tool{font-size:15px;font-weight:700;margin-top:6px}
+  .syn-node .syn-role{font-size:12.5px;color:#bfdbfe;margin-top:6px;line-height:1.55}
+  .syn-arrow{
+    flex:0 0 28px;
+    display:flex;align-items:center;justify-content:center;
+    color:#fde68a;font-size:22px;font-weight:700;
+  }
+  .synergy .syn-foot{
+    margin-top:26px;background:rgba(253,230,138,.08);border:1px dashed rgba(253,230,138,.4);
+    border-radius:10px;padding:14px 18px;font-size:14.5px;color:#fef3c7;line-height:1.7
+  }
+  .synergy .syn-foot strong{color:#fde68a}
+  @media (max-width:900px){
+    .syn-flow{flex-direction:column}
+    .syn-arrow{transform:rotate(90deg);padding:6px 0}
+  }
+
+  /* Footer */
+  footer.foot{margin-top:80px;padding-top:32px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);text-align:center}
+  footer.foot .meta{margin-top:6px}
+
+  /* Misc */
+  .pill{display:inline-block;font-size:13px;background:var(--tag-bg);color:var(--brand);padding:4px 10px;border-radius:999px;font-weight:600;margin-right:5px}
+  .ref-link{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;color:var(--brand);font-weight:600}
+  .ref-link::after{content:"↗";font-size:11px}
+  .note{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6}
+  ul.bullets{padding-left:20px;color:var(--ink-2);font-size:15.5px;margin:0;line-height:1.75}
+  ul.bullets li{margin-bottom:8px}
+  ul.bullets li strong{color:var(--ink)}
+
+  /* Image card (appendix) */
+  .img-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+  .img-card img{width:100%;height:auto;border-radius:6px;display:block}
+  .img-card .cap{font-size:13px;color:var(--muted);margin-top:11px;text-align:center}
+
+  /* === Appendix (Collapsible) === */
+  details.appendix{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    margin-bottom:14px;box-shadow:var(--shadow);overflow:hidden;
+  }
+  details.appendix > summary{
+    list-style:none;cursor:pointer;
+    padding:18px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:15.5px;font-weight:700;color:var(--ink);
+    user-select:none;
+    transition:background .15s;
+  }
+  details.appendix > summary:hover{background:#f6f8fb}
+  details.appendix > summary::-webkit-details-marker{display:none}
+  details.appendix > summary::after{
+    content:"▼";font-size:11px;color:var(--muted);
+    transition:transform .25s;
+  }
+  details.appendix[open] > summary::after{transform:rotate(180deg)}
+  details.appendix > summary .ap-tag{
+    display:inline-block;font-size:11.5px;font-weight:700;
+    color:#fff;background:var(--muted);padding:3px 9px;border-radius:5px;
+    margin-right:12px;letter-spacing:.04em
+  }
+  details.appendix .ap-body{padding:0 24px 24px}
+
+  /* Print */
+  @media print{
+    body{background:#fff;font-size:13px}
+    .wrap{padding:0}
+    section{break-inside:avoid;page-break-inside:avoid}
+    header.cover{background:#0b1437 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    details.appendix{break-inside:avoid}
+    details.appendix > summary::after{display:none}
+    details.appendix{open:true}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== COVER ===== -->
+  <header class="cover">
+    <div class="cover-eyebrow">CBS · Authoring Tool Strategy Report</div>
+    <h1>CBS 저작툴 현황과 <span class="em">저작툴 통합 고도화</span> 필요성 보고</h1>
+    <p class="lede">
+      AIDT 1·2차년도 출원 과정에서 검증된 객관적 수치(외주 발주 22.4억원 / 디버깅 이슈 216건)를 기반으로 현행 워크플로우의 구조적 한계를 진단하고, 정·동적 저작툴의 통합 고도화를 통한 <strong style="color:#fde68a">5년 누적 30.6억원 비용 절감</strong> 및 <strong style="color:#fde68a">외부 SaaS BM 확장</strong> 가능성을 제시합니다.
+    </p>
+    <div class="cover-meta">
+      <span class="meta-item">CBS기획운영Cell</span>
+      <span class="dot"></span>
+      <span class="meta-item">2026.05</span>
+    </div>
+  </header>
+
+  <!-- ===== 1. CBS 4대 저작툴 ===== -->
+  <section id="tools">
+    <div class="section-head">
+      <h2>CBS 4대 저작툴 현황 및 특장점</h2>
+      <span class="num">01</span>
+    </div>
+    <p class="lead-text">
+      CBS는 콘텐츠 성격에 따라 특화된 4종의 저작툴을 운영 중이며, 각 툴은 비상교육 산하 AIDT·비바샘·온리원·스마트문제은행·신규 게임브랜드 등 모든 주요 서비스의 콘텐츠 공급을 책임지고 있습니다.
+    </p>
+
+    <div class="grid-2">
+      <!-- 동적 저작툴 -->
+      <div class="tool">
+        <div class="thumb"><img src="동적 저작툴.png" alt="동적 저작툴 (모션에디터) 화면" /></div>
+        <div class="body">
+          <span class="badge b-dyn">동적 저작툴</span>
+          <h3>모션에디터 — 코딩 없는 인터랙티브 콘텐츠 양산</h3>
+          <ul>
+            <li><strong>트리거-액션 기반</strong>으로 개발자 개입 없이 조작형 콘텐츠 제작</li>
+            <li>기제작된 <strong>HTML 템플릿을 저작툴에 import</strong>하여 다양한 컴포넌트를 라이브러리화 — 콘텐츠 활용도 극대화</li>
+            <li>기존 템플릿에 <strong>데이터 바인딩 기능</strong>을 접목하여 1개의 템플릿으로 다양한 학교급 콘텐츠를 양산할 수 있는 구조 마련</li>
+            <li>제로베이스 신규 제작과 템플릿 변형 양산을 동시 지원</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 정적 저작툴 -->
+      <div class="tool">
+        <div class="thumb"><img src="정적 저작툴.png" alt="정적(범용) 저작툴 화면" /></div>
+        <div class="body">
+          <span class="badge b-stt">정적 저작툴</span>
+          <h3>범용 저작툴 — 메타정보 기반 신뢰성 높은 문항 양산</h3>
+          <ul>
+            <li>모든 콘텐츠가 <strong>교육부 교육과정 표준체계</strong> 메타정보로 태깅 — 신뢰성·검색성 확보</li>
+            <li>방대한 교과별 문항 템플릿 → 비상교육 내 <strong>범용 문항 저작툴</strong>로 활용</li>
+            <li>힌트·해설 자동생성, 수학 쌍둥이/유사문항 생성, 메타 오토태깅, OCR 등 AI 기능 탑재</li>
+          </ul>
+          <div class="brand-line">활용 브랜드: AIDT, 비바샘 스마트문제은행, 신규 게임브랜드 · <a class="ref-link" href="https://joo-vs.github.io/260509-report/" target="_blank" rel="noopener">상세 리포트</a></div>
+        </div>
+      </div>
+
+      <!-- 매스캔버스 -->
+      <div class="tool">
+        <div class="thumb"><img src="매스캔버스.png" alt="매스캔버스 화면" /></div>
+        <div class="body">
+          <span class="badge b-mat">매스캔버스</span>
+          <h3>초·중등 수학 통합 디지털 캔버스</h3>
+          <ul>
+            <li>수 배열판·벤다이어그램·좌표평면·펜토미노·칠교판 등 <strong>40여 종 디지털 도구 통합</strong></li>
+            <li><strong>2D·3D 동시 활용</strong>으로 입체도형 전개도, 소인수분해를 터치·드래그로 시각화</li>
+            <li>학생이 직접 조작·반복 학습 — 자기주도 수학 학습에 최적화</li>
+          </ul>
+          <div class="brand-line">활용 브랜드: AIDT 수학, 비바샘, 자체 브랜드</div>
+        </div>
+      </div>
+
+      <!-- ibook -->
+      <div class="tool">
+        <div class="thumb"><img src="ibook편집기.png" alt="ibook 편집기 화면" /></div>
+        <div class="body">
+          <span class="badge b-ibk">ibook 편집기</span>
+          <h3>서책의 디지털 라이징 + 학습 확장 레이어</h3>
+          <ul>
+            <li>서책을 그대로 디지털라이징한 1차 전환 + <strong>조작형 활동 추가</strong></li>
+            <li>동영상 강의 삽입, 학생 필기 인식, 연관 문항 제공</li>
+            <li><strong>AI 튜터 기능</strong>까지 확대 — 단방향 디지털북을 학습 인터랙션으로 확장</li>
+          </ul>
+          <div class="brand-line">활용 브랜드: 비바샘, 온리원, AIDT</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- === 4종 저작툴이 묶여 만드는 CBS의 구조적 경쟁력 (시각적 강조) === -->
+    <div class="synergy">
+      <h3>4종 저작툴이 묶여 만드는 <span class="em">CBS의 구조적 경쟁력</span></h3>
+      <p class="syn-lede">
+        CBS의 진짜 가치는 4종 저작툴 각각의 기능보다도, 이들이 동일한 메타 표준·콘텐츠 자산 위에 통합 운영된다는 점입니다. <strong style="color:#fef3c7">단일 콘텐츠가 4종 저작툴을 거치며 형태를 바꾸어 재활용되는 풀 라이프사이클</strong>은 경쟁사가 단기간에 따라잡기 어려운 진입장벽입니다.
+      </p>
+      <div class="syn-flow">
+        <div class="syn-node">
+          <div class="syn-step">STEP 01</div>
+          <div class="syn-tool">정적 저작툴</div>
+          <div class="syn-role">교육과정 메타로<br/>태깅된 문항 자산</div>
+        </div>
+        <div class="syn-arrow">→</div>
+        <div class="syn-node">
+          <div class="syn-step">STEP 02</div>
+          <div class="syn-tool">동적 저작툴</div>
+          <div class="syn-role">동일 자산을<br/>인터랙션으로 변형</div>
+        </div>
+        <div class="syn-arrow">→</div>
+        <div class="syn-node">
+          <div class="syn-step">STEP 03</div>
+          <div class="syn-tool">ibook 편집기</div>
+          <div class="syn-role">단행본 형태로<br/>구조화·배포</div>
+        </div>
+        <div class="syn-arrow">→</div>
+        <div class="syn-node">
+          <div class="syn-step">STEP 04</div>
+          <div class="syn-tool">매스캔버스</div>
+          <div class="syn-role">실시간 학습 활동으로<br/>직접 조작·반복</div>
+        </div>
+      </div>
+      <div class="syn-foot">
+        <strong>핵심 인사이트</strong> — 동일한 콘텐츠 자산이 정적 → 동적 → 단행본 → 학습활동의 4단계 라이프사이클을 단일 플랫폼 위에서 순환합니다. 경쟁사가 동일 수준의 자산 효율에 도달하려면 4종 저작툴을 모두 동일 메타 표준으로 묶어야 하며, 이는 사실상 CBS가 구축한 수년간의 자산을 다시 쌓는 것과 같습니다.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 2. 통합 고도화 필요성 (동적+정적 통합) ===== -->
+  <section id="why-upgrade">
+    <div class="section-head">
+      <h2>저작툴 통합 고도화 필요성</h2>
+      <span class="num">02</span>
+    </div>
+
+    <p class="lead-text">
+      AIDT 1·2차년도 출원을 준비하며 다양한 콘텐츠의 <strong>외주 의존도 누적, 비용 및 운영 측면의 부담 이슈</strong>가 발생했고, CBS 내 신규 브랜드가 확장될수록 <strong>표준화된 저작 환경에 대한 필요성</strong>이 더욱 대두되었습니다.
+    </p>
+
+    <!-- 근거 1: 외주 발주 비용 -->
+    <div class="card">
+      <h3><span class="tag">근거 1</span>외주 수작업 콘텐츠 누적 — 840건 / 22.4억원</h3>
+      <p>AIDT 1·2차년도 콘텐츠는 <strong>스윙크·레이팝·셈웨어·모노브레인·셀바스·클비·코드넛</strong> 등 7개 외주사에 분산 발주되었으며, 대부분 일회성 수작업으로 제작되어 <strong>재활용·확장이 구조적으로 어려운 상태</strong>입니다. 동일 기간 영어 교과는 템플릿 기반으로 3,333건의 아티클을 양산하며 <strong>외주 76건 대비 43.8배의 자산 효율</strong>을 입증했습니다.</p>
+      <table class="dt" style="margin-top:14px">
+        <thead><tr><th>구분</th><th class="num">개수</th><th>특성</th></tr></thead>
+        <tbody>
+          <tr><td>외주 수작업 (수학)</td><td class="num">764</td><td>일회성·외주사 종속</td></tr>
+          <tr><td>외주 수작업 (영어)</td><td class="num">76</td><td>일회성·외주사 종속</td></tr>
+          <tr><td>템플릿 기반 (영어)</td><td class="num">3,333</td><td>데이터 바인딩으로 양산</td></tr>
+          <tr class="total"><td>합계</td><td class="num">4,173</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p class="note">※ 외주 발주 22항목·22.4억원의 상세 내역은 <a href="#appendix-cost">하단 Appendix A</a>에서 확인할 수 있습니다.</p>
+    </div>
+
+    <!-- 근거 2: 디버깅 이슈 -->
+    <div class="card" style="margin-top:20px">
+      <h3><span class="tag">근거 2</span>운영 단계 디버깅 이슈 누적 — 216건</h3>
+      <p>외주 개발물의 플랫폼 탑재·운영 과정에서 다음과 같은 디버깅 이슈가 누적되었습니다. 대부분 <strong>외주사-CBS 간 핸드오버 단계의 정보 단절</strong>에서 비롯된 것으로, 자체 저작툴 환경에서는 구조적으로 발생하지 않거나 즉시 대응 가능한 항목입니다.</p>
+
+      <div style="margin:16px 0 4px">
+        <div class="issue-row">
+          <span class="nm">콘텐츠 (5종)</span>
+          <div class="bar"><div class="bar-fill c-cont" style="width:54.2%">117건 · 54.2%</div></div>
+        </div>
+        <div class="issue-row">
+          <span class="nm">뷰어 (2종)</span>
+          <div class="bar"><div class="bar-fill c-view" style="width:24.1%">52건 · 24.1%</div></div>
+        </div>
+        <div class="issue-row">
+          <span class="nm">경량화 (3종)</span>
+          <div class="bar"><div class="bar-fill c-light" style="width:16.2%">35건 · 16.2%</div></div>
+        </div>
+        <div class="issue-row">
+          <span class="nm">저작툴</span>
+          <div class="bar"><div class="bar-fill c-tool" style="width:3.2%"></div><span class="bar-out">7건 · 3.2%</span></div>
+        </div>
+        <div class="issue-row">
+          <span class="nm">인프라</span>
+          <div class="bar"><div class="bar-fill c-infra" style="width:2.3%"></div><span class="bar-out">5건 · 2.3%</span></div>
+        </div>
+      </div>
+
+      <div class="callout warn" style="margin-top:18px">
+        <strong>현행 워크플로우의 구조적 한계</strong>
+        <p>이슈의 <strong>78.3%(169건)</strong>가 콘텐츠·뷰어 영역, 즉 <strong>외주가 만든 결과물의 호환성·환경 종속성</strong>에서 발생했습니다. 이는 외주에 의존하는 한 디버깅 비용은 콘텐츠가 늘어날수록 비례 증가할 수밖에 없는 구조임을 보여줍니다.</p>
+      </div>
+      <p class="note">※ 11개 세부 이슈 유형의 상세 분류표는 <a href="#appendix-issues">하단 Appendix B</a>에서 확인할 수 있습니다.</p>
+    </div>
+
+    <!-- 근거 3: 정적 저작툴의 진입장벽 -->
+    <div class="card" style="margin-top:20px">
+      <h3><span class="tag">근거 3</span>정적 저작툴의 높은 진입장벽 — 신규 브랜드 확장의 병목</h3>
+      <p>정적 저작툴은 메타 표준 기반 신뢰성과 방대한 AI 기능(힌트·해설 자동생성, 쌍둥이/유사문항, 메타 오토태깅, OCR)을 갖춘 <strong>비상교육 내 가장 강력한 자산</strong>입니다. 그러나 그만큼 기능이 전문화·고도화되어 있어 새로 인입되는 사용자는 학습에 수개월이 소요됩니다.</p>
+      <ul class="bullets" style="margin-top:14px">
+        <li><strong>높은 초기 진입장벽</strong> — 범용 저작툴 특성상 전문·방대한 기능 탑재. 신규 인입 유저 학습에 수개월 소요.</li>
+        <li><strong>신규 브랜드 확장 가속화</strong> — AIDT·비바샘 스마트문제은행·신규 게임브랜드 등 인입 채널이 늘수록 학습 비용 증가가 병목으로 작용.</li>
+        <li><strong>외부 BM 전환 불가 구조</strong> — 사내 자산은 충분하지만 사용자 편의가 부족해 외부 유료 SaaS 전환이 불가능한 상태.</li>
+      </ul>
+    </div>
+
+    <!-- 통합 고도화 5대 방향 -->
+    <div class="card" style="margin-top:20px">
+      <h3><span class="tag">통합 전략</span>저작툴 통합 고도화 5대 방향</h3>
+      <p>위 3가지 근거는 서로 다른 문제처럼 보이지만, 해결 방향은 하나로 수렴합니다 — <strong>사용자가 직접 자산을 만들 수 있는 통합 환경</strong>입니다.</p>
+      <div class="grid-5" style="margin-top:18px">
+        <div class="pillar">
+          <span class="num">01</span>
+          <h4>저작툴 모드 2원화</h4>
+          <p>내부용(Pro) / 외부용(Lite)으로 모드 분리, 사용자 권한·복잡도에 맞춘 UX 제공.</p>
+        </div>
+        <div class="pillar">
+          <span class="num">02</span>
+          <h4>완성형 초벌 콘텐츠</h4>
+          <p>방대한 CBS 데이터를 벡터화한 <strong>V사이트와 연계</strong>하여, 플랫폼 인입 계정 정보에 맞춰 학교급·교과별 완성형 초벌 콘텐츠를 자동 제공. 빈 캔버스 부담 제거.</p>
+        </div>
+        <div class="pillar">
+          <span class="num">03</span>
+          <h4>데이터 바인딩</h4>
+          <p>기존 제작 템플릿에 <strong>CBS API를 연동</strong>, 다양한 교과급에서 활용 가능하도록 원천 데이터를 교체하여 단시간에 고퀄리티 콘텐츠 양산.</p>
+        </div>
+        <div class="pillar">
+          <span class="num">04</span>
+          <h4>AI 편집 어시스턴트</h4>
+          <p>선택 템플릿 유형별 <strong>최적 커스터마이징 옵션 제안</strong> + 유사·쌍둥이 문항 생성, OCR, 힌트·해설 자동생성 엔진 탑재.</p>
+        </div>
+        <div class="pillar">
+          <span class="num">05</span>
+          <h4>BM 확장 — 외부 유료 SaaS</h4>
+          <p>내부용 인프라를 외부 학원·교사·출판사 대상 유료 플랫폼으로 확장, 신규 수익원 창출.</p>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:20px">
+        <div>
+          <p style="margin:0 0 8px;font-size:13.5px;color:var(--muted);font-weight:600">정적 저작툴 고도화 목업</p>
+          <a href="https://joo-vs.github.io/260313/" target="_blank" rel="noopener" class="ref-link">joo-vs.github.io/260313 보기</a>
+        </div>
+        <div>
+          <p style="margin:0 0 8px;font-size:13.5px;color:var(--muted);font-weight:600">동적 저작툴 고도화 목업</p>
+          <a href="https://visang.vercel.app/#share-motion-editor-final" target="_blank" rel="noopener" class="ref-link">visang.vercel.app 모션에디터 보기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 4. 워크플로우 비교 ===== -->
+  <section id="workflow">
+    <div class="section-head">
+      <h2>워크플로우 비교 — 현행 vs 고도화 이후</h2>
+      <span class="num">03</span>
+    </div>
+    <p class="lead-text">
+      외주 의존 워크플로우는 7단계의 직렬 프로세스로 구성되며, 각 단계마다 핸드오버 비용과 정보 손실이 누적됩니다. 고도화 이후에는 기획자가 곧 제작자가 되는 4단계 병렬 구조로 단순화됩니다.
+    </p>
+
+    <!-- 현행 -->
+    <div class="wf-block">
+      <div class="wf-title">
+        <span class="wf-tag cur">AS-IS</span>
+        <h3>현행 워크플로우 — 외주 의존 7단계 직렬</h3>
+        <span class="meta">평균 리드타임 12~20주</span>
+      </div>
+      <div class="wf-steps">
+        <div class="wf-step warn"><div class="step-no">01</div><div class="step-name">기획</div><div class="step-time">2~3주</div></div>
+        <div class="wf-step warn"><div class="step-no">02</div><div class="step-name">외주 발주·계약</div><div class="step-time">2~4주</div></div>
+        <div class="wf-step warn"><div class="step-no">03</div><div class="step-name">외주 개발</div><div class="step-time">6~12주</div></div>
+        <div class="wf-step warn"><div class="step-no">04</div><div class="step-name">검수·QA</div><div class="step-time">2~3주</div></div>
+        <div class="wf-step warn"><div class="step-no">05</div><div class="step-name">디버깅 (반복)</div><div class="step-time">2~4주</div></div>
+        <div class="wf-step warn"><div class="step-no">06</div><div class="step-name">플랫폼 탑재</div><div class="step-time">1주</div></div>
+        <div class="wf-step warn"><div class="step-no">07</div><div class="step-name">CS 처리 (상시)</div><div class="step-time">운영 內</div></div>
+      </div>
+      <div class="wf-foot">
+        <strong style="color:var(--danger)">구조적 비용 발생 지점:</strong> ① 외주 발주·계약 단계의 행정 오버헤드 ② 기획-개발 핸드오버 단계의 의사소통 손실 ③ 디버깅 단계의 외주사 재요청·왕복 비용 ④ 운영 中 CS 발생 시 외주사 재계약 필요
+      </div>
+    </div>
+
+    <!-- 고도화 -->
+    <div class="wf-block improved">
+      <div class="wf-title">
+        <span class="wf-tag imp">TO-BE</span>
+        <h3>고도화 후 워크플로우 — 저작툴 기반 4단계 병렬</h3>
+        <span class="meta">평균 리드타임 3~4주</span>
+      </div>
+      <div class="wf-steps">
+        <div class="wf-step imp"><div class="step-no">01</div><div class="step-name">기획 ⇄ 제작 동시 진행</div><div class="step-time">2~3주</div></div>
+        <div class="wf-step imp"><div class="step-no">02</div><div class="step-name">자체 검수</div><div class="step-time">3~5일</div></div>
+        <div class="wf-step imp"><div class="step-no">03</div><div class="step-name">배포</div><div class="step-time">즉시</div></div>
+        <div class="wf-step imp"><div class="step-no">04</div><div class="step-name">자체 CS·디버깅</div><div class="step-time">1~2일/건</div></div>
+      </div>
+      <div class="wf-foot">
+        <strong style="color:var(--green)">고도화 효과:</strong> ① 기획자 = 제작자 → 핸드오버 손실 0 ② 외주 발주·계약 단계 자체가 사라짐 ③ 디버깅이 즉시 자체 처리 가능 → 평균 응답속도 수일 → 수시간 ④ 콘텐츠 자산이 모두 데이터 바인딩 가능한 형태로 적재 → 재활용률 급증
+      </div>
+    </div>
+
+    <div class="compare-stats">
+      <div class="cmp"><span class="label">평균 리드타임</span>
+        <div class="vals"><span class="from">12~20주</span><span class="arrow">→</span><span class="to">3~4주</span></div>
+      </div>
+      <div class="cmp"><span class="label">프로세스 단계</span>
+        <div class="vals"><span class="from">7단계</span><span class="arrow">→</span><span class="to">4단계</span></div>
+      </div>
+      <div class="cmp"><span class="label">디버깅 응답속도</span>
+        <div class="vals"><span class="from">2~4주</span><span class="arrow">→</span><span class="to">1~2일</span></div>
+      </div>
+      <div class="cmp"><span class="label">콘텐츠 재활용률</span>
+        <div class="vals"><span class="from">~10%</span><span class="arrow">→</span><span class="to">70%↑</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 5. 5년 비용 절감 예측 ===== -->
+  <section id="forecast">
+    <div class="section-head">
+      <h2>5년 비용 절감 예측 (보수적 시나리오)</h2>
+      <span class="num">04</span>
+    </div>
+    <p class="lead-text">
+      AIDT 1·2차년도 외주 발주 누적 22.4억원을 <strong>연 11.2억원</strong> 베이스라인으로 환산하고, 고도화 이후 <strong>외주 의존 70% 내재화</strong>를 가정한 보수적 모델입니다. 인플레이션·신규 브랜드 확장으로 인한 추가 발주 증가분은 미반영되어 있어, 실제 절감 효과는 본 예측보다 클 가능성이 높습니다.
+    </p>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <h3>연간 콘텐츠 제작 비용 — 현행 유지 vs 고도화 (단위: 억원)</h3>
+        <span class="legend-note">시나리오: 70% 내재화 · 1년차 투자비 4억 반영</span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartYearly"></canvas>
+      </div>
+      <div class="chart-foot">
+        <div class="ch-stat"><span class="label">5년 누적 — 현행 유지 시</span><span class="value red">56.0 억원</span></div>
+        <div class="ch-stat"><span class="label">5년 누적 — 고도화 시</span><span class="value">25.4 억원</span></div>
+        <div class="ch-stat"><span class="label">5년 누적 절감액</span><span class="value green">▼ 30.6 억원</span></div>
+      </div>
+    </div>
+
+    <div class="chart-card" style="margin-top:20px">
+      <div class="chart-head">
+        <h3>누적 비용 추이 — 손익분기점 시점 (단위: 억원)</h3>
+        <span class="legend-note">고도화 시 1년차 말 회수 시작, 2년차부터 본격 절감</span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chartCumulative"></canvas>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h3><span class="tag">예측 가정</span>본 모델의 베이스라인 가정</h3>
+      <table class="dt">
+        <thead><tr><th>구분</th><th>현행 유지 시 (연)</th><th>고도화 후 (연)</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td>외주 발주비</td><td class="num">11.2 억</td><td class="num">3.36 억</td><td>특수 인터랙션·라이선스 30%만 외주 유지</td></tr>
+          <tr><td>1년차 고도화 투자</td><td class="num">—</td><td class="num">+4.0 억</td><td>저작툴 개발·UI/UX 고도화 (1회성)</td></tr>
+          <tr><td>1년차 외주 잔여분</td><td class="num">—</td><td class="num">+2.24 억</td><td>전환기 외주 50% 유지</td></tr>
+          <tr><td>운영비</td><td class="num">≈ 0</td><td class="num">0.4~0.5 억</td><td>자체 운영 인건비·인프라 추가분</td></tr>
+          <tr class="total"><td>연간 합계 (안정 시)</td><td class="num">11.2 억</td><td class="num">3.86 억</td><td>2년차 이후 안정 구간</td></tr>
+        </tbody>
+      </table>
+      <p class="note">※ CS·디버깅 절감 효과(216건 기준 추정 5~7억)와 신규 브랜드 확장에 따른 베이스라인 증가분은 보수적 관점에서 미반영. BM 확장 매출은 <a href="#bm">5장</a>에서 별도 추정.</p>
+    </div>
+  </section>
+
+  <!-- ===== 6. BM 확장 ===== -->
+  <section id="bm">
+    <div class="section-head">
+      <h2>외부 SaaS BM 확장 — 잠재 매출 추정</h2>
+      <span class="num">05</span>
+    </div>
+    <p class="lead-text">
+      통합 고도화의 종착점은 단순한 비용 절감이 아닌 <strong>내부용 인프라의 외부 유료 플랫폼화</strong>입니다. 메타 표준·콘텐츠 자산을 이미 보유한 CBS는, UI/UX 외부화만으로 신규 시장 진입이 가능합니다.
+    </p>
+    <div class="card">
+      <h3><span class="tag">BM Upside</span>외부 SaaS 전환 시 잠재 매출 (보수적 추정)</h3>
+      <table class="dt">
+        <thead><tr><th>연차</th><th>유료 라이선스 (계정)</th><th>ARPU (연)</th><th class="num">예상 매출</th></tr></thead>
+        <tbody>
+          <tr><td>3년차 (2028)</td><td>50</td><td>200만원</td><td class="num">1.0 억</td></tr>
+          <tr><td>4년차 (2029)</td><td>150</td><td>200만원</td><td class="num">3.0 억</td></tr>
+          <tr><td>5년차 (2030)</td><td>300</td><td>200만원</td><td class="num">6.0 억</td></tr>
+          <tr class="total"><td>3개년 누적</td><td>—</td><td>—</td><td class="num">10.0 억</td></tr>
+        </tbody>
+      </table>
+      <div class="callout green" style="margin-top:18px">
+        <strong>합산 효과 (Cost-Save + BM)</strong>
+        <p>비용 절감 누적 <strong>30.6억</strong> + BM 잠재 매출 누적 <strong>10.0억</strong> = <strong>5년 합산 약 40.6억원</strong>의 재무 가치 창출. 실제로는 인플레이션·신규 브랜드 확장 미반영 베이스라인이므로 상한은 더 높습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7. 결론 ===== -->
+  <section id="conclusion">
+    <div class="section-head">
+      <h2>종합 요약 및 의사결정 요청</h2>
+      <span class="num">06</span>
+    </div>
+
+    <p class="lead-text">
+      CBS는 4종의 저작툴(동적·정적·매스캔버스·ibook)로 비상교육 全 브랜드의 콘텐츠 제작을 지원하는 코어 인프라입니다. AIDT 출원 과정에서 외주 의존이 누적되며 비용·품질·재활용성의 임계점에 도달했고, 현 시점이 <strong>저작툴 고도화를 통해 비용을 내재화하고, 동시에 외부 유료 플랫폼 BM으로 확장할 적기</strong>입니다.
+    </p>
+
+    <!-- 핵심 KPI 4종 -->
+    <div class="grid-4">
+      <div class="kpi warn">
+        <span class="label">현행 외주 발주 누적</span>
+        <span class="value">22.4<span class="unit">억</span></span>
+        <span class="delta">AIDT 1·2차년도 (24.01~25.06)</span>
+      </div>
+      <div class="kpi warn">
+        <span class="label">조작형 콘텐츠 디버깅 이슈</span>
+        <span class="value">216<span class="unit">건</span></span>
+        <span class="delta">경량화·콘텐츠·뷰어·인프라·저작툴</span>
+      </div>
+      <div class="kpi good">
+        <span class="label">5년 누적 절감 예상액</span>
+        <span class="value">30.6<span class="unit">억</span></span>
+        <span class="delta">보수적 시나리오 (70% 내재화)</span>
+      </div>
+      <div class="kpi good">
+        <span class="label">제작 리드타임 단축 효과</span>
+        <span class="value">‑70<span class="unit">%</span></span>
+        <span class="delta">평균 12주 → 3~4주</span>
+      </div>
+    </div>
+
+    <!-- 지금 고도화해야 하는 3가지 이유 -->
+    <div class="card" style="margin-top:24px">
+      <h3><span class="tag">Decision</span>지금 고도화해야 하는 3가지 이유</h3>
+      <div class="grid-3" style="margin-top:14px">
+        <div class="pillar">
+          <span class="num">α</span>
+          <h4>비용 임계점 도달</h4>
+          <p>AIDT 1·2차년도만으로 외주 22.4억 + 디버깅 216건. 신규 브랜드 확장 시 누적 곡선이 가팔라지는 구조.</p>
+        </div>
+        <div class="pillar">
+          <span class="num">β</span>
+          <h4>자산 재활용 격차</h4>
+          <p>영어 템플릿 76 vs 3,333건의 격차가 보여주듯, 동적 저작툴은 자산화의 분기점. 늦을수록 외주 종속 자산이 누적됨.</p>
+        </div>
+        <div class="pillar">
+          <span class="num">γ</span>
+          <h4>BM 전환 타이밍</h4>
+          <p>경쟁사 대비 메타 표준·콘텐츠 자산은 우위. 지금 UX를 외부화 가능 수준으로 끌어올려야 SaaS 시장에 선점 가능.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 요청 사항 -->
+    <div class="callout green" style="margin-top:20px">
+      <strong>요청 사항</strong>
+      <p>① 동·정적 저작툴 통합 고도화 프로젝트 1년차 투자(약 4억) 승인 / ② 외부 SaaS BM 검토 TF 구성 / ③ 2026년 연간 KPI에 콘텐츠 자체 양산률·외주 의존 감소율 지표 반영.</p>
+    </div>
+  </section>
+
+  <!-- ===== APPENDIX (Collapsible) ===== -->
+  <section id="appendix">
+    <div class="section-head">
+      <h2>Appendix — 상세 근거 자료</h2>
+      <span class="num">A</span>
+    </div>
+    <p class="lead-text">본문에서 인용한 수치의 원천 자료입니다. 필요 시 펼쳐서 확인하실 수 있습니다.</p>
+
+    <details class="appendix" id="appendix-cost">
+      <summary><span><span class="ap-tag">Appendix A</span>영어·수학 교과 외주 발주 비용 상세 (22항목 / 22.4억원)</span></summary>
+      <div class="ap-body">
+        <p style="font-size:14.5px;color:var(--muted);margin:0 0 14px">AIDT 1·2차년도 외주 발주 22항목의 원본 표입니다. 학년·품목·금액·계약업체별로 구분되어 있으며, 합계는 부가세 포함 기준입니다.</p>
+        <div class="img-card">
+          <img src="외주발주 비용.png" alt="영어 및 수학 교과 조작형 콘텐츠 외주 발주 비용 표">
+          <div class="cap">[원본 자료] 영어·수학 교과 조작형 콘텐츠 외주 발주 비용 — 22항목 합계 22.4억원 (+ 폰트 0.25억)</div>
+        </div>
+        <div class="img-card" style="margin-top:14px">
+          <img src="외주발주 현황.png" alt="외주사 수작업 콘텐츠 및 템플릿 기반 콘텐츠 개수">
+          <div class="cap">[원본 자료] 외주 수작업 840건 vs 템플릿 기반 3,343건의 자산 효율 비교</div>
+        </div>
+      </div>
+    </details>
+
+    <details class="appendix" id="appendix-issues">
+      <summary><span><span class="ap-tag">Appendix B</span>조작형 콘텐츠 디버깅 이슈 상세 분류표 (216건)</span></summary>
+      <div class="ap-body">
+        <p style="font-size:14.5px;color:var(--muted);margin:0 0 14px">경량화·콘텐츠·뷰어·인프라·저작툴 5개 분류, 11개 세부 유형으로 구분된 누적 이슈 216건의 원본 표입니다.</p>
+        <div class="img-card">
+          <img src="조작형 이슈리스트.png" alt="조작형 콘텐츠 이슈 분류 상세 표">
+          <div class="cap">[원본 자료] 조작형 콘텐츠 이슈 분류 — 콘텐츠/뷰어/경량화 영역에 95% 집중</div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    CBS Authoring Tool Strategy Report · CBS기획운영Cell
+    <div class="meta">데이터 기준: AIDT 1·2차년도 외주 발주 내역 (24.01~25.06) · 조작형 콘텐츠 이슈 누적 216건 · 보수적 절감 시나리오</div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  Chart.defaults.font.family = "Pretendard,-apple-system,'Segoe UI',sans-serif";
+  Chart.defaults.font.size = 13;
+  Chart.defaults.color = '#363b48';
+
+  const years = ['2026 (1년차)','2027 (2년차)','2028 (3년차)','2029 (4년차)','2030 (5년차)'];
+  const asis  = [11.2, 11.2, 11.2, 11.2, 11.2];
+  const tobe  = [10.0,  3.86, 3.86, 3.86, 3.86];
+  const save  = asis.map((v,i)=>+(v - tobe[i]).toFixed(2));
+
+  // Yearly Bar
+  new Chart(document.getElementById('chartYearly'), {
+    type: 'bar',
+    data: {
+      labels: years,
+      datasets: [
+        { label:'현행 유지 시', data: asis, backgroundColor:'rgba(185, 28, 28, 0.85)', borderRadius:6, maxBarThickness:48 },
+        { label:'고도화 시',   data: tobe, backgroundColor:'rgba(21, 128, 61, 0.85)', borderRadius:6, maxBarThickness:48 },
+        { label:'연간 절감액', type:'line', data: save, borderColor:'#1d4ed8',
+          backgroundColor:'rgba(29,78,216,0.15)', borderWidth:2.5, tension:.3, fill:false, pointRadius:5,
+          pointBackgroundColor:'#1d4ed8', yAxisID:'y' }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{boxWidth:14,padding:14,font:{size:13}}},
+        tooltip:{ callbacks:{ label:(ctx)=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}억원` } }
+      },
+      scales:{
+        y:{ beginAtZero:true, title:{display:true,text:'억원',font:{size:13}}, grid:{color:'#eef0f5'} },
+        x:{ grid:{display:false} }
+      }
+    }
+  });
+
+  // Cumulative Line
+  const cumAsis = asis.reduce((acc,v,i)=>{acc.push((acc[i-1]||0)+v); return acc},[]);
+  const cumTobe = tobe.reduce((acc,v,i)=>{acc.push((acc[i-1]||0)+v); return acc},[]);
+  const cumSave = cumAsis.map((v,i)=>+(v - cumTobe[i]).toFixed(2));
+
+  new Chart(document.getElementById('chartCumulative'), {
+    type:'line',
+    data:{
+      labels: years,
+      datasets:[
+        { label:'현행 유지 (누적)', data: cumAsis, borderColor:'#b91c1c',
+          backgroundColor:'rgba(185,28,28,0.08)', borderWidth:3, tension:.3, fill:true, pointRadius:5 },
+        { label:'고도화 (누적)', data: cumTobe, borderColor:'#15803d',
+          backgroundColor:'rgba(21,128,61,0.08)', borderWidth:3, tension:.3, fill:true, pointRadius:5 },
+        { label:'누적 절감액', data: cumSave, borderColor:'#1d4ed8',
+          backgroundColor:'rgba(29,78,216,0.10)', borderWidth:3, borderDash:[6,4], tension:.3, fill:false, pointRadius:5 }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{boxWidth:14,padding:14,font:{size:13}}},
+        tooltip:{ callbacks:{ label:(ctx)=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}억원` } }
+      },
+      scales:{
+        y:{ beginAtZero:true, title:{display:true,text:'누적 (억원)',font:{size:13}}, grid:{color:'#eef0f5'} },
+        x:{ grid:{display:false} }
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
