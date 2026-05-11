@@ -255,6 +255,17 @@
   .pill{display:inline-block;font-size:13px;background:var(--tag-bg);color:var(--brand);padding:4px 10px;border-radius:999px;font-weight:600;margin-right:5px}
   .ref-link{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;color:var(--brand);font-weight:600}
   .ref-link::after{content:"↗";font-size:11px}
+  .btn-go{
+    display:inline-flex;align-items:center;gap:7px;
+    background:var(--brand);color:#fff;
+    padding:10px 20px;border-radius:8px;
+    font-size:14px;font-weight:700;letter-spacing:.01em;
+    text-decoration:none;
+    box-shadow:0 1px 2px rgba(15,23,42,.06),0 2px 8px rgba(29,78,216,.18);
+    transition:transform .15s,box-shadow .15s,background .15s;
+  }
+  .btn-go:hover{background:#1e40af;text-decoration:none;transform:translateY(-1px);box-shadow:0 2px 4px rgba(15,23,42,.08),0 6px 14px rgba(29,78,216,.22)}
+  .btn-go span{font-size:12px}
   .note{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6}
   ul.bullets{padding-left:20px;color:var(--ink-2);font-size:15.5px;margin:0;line-height:1.75}
   ul.bullets li{margin-bottom:8px}
@@ -540,12 +551,12 @@
 
       <div class="grid-2" style="margin-top:20px">
         <div>
-          <p style="margin:0 0 8px;font-size:13.5px;color:var(--muted);font-weight:600">정적 저작툴 고도화 목업</p>
-          <a href="https://joo-vs.github.io/260313/" target="_blank" rel="noopener" class="ref-link">joo-vs.github.io/260313 보기</a>
+          <p style="margin:0 0 10px;font-size:13.5px;color:var(--muted);font-weight:600">정적 저작툴 고도화 목업</p>
+          <a href="https://joo-vs.github.io/260313/" target="_blank" rel="noopener" class="btn-go">바로가기 <span aria-hidden="true">↗</span></a>
         </div>
         <div>
-          <p style="margin:0 0 8px;font-size:13.5px;color:var(--muted);font-weight:600">동적 저작툴 고도화 목업</p>
-          <a href="https://visang.vercel.app/#share-motion-editor-final" target="_blank" rel="noopener" class="ref-link">visang.vercel.app 모션에디터 보기</a>
+          <p style="margin:0 0 10px;font-size:13.5px;color:var(--muted);font-weight:600">동적 저작툴 고도화 목업</p>
+          <a href="https://visang.vercel.app/#share-motion-editor-final" target="_blank" rel="noopener" class="btn-go">바로가기 <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </div>
@@ -651,20 +662,7 @@
       </div>
     </div>
 
-    <div class="card" style="margin-top:20px">
-      <h3><span class="tag">예측 가정</span>본 모델의 베이스라인 가정</h3>
-      <table class="dt">
-        <thead><tr><th>구분</th><th>현행 유지 시 (연)</th><th>고도화 후 (연)</th><th>비고</th></tr></thead>
-        <tbody>
-          <tr><td>외주 발주비</td><td class="num">11.2 억</td><td class="num">3.36 억</td><td>특수 인터랙션·라이선스 30%만 외주 유지</td></tr>
-          <tr><td>1년차 고도화 투자</td><td class="num">—</td><td class="num">+4.0 억</td><td>저작툴 개발·UI/UX 고도화 (1회성)</td></tr>
-          <tr><td>1년차 외주 잔여분</td><td class="num">—</td><td class="num">+2.24 억</td><td>전환기 외주 50% 유지</td></tr>
-          <tr><td>운영비</td><td class="num">≈ 0</td><td class="num">0.4~0.5 억</td><td>자체 운영 인건비·인프라 추가분</td></tr>
-          <tr class="total"><td>연간 합계 (안정 시)</td><td class="num">11.2 억</td><td class="num">3.86 억</td><td>2년차 이후 안정 구간</td></tr>
-        </tbody>
-      </table>
-      <p class="note">※ CS·디버깅 절감 효과(216건 기준 추정 5~7억)와 신규 브랜드 확장에 따른 베이스라인 증가분은 보수적 관점에서 미반영. BM 확장 매출은 <a href="#bm">5장</a>에서 별도 추정.</p>
-    </div>
+    <p class="note" style="margin-top:14px">※ 본 모델의 베이스라인 항목별 가정(외주 발주비·1년차 투자·운영비 등)은 <a href="#appendix-baseline">하단 Appendix C</a>에서 확인할 수 있습니다.</p>
   </section>
 
   <!-- ===== 6. BM 확장 ===== -->
@@ -789,6 +787,24 @@
           <img src="조작형 이슈리스트.png" alt="조작형 콘텐츠 이슈 분류 상세 표">
           <div class="cap">[원본 자료] 조작형 콘텐츠 이슈 분류 — 콘텐츠/뷰어/경량화 영역에 95% 집중</div>
         </div>
+      </div>
+    </details>
+
+    <details class="appendix" id="appendix-baseline">
+      <summary><span><span class="ap-tag">Appendix C</span>본 모델의 베이스라인 가정 (5년 절감 시나리오)</span></summary>
+      <div class="ap-body">
+        <p style="font-size:14.5px;color:var(--muted);margin:0 0 14px">4장 절감 시나리오의 항목별 가정값입니다. 외주 발주비·1년차 투자·운영비 등 베이스라인 구성 항목과 안정 구간 합계를 정리했습니다.</p>
+        <table class="dt">
+          <thead><tr><th>구분</th><th>현행 유지 시 (연)</th><th>고도화 후 (연)</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td>외주 발주비</td><td class="num">11.2 억</td><td class="num">3.36 억</td><td>특수 인터랙션·라이선스 30%만 외주 유지</td></tr>
+            <tr><td>1년차 고도화 투자</td><td class="num">—</td><td class="num">+4.0 억</td><td>저작툴 개발·UI/UX 고도화 (1회성)</td></tr>
+            <tr><td>1년차 외주 잔여분</td><td class="num">—</td><td class="num">+2.24 억</td><td>전환기 외주 50% 유지</td></tr>
+            <tr><td>운영비</td><td class="num">≈ 0</td><td class="num">0.4~0.5 억</td><td>자체 운영 인건비·인프라 추가분</td></tr>
+            <tr class="total"><td>연간 합계 (안정 시)</td><td class="num">11.2 억</td><td class="num">3.86 억</td><td>2년차 이후 안정 구간</td></tr>
+          </tbody>
+        </table>
+        <p class="note">※ CS·디버깅 절감 효과(216건 기준 추정 5~7억)와 신규 브랜드 확장에 따른 베이스라인 증가분은 보수적 관점에서 미반영. BM 확장 매출은 <a href="#bm">5장</a>에서 별도 추정.</p>
       </div>
     </details>
   </section>
