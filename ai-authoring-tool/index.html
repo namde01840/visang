@@ -1,0 +1,3075 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI저작툴 · 수업 슬라이드 카탈로그</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap">
+<style>
+  :root {
+    --bg: #F4F5F7;
+    --bg-2: #EAECF0;
+    --paper: #FFFFFF;
+    --ink: #111827;
+    --ink-2: #374151;
+    --ink-3: #6B7280;
+    --ink-4: #9CA3AF;
+    --line: #E5E7EB;
+    --line-2: #F3F4F6;
+    --icon: #000000;
+
+    --mint: #00B8B6;
+    --mint-dark: #009A98;
+    --mint-soft: #CCEFEF;
+    --mint-mid: #80DCDB;
+
+    --creative: #E05C3A;        --creative-soft: #FAEAE4;
+    --curriculum: #2E7D60;      --curriculum-soft: #D4EDE5;
+    --tool: #00B8B6;            --tool-soft: #CCEFEF;
+    --theme: #6A5ACD;           --theme-soft: #E4E1F8;
+
+    --area-num: #3D9E6E;
+    --area-shape: #D05A35;
+    --area-rel: #C08A20;
+    --area-data: #7060C8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.005em;
+  }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ========== TOP BAR ========== */
+  .topbar-wrap { background: var(--paper); border-bottom: 1px solid var(--line); }
+  .topbar {
+    max-width: 1440px; margin: 0 auto;
+    padding: 12px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .brand-logo {
+    width: 32px; height: 32px;
+    background: var(--mint);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: -0.04em;
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+  .brand-text strong { font-size: 15px; letter-spacing: -0.02em; font-weight: 700; }
+  .brand-text span { font-size: 10px; color: var(--ink-3); margin-top: 3px; letter-spacing: 0.04em; font-weight: 500; }
+
+  .tabbar {
+    display: flex; align-items: stretch;
+    flex: 1; justify-content: center;
+    gap: 2px;
+  }
+  .tab {
+    background: none; border: none;
+    padding: 9px 16px;
+    border-radius: 8px;
+    color: var(--ink-3);
+    font-size: 13.5px; font-weight: 600;
+    letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .tab:hover { color: var(--ink-2); background: var(--bg-2); }
+  .tab.active { color: var(--mint-dark); background: var(--mint-soft); }
+  .tab.active::after {
+    content: ''; position: absolute;
+    left: 12px; right: 12px; bottom: 1px;
+    height: 2px; background: var(--mint);
+    border-radius: 2px;
+  }
+  .tab .count { font-size: 11px; color: var(--ink-4); font-weight: 500; }
+  .tab.active .count { color: var(--mint); }
+
+  .topbar-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .top-search {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    padding: 7px 14px 7px 34px;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 12.5px;
+    width: 220px;
+    color: var(--ink);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'><circle cx='11' cy='11' r='7'/><path d='m20 20-3-3'/></svg>");
+    background-repeat: no-repeat;
+    background-position: 12px center;
+  }
+  .top-search::placeholder { color: var(--ink-3); }
+  .top-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink-2);
+    letter-spacing: -0.015em;
+  }
+  .top-btn.primary { background: var(--mint); color: #FFFFFF; border-color: var(--mint); }
+  .top-btn.primary:hover { background: var(--mint-dark); border-color: var(--mint-dark); }
+
+  /* ========== CONTEXT BAR: grade/subject selectors ========== */
+  .context-wrap {
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .context-bar {
+    max-width: 1440px; margin: 0 auto;
+    padding: 14px 32px;
+    display: flex; align-items: center; gap: 24px;
+    flex-wrap: wrap;
+  }
+  .context-bar .top-search { margin-left: auto; }
+  .context-label {
+    font-size: 11px; font-weight: 700; color: var(--ink-3);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .context-group { display: flex; align-items: center; gap: 8px; }
+  .context-group > .group-name {
+    font-size: 12px; color: var(--ink-2); font-weight: 600;
+    margin-right: 2px;
+  }
+  .ctx-select {
+    padding: 7px 30px 7px 12px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--paper);
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--ink);
+    font-weight: 600;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    min-width: 96px;
+  }
+  .ctx-select:hover { border-color: var(--ink-3); }
+  .ctx-select:focus { outline: 2px solid var(--mint-soft); border-color: var(--mint); }
+  .ctx-divider { width: 1px; height: 22px; background: var(--line); }
+
+  /* ========== HERO ========== */
+  .hero-wrap { background: var(--bg); }
+  .hero {
+    max-width: 1440px; margin: 0 auto;
+    padding: 24px 32px 6px;
+  }
+  .hero-title {
+    font-size: 22px;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .hero-title em { font-style: normal; color: var(--mint-dark); }
+  .hero-sub {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+
+  /* ========== LAYOUT ========== */
+  .layout-home { background: var(--bg); }
+  .layout-catalog {
+    max-width: 1440px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: calc(100vh - 200px);
+  }
+  .layout-catalog .sidebar { display: block; }
+  .layout-catalog.show-home-only { display: none; }
+
+  /* ========== LANDING ========== */
+  .landing {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 18px 32px 60px;
+  }
+
+  /* Notice + Stats */
+  .landing-top {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+  .notice-panel {
+    background: linear-gradient(135deg, #1A2332 0%, #1F3040 100%);
+    color: var(--paper);
+    border-radius: 14px;
+    padding: 26px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  .notice-panel::before {
+    content: '';
+    position: absolute;
+    right: -60px; bottom: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,184,182,0.22) 0%, transparent 65%);
+  }
+  .notice-eyebrow {
+    font-size: 10.5px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .notice-pulse {
+    width: 7px; height: 7px;
+    background: var(--mint);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(0, 184, 182, 0.28);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(0, 184, 182, 0.28); }
+    50%      { box-shadow: 0 0 0 8px rgba(0, 184, 182, 0.08); }
+  }
+  .notice-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .notice-title em { color: var(--mint-mid); font-style: normal; }
+  .notice-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    max-width: 480px;
+    position: relative;
+  }
+  .notice-meta {
+    display: flex; gap: 28px;
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.5);
+    position: relative;
+  }
+  .notice-meta-item strong {
+    display: block;
+    color: var(--paper);
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 2px;
+    letter-spacing: -0.01em;
+  }
+
+  .stats-panel {
+    background: var(--paper);
+    border-radius: 14px;
+    padding: 22px 24px;
+    border: 1px solid var(--line);
+    display: flex; flex-direction: column;
+  }
+  .stats-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .stats-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .stats-period {
+    font-size: 10px;
+    color: var(--ink-3);
+    background: var(--bg-2);
+    padding: 3px 9px;
+    border-radius: 9px;
+    font-weight: 600;
+  }
+  .stats-total { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
+  .stats-total-num { font-size: 38px; font-weight: 800; color: var(--ink); letter-spacing: -0.03em; line-height: 1; }
+  .stats-total-unit { font-size: 13px; color: var(--ink-3); font-weight: 600; }
+  .stats-sub { font-size: 11.5px; color: var(--ink-3); margin-bottom: 16px; }
+  .stats-sub strong { color: var(--mint); font-weight: 700; }
+  .stats-bar {
+    display: flex;
+    height: 9px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+  }
+  .stats-bar-seg { height: 100%; }
+  .stats-bar-seg.creative   { background: var(--creative); }
+  .stats-bar-seg.curriculum { background: var(--curriculum); }
+  .stats-bar-seg.tool       { background: var(--tool); }
+  .stats-bar-seg.theme      { background: var(--theme); }
+  .stats-legend {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 12px;
+    font-size: 11px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; color: var(--ink-2); font-weight: 500; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .legend-item .num { color: var(--ink-3); margin-left: auto; font-weight: 600; }
+
+  /* ========== Section rows ========== */
+  .row-section { margin-bottom: 42px; }
+  .row-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 14px;
+    gap: 12px;
+  }
+  .row-header-left { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .row-eyebrow {
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--row-accent, var(--ink-3));
+    font-weight: 700;
+  }
+  .row-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .row-desc { font-size: 12.5px; color: var(--ink-3); font-weight: 500; }
+  .row-link {
+    font-size: 12px;
+    color: var(--ink-2);
+    background: none;
+    border: none;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 7px;
+    transition: background 0.15s;
+  }
+  .row-link:hover { background: var(--bg-2); }
+
+  /* Card grid (row carousel) */
+  .row-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  /* ========== Slide card ========== */
+  .card {
+    background: var(--paper);
+    border-radius: 11px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.07);
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.09), 0 0 0 1px rgba(0,0,0,0.08);
+  }
+  .card-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, #EAF4F7 0%, #DCE9EF 100%);
+    overflow: hidden;
+    display: grid; place-items: center;
+  }
+  .thumb-illust {
+    width: 70%; height: 60%;
+    display: grid; place-items: center;
+    color: var(--ink-3);
+    font-size: 22px; font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .card[data-area="수와 연산"] .card-thumb { background: linear-gradient(135deg, #D4EDE5 0%, #EAECF0 100%); }
+  .card[data-area="도형과 측정"] .card-thumb { background: linear-gradient(135deg, #FAEAE4 0%, #EAECF0 100%); }
+  .card[data-area="변화와 관계"] .card-thumb { background: linear-gradient(135deg, #FDF0D0 0%, #EAECF0 100%); }
+  .card[data-area="자료와 가능성"] .card-thumb { background: linear-gradient(135deg, #E4E1F8 0%, #EAECF0 100%); }
+
+  .thumb-badge {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(31, 30, 27, 0.78);
+    color: var(--paper);
+    font-size: 10px;
+    padding: 3px 7px;
+    border-radius: 9px;
+    font-weight: 600;
+    backdrop-filter: blur(6px);
+  }
+  .thumb-dot {
+    position: absolute; top: 8px; right: 8px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--paper);
+    display: grid; place-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+  .thumb-dot::before { content: ''; width: 7px; height: 7px; border-radius: 50%; }
+  .card[data-area="수와 연산"] .thumb-dot::before { background: var(--area-num); }
+  .card[data-area="도형과 측정"] .thumb-dot::before { background: var(--area-shape); }
+  .card[data-area="변화와 관계"] .thumb-dot::before { background: var(--area-rel); }
+  .card[data-area="자료와 가능성"] .thumb-dot::before { background: var(--area-data); }
+
+  .card-body {
+    padding: 12px 14px 13px;
+    display: flex; flex-direction: column;
+    flex: 1;
+  }
+  .card-meta-line {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .card-meta-line .dot { color: var(--ink-4); }
+  .card-stage { color: var(--ink-2); font-weight: 600; }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.32;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-subtitle {
+    font-size: 11.5px;
+    color: var(--ink-3);
+    line-height: 1.4;
+    margin-bottom: 10px;
+    font-weight: 400;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-tags {
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid var(--line-2);
+    display: flex; gap: 4px; flex-wrap: wrap;
+  }
+  .card-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: var(--bg-2);
+    border-radius: 6px;
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  .card-tag.mint { background: var(--mint-soft); color: var(--mint-dark); }
+
+  /* ========== Tool tile ========== */
+  .tool-tile {
+    background: var(--paper);
+    border-radius: 11px;
+    border: 1px solid var(--line);
+    padding: 16px 16px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; flex-direction: column;
+    min-height: 156px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-tile::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--tile-accent, var(--ink-4));
+  }
+  .tool-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(31, 30, 27, 0.08);
+    border-color: var(--tile-accent, var(--ink-3));
+  }
+  .tool-tile[data-area="수와 연산"]   { --tile-accent: var(--area-num); }
+  .tool-tile[data-area="도형과 측정"] { --tile-accent: var(--area-shape); }
+  .tool-tile[data-area="변화와 관계"] { --tile-accent: var(--area-rel); }
+  .tool-tile[data-area="자료와 가능성"] { --tile-accent: var(--area-data); }
+  .tool-tile-area {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tile-accent);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .tool-tile-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: var(--bg-2);
+    display: grid; place-items: center;
+    margin-bottom: 10px;
+    color: var(--tile-accent);
+  }
+  .tool-tile-name {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .tool-tile-desc {
+    font-size: 11.5px;
+    color: var(--ink-3);
+    line-height: 1.45;
+    margin-bottom: 12px;
+    flex: 1;
+  }
+  .tool-tile-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px;
+    color: var(--ink-3);
+    padding-top: 10px;
+    border-top: 1px solid var(--line-2);
+  }
+  .tool-tile-foot .uses { font-weight: 700; color: var(--tile-accent); }
+  .tool-tile-foot .arrow {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--bg-2);
+    display: grid; place-items: center;
+    color: var(--ink-3);
+    font-size: 11px;
+    transition: all 0.15s;
+  }
+  .tool-tile:hover .arrow {
+    background: var(--mint); color: #FFFFFF; transform: translateX(2px);
+  }
+
+  /* ========== SIDEBAR (catalog) ========== */
+  .sidebar {
+    background: var(--paper);
+    border-right: 1px solid var(--line);
+    padding: 22px 22px 60px;
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+    position: sticky; top: 0;
+  }
+  .sidebar-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .sidebar-title { font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+  .sidebar-reset {
+    font-size: 11px; color: var(--ink-3); background: none; border: none;
+    font-weight: 500; padding: 0;
+  }
+  .sidebar-reset:hover { color: var(--ink); text-decoration: underline; }
+  .filter-group { margin-bottom: 20px; }
+  .filter-group-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-2);
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .filter-options { display: flex; flex-direction: column; gap: 2px; }
+  .filter-option {
+    display: flex; align-items: center;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    user-select: none;
+    gap: 8px;
+    transition: background 0.12s;
+  }
+  .filter-option:hover { background: var(--bg-2); }
+  .filter-option.active { background: var(--mint-soft); color: var(--mint-dark); font-weight: 600; }
+  .filter-option input[type=checkbox] {
+    appearance: none;
+    width: 14px; height: 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 3px;
+    margin: 0;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .filter-option input:checked { background: var(--mint); border-color: var(--mint); }
+  .filter-option input[type=checkbox]:checked::after {
+    content: '✓'; position: absolute; color: white; font-size: 10px;
+    top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 700;
+  }
+  .filter-option .count {
+    margin-left: auto;
+    font-size: 10.5px;
+    color: var(--ink-4);
+    font-weight: 500;
+  }
+
+  /* ========== CONTENT (catalog) ========== */
+  .content { padding: 22px 28px 80px; min-width: 0; }
+  .content-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; gap: 12px;
+  }
+  .content-title { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+  .content-count { font-size: 13px; color: var(--ink-3); font-weight: 500; }
+  .content-count strong { color: var(--ink); font-weight: 700; }
+  .content-sort { display: flex; align-items: center; gap: 8px; }
+  .sort-select {
+    padding: 6px 28px 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--paper);
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--ink-2);
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 8px center;
+  }
+
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  /* ========== MODAL ========== */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(17, 24, 39, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 40px;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-backdrop.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--paper);
+    border-radius: 14px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+  }
+  .modal.sm { max-width: 540px; }
+  .modal.lg { max-width: 920px; }
+  .modal-close {
+    position: absolute; top: 18px; right: 18px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    display: grid; place-items: center;
+    font-size: 18px; color: var(--ink-2);
+    z-index: 2;
+  }
+  .modal-close:hover { background: var(--bg-2); }
+  .modal-header { padding: 22px 28px 0; }
+  .modal-title { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
+  .modal-tab-row {
+    display: flex; gap: 4px;
+    margin: 18px 0 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 28px;
+  }
+  .modal-tab {
+    background: none; border: none;
+    padding: 10px 14px;
+    font-size: 13px; font-weight: 700;
+    color: var(--ink-3);
+    position: relative;
+    letter-spacing: -0.015em;
+  }
+  .modal-tab.active { color: var(--mint-dark); }
+  .modal-tab.active::after {
+    content: ''; position: absolute;
+    left: 8px; right: 8px; bottom: -1px;
+    height: 2px;
+    background: var(--mint);
+    border-radius: 2px;
+  }
+  .modal-body { padding: 22px 28px 24px; }
+
+  /* Form rows */
+  .form-grid { display: grid; grid-template-columns: 96px 1fr; gap: 12px 16px; align-items: center; }
+  .form-label { font-size: 12.5px; color: var(--ink-2); font-weight: 600; }
+  .form-row-inline { display: flex; gap: 8px; }
+  .form-row-inline .ctx-select { flex: 1; min-width: 0; }
+  .form-input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--bg-2);
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .form-input:focus { outline: 2px solid var(--mint-soft); border-color: var(--mint); background: var(--paper); }
+  .modal-footer {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-2);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .btn-primary {
+    background: var(--mint); color: #FFFFFF; border: none;
+    padding: 10px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  .btn-primary:hover { background: var(--mint-dark); }
+  .btn-secondary {
+    background: var(--paper); color: var(--ink-2);
+    border: 1px solid var(--line);
+    padding: 10px 16px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600;
+  }
+  .btn-secondary:hover { border-color: var(--ink-3); }
+
+  /* ========== TEMPLATE / CONTENT POPUP ========== */
+  .tpl-modal { max-width: 940px; }
+  .tpl-modal-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 16px 28px 0;
+    border-bottom: 1px solid var(--line);
+    margin: 14px 0 0;
+  }
+  .tpl-modal-tab {
+    background: none; border: none;
+    padding: 11px 18px 13px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ink-3);
+    position: relative;
+    letter-spacing: -0.015em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tpl-modal-tab .tab-ico {
+    width: 18px; height: 18px;
+    border-radius: 5px;
+    background: var(--bg-2);
+    display: grid; place-items: center;
+    color: var(--ink-3);
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .tpl-modal-tab:hover { color: var(--ink); }
+  .tpl-modal-tab.active { color: var(--mint-dark); }
+  .tpl-modal-tab.active .tab-ico { background: var(--mint-soft); color: var(--mint-dark); }
+  .tpl-modal-tab.active::after {
+    content: '';
+    position: absolute;
+    left: 12px; right: 12px; bottom: -1px;
+    height: 2px;
+    background: var(--mint);
+    border-radius: 2px;
+  }
+  .tpl-pane { display: none; }
+  .tpl-pane.active { display: block; }
+
+  /* Completed content - large readable buttons */
+  .tpl-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .tpl-big-btn {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .tpl-big-btn:hover {
+    border-color: var(--mint);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px rgba(0, 184, 182, 0.10);
+  }
+  .tpl-big-btn::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 90px; height: 100%;
+    background: radial-gradient(circle at right center, var(--bb-soft, var(--mint-soft)) 0%, transparent 60%);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .tpl-big-btn[data-accent="curriculum"] { --bb-color: var(--curriculum); --bb-soft: var(--curriculum-soft); }
+  .tpl-big-btn[data-accent="tool"]       { --bb-color: var(--tool);       --bb-soft: var(--tool-soft); }
+  .tpl-big-btn[data-accent="theme"]      { --bb-color: var(--theme);      --bb-soft: var(--theme-soft); }
+  .tpl-big-btn[data-accent="creative"]   { --bb-color: var(--creative);   --bb-soft: var(--creative-soft); }
+  .tpl-big-btn .bb-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: var(--bb-soft, var(--bg-2));
+    color: var(--bb-color, var(--ink-2));
+    display: grid; place-items: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .tpl-big-btn .bb-text { display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 1; flex: 1; }
+  .tpl-big-btn .bb-text strong {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 3px;
+  }
+  .tpl-big-btn .bb-text span {
+    font-size: 11.5px;
+    color: var(--ink-3);
+    font-weight: 500;
+    line-height: 1.45;
+  }
+  .tpl-big-btn .bb-arrow {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--bg-2);
+    color: var(--ink-3);
+    display: grid; place-items: center;
+    font-size: 12px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+  .tpl-big-btn:hover .bb-arrow {
+    background: var(--mint);
+    color: #FFFFFF;
+    transform: translateX(3px);
+  }
+
+  .tpl-section { margin-bottom: 22px; }
+  .tpl-section:last-child { margin-bottom: 0; }
+  .tpl-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tpl-section-title::before {
+    content: '';
+    width: 4px; height: 12px;
+    background: var(--mint);
+    border-radius: 2px;
+  }
+  .tpl-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+  /* ====== NEW Template Gallery (two-pane: category sidebar + thumb grid) ====== */
+  .gallery {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--paper);
+    min-height: 460px;
+  }
+  .gallery-side {
+    background: var(--bg);
+    border-right: 1px solid var(--line);
+    padding: 16px 12px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .gallery-side-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 10px 10px;
+  }
+  .cat-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: all 0.12s;
+    background: transparent;
+    border: 1px solid transparent;
+    text-align: left;
+    font-family: inherit;
+    color: var(--ink-2);
+  }
+  .cat-item:hover { background: var(--bg-2); }
+  .cat-item.active {
+    background: var(--paper);
+    border-color: var(--mint);
+    box-shadow: 0 2px 6px rgba(0,184,182,0.10);
+  }
+  .cat-item .cat-ico {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--bg-2);
+    display: grid; place-items: center;
+    color: var(--ink-2);
+    flex-shrink: 0;
+    transition: all 0.12s;
+  }
+  .cat-item.active .cat-ico {
+    background: var(--mint-soft);
+    color: var(--mint-dark);
+  }
+  .cat-item .cat-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+  .cat-item .cat-name { font-size: 13px; font-weight: 700; color: var(--ink); letter-spacing: -0.015em; }
+  .cat-item.active .cat-name { color: var(--mint-dark); }
+  .cat-item .cat-count { font-size: 10.5px; color: var(--ink-4); font-weight: 600; margin-top: 1px; }
+  .cat-item .cat-arrow {
+    width: 16px; height: 16px;
+    color: var(--ink-4);
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+  .cat-item.active .cat-arrow { opacity: 1; color: var(--mint); }
+
+  .gallery-main {
+    padding: 20px 22px 22px;
+    overflow-y: auto;
+    max-height: 540px;
+  }
+  .gallery-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .gallery-head-left { display: flex; flex-direction: column; gap: 4px; }
+  .gallery-head-title { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+  .gallery-head-sub   { font-size: 12px; color: var(--ink-3); font-weight: 500; }
+  .gallery-search {
+    width: 200px;
+    padding: 7px 12px 7px 30px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--bg);
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--ink);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'><circle cx='11' cy='11' r='7'/><path d='m20 20-3-3'/></svg>");
+    background-repeat: no-repeat;
+    background-position: 10px center;
+  }
+  .gallery-search::placeholder { color: var(--ink-4); }
+
+  .thumb-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .thumb-grid.cols-1 {
+    grid-template-columns: 1fr;
+  }
+  .thumb-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.16s;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .thumb-card:hover {
+    border-color: var(--ink-3);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+  }
+  .thumb-card.selected {
+    border-color: var(--mint);
+    box-shadow: 0 0 0 2px var(--mint-soft), 0 10px 20px rgba(0,184,182,0.12);
+  }
+  .thumb-card.selected::after {
+    content: '✓';
+    position: absolute; top: 8px; right: 8px;
+    width: 22px; height: 22px;
+    background: var(--mint);
+    color: #FFFFFF;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 800;
+    z-index: 2;
+  }
+  .thumb-card .tag {
+    position: absolute;
+    top: 8px; left: 8px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 9.5px;
+    padding: 2px 7px;
+    border-radius: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    z-index: 1;
+  }
+  .thumb-card .tag.new   { background: var(--mint); }
+  .thumb-card .tag.hot   { background: var(--creative); }
+
+  .thumb-preview {
+    aspect-ratio: 16 / 11;
+    background: linear-gradient(180deg, #F8FAFB 0%, #ECEFF3 100%);
+    display: grid; place-items: center;
+    border-bottom: 1px solid var(--line-2);
+    position: relative;
+    overflow: hidden;
+  }
+  .thumb-preview svg {
+    width: 64%; height: 64%;
+    color: var(--ink-2);
+  }
+  .thumb-card[data-accent="quiz"]  .thumb-preview { background: linear-gradient(180deg, #F4ECFB 0%, #ECEFF3 100%); }
+  .thumb-card[data-accent="quiz"]  .thumb-preview svg { color: var(--theme); }
+  .thumb-card[data-accent="manip"] .thumb-preview { background: linear-gradient(180deg, #E6F6F6 0%, #ECEFF3 100%); }
+  .thumb-card[data-accent="manip"] .thumb-preview svg { color: var(--mint-dark); }
+  .thumb-card[data-accent="item"]  .thumb-preview { background: linear-gradient(180deg, #FEEFE9 0%, #ECEFF3 100%); }
+  .thumb-card[data-accent="item"]  .thumb-preview svg { color: var(--creative); }
+  .thumb-card[data-accent="blank"] .thumb-preview {
+    background: linear-gradient(160deg, #F2FBFB 0%, #E6F4F4 60%, #DCEBEC 100%);
+  }
+  .thumb-card[data-accent="blank"] .thumb-preview svg { color: var(--ink-2); }
+  .thumb-card[data-accent="blank"] .thumb-preview svg { width: 78%; height: 80%; }
+
+  .thumb-body {
+    padding: 10px 12px 12px;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .thumb-name { font-size: 12.5px; font-weight: 700; color: var(--ink); letter-spacing: -0.015em; }
+  .thumb-meta { font-size: 10.5px; color: var(--ink-3); font-weight: 500; }
+
+  .gallery-empty {
+    grid-column: 1 / -1;
+    padding: 50px 20px;
+    text-align: center;
+    color: var(--ink-3);
+    font-size: 13px;
+  }
+
+  /* ========== ARTICLE PICKER POPUP ========== */
+  .picker-modal { max-width: 1080px; }
+  .picker-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 28px 0;
+  }
+  .picker-title { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
+  .picker-subtabs {
+    display: flex;
+    gap: 24px;
+    padding: 14px 28px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .picker-subtab {
+    background: none; border: none;
+    padding: 10px 0 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink-3);
+    position: relative;
+    letter-spacing: -0.015em;
+  }
+  .picker-subtab.active { color: var(--mint-dark); }
+  .picker-subtab.active::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 2px;
+    background: var(--mint);
+    border-radius: 2px;
+  }
+
+  .picker-filter {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin: 18px 28px 0;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .picker-filter-row {
+    display: flex; align-items: center; gap: 14px;
+    flex-wrap: wrap;
+  }
+  .picker-filter-row .field { display: flex; align-items: center; gap: 8px; }
+  .picker-filter-row .field-label {
+    font-size: 12px; color: var(--ink-2); font-weight: 700;
+    min-width: 50px;
+  }
+  .picker-filter-row .ctx-select { min-width: 130px; }
+  .picker-filter-row .picker-search {
+    flex: 1; min-width: 220px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--paper);
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+  .picker-filter-row .picker-search::placeholder { color: var(--ink-4); }
+  .picker-reset {
+    background: none; border: none;
+    color: var(--ink-3);
+    font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 8px; border-radius: 6px;
+  }
+  .picker-reset:hover { color: var(--ink); background: var(--bg-2); }
+
+  .picker-tags {
+    display: flex; align-items: center; gap: 8px;
+    overflow: hidden;
+  }
+  .picker-tags .field-label { flex-shrink: 0; }
+  .picker-tag-track {
+    display: flex; gap: 6px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    flex: 1;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .picker-tag-track::-webkit-scrollbar { display: none; }
+  .picker-tag {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: 16px;
+    font-size: 11.5px;
+    color: var(--ink-2);
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+    transition: all 0.12s;
+  }
+  .picker-tag::before {
+    content: '✓';
+    color: var(--ink-4);
+    font-size: 10px;
+  }
+  .picker-tag:hover { border-color: var(--ink-3); }
+  .picker-tag.selected {
+    background: var(--mint-soft);
+    color: var(--mint-dark);
+    border-color: var(--mint);
+  }
+  .picker-tag.selected::before { color: var(--mint); }
+  .picker-tag-arrow {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    display: grid; place-items: center;
+    color: var(--ink-2);
+    font-size: 11px;
+  }
+  .picker-tag-arrow:hover { background: var(--bg-2); }
+
+  .picker-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px 8px;
+  }
+  .picker-view-toggle {
+    display: flex; gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  .picker-view-btn {
+    background: var(--paper); border: none;
+    padding: 6px 10px;
+    color: var(--ink-3);
+    display: grid; place-items: center;
+  }
+  .picker-view-btn.active { background: var(--mint-soft); color: var(--mint-dark); }
+  .picker-count { font-size: 12.5px; color: var(--ink-2); font-weight: 600; }
+  .picker-count strong { color: var(--mint-dark); }
+
+  .picker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    padding: 8px 28px 18px;
+  }
+  .picker-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .picker-card:hover {
+    border-color: var(--mint);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  }
+  .picker-card.selected {
+    border-color: var(--mint);
+    box-shadow: 0 0 0 2px var(--mint-soft);
+  }
+  .picker-card .check {
+    position: absolute; top: 8px; left: 8px;
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    display: grid; place-items: center;
+    z-index: 2;
+    transition: all 0.12s;
+  }
+  .picker-card.selected .check {
+    background: var(--mint);
+    border-color: var(--mint);
+    color: #FFFFFF;
+  }
+  .picker-card.selected .check::after {
+    content: '✓'; color: #FFFFFF; font-size: 12px; font-weight: 800;
+  }
+  .picker-card .new-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--mint);
+    color: #FFFFFF;
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    display: inline-flex; align-items: center; gap: 3px;
+    z-index: 2;
+  }
+  .picker-card-thumb {
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, #EAF4F7 0%, #DCE9EF 100%);
+    display: grid; place-items: center;
+    color: var(--ink-4);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .picker-card[data-area="수와 연산"] .picker-card-thumb { background: linear-gradient(135deg, #D4EDE5 0%, #EAECF0 100%); }
+  .picker-card[data-area="도형과 측정"] .picker-card-thumb { background: linear-gradient(135deg, #FAEAE4 0%, #EAECF0 100%); }
+  .picker-card[data-area="변화와 관계"] .picker-card-thumb { background: linear-gradient(135deg, #FDF0D0 0%, #EAECF0 100%); }
+  .picker-card[data-area="자료와 가능성"] .picker-card-thumb { background: linear-gradient(135deg, #E4E1F8 0%, #EAECF0 100%); }
+  .picker-card-body { padding: 11px 13px 12px; }
+  .picker-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    line-height: 1.32;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .picker-card-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .picker-card-meta .preview-btn {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 10.5px;
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+  .picker-card-meta .preview-btn:hover { background: var(--bg-2); }
+
+  .picker-pagination {
+    display: flex; align-items: center; gap: 6px;
+    justify-content: flex-start;
+  }
+  .pg-btn {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    display: grid; place-items: center;
+    color: var(--ink-2);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .pg-btn.active { background: var(--mint-soft); color: var(--mint-dark); border-color: var(--mint); }
+  .pg-btn:hover:not(.active) { background: var(--bg-2); }
+
+  .picker-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px 22px;
+    border-top: 1px solid var(--line);
+    margin-top: 8px;
+  }
+
+  /* ====== Article 카드(qbank) 전용 모드 — 문제은행/조작형/수업자료 ====== */
+  .picker-modal[data-mode="qbank"] .picker-subtabs { display: none; }
+  .picker-modal[data-mode="qbank"] .picker-filter {
+    padding: 18px 20px 20px;
+    gap: 0;
+    background: var(--bg);
+  }
+  .picker-modal[data-mode="qbank"] .picker-tags { display: none; }
+  .qb-type-badge.manip      { background: var(--mint-soft); color: var(--mint-dark); }
+  .qb-type-badge.curriculum { background: var(--curriculum-soft); color: var(--curriculum); }
+
+  /* labels-on-top filter fields */
+  .qb-filter {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1.3fr 2fr auto;
+    gap: 12px;
+    align-items: end;
+  }
+  .qb-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .qb-field-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+  }
+  .qb-field .ctx-select {
+    width: 100%;
+    padding: 10px 32px 10px 14px;
+    font-size: 13px;
+    background-color: var(--paper);
+    border-radius: 8px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .qb-search-row {
+    display: flex; gap: 8px; align-items: stretch;
+  }
+  .qb-search-row .ctx-select {
+    flex: 0 0 130px;
+    min-width: 0;
+  }
+  .qb-search-row input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .qb-search-row input::placeholder { color: var(--ink-4); }
+  .qb-reset {
+    align-self: end;
+    margin-bottom: 1px;
+    background: none;
+    border: none;
+    color: var(--ink-2);
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 10px 6px;
+    white-space: nowrap;
+  }
+  .qb-reset:hover { color: var(--ink); }
+  .qb-reset svg { color: var(--ink-3); }
+
+  .picker-modal[data-mode="qbank"] .picker-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+  }
+  .picker-modal[data-mode="qbank"] .picker-card {
+    border-radius: 10px;
+    border-color: var(--line);
+  }
+  .picker-modal[data-mode="qbank"] .picker-card .check {
+    top: 10px; left: 10px;
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    border-width: 1.5px;
+    background: var(--paper);
+    z-index: 3;
+  }
+  .picker-modal[data-mode="qbank"] .picker-card.selected .check::after { font-size: 10px; }
+  .picker-modal[data-mode="qbank"] .picker-card .new-badge { display: none; }
+  .qb-type-badge {
+    position: absolute;
+    top: 10px; left: 36px;
+    background: var(--bg-2);
+    color: var(--ink-2);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: -0.01em;
+    z-index: 3;
+  }
+  .qb-type-badge.subjective { background: #FDF0D0; color: #8A6010; }
+  .picker-modal[data-mode="qbank"] .picker-card-thumb {
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(180deg, #F8FAFB 0%, #F1F4F7 100%) !important;
+    border-bottom: 1px solid var(--line-2);
+    display: block;
+    color: var(--ink-3);
+    padding: 36px 14px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .picker-modal[data-mode="qbank"] .picker-card-thumb svg {
+    width: 100%; height: 100%;
+  }
+  .qb-preview-btn {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    background: rgba(255,255,255,0.95);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 4px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-2);
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    z-index: 2;
+  }
+  .qb-preview-btn:hover { background: var(--paper); color: var(--ink); }
+  .picker-modal[data-mode="qbank"] .picker-card-body {
+    padding: 12px 14px 14px;
+    display: flex; flex-direction: column; gap: 7px;
+  }
+  .picker-modal[data-mode="qbank"] .picker-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    line-height: 1.32;
+    margin-bottom: 0;
+    letter-spacing: -0.015em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+  .qb-source {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11.5px;
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  .qb-source::before {
+    content: '';
+    width: 10px; height: 10px;
+    border: 1.8px solid var(--ink-3);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, var(--ink-3) 0 1.6px, transparent 1.8px);
+    display: inline-block;
+  }
+  .qb-tags {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    margin-top: 1px;
+  }
+  .qb-tag {
+    font-size: 10.5px;
+    color: var(--ink-2);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 2px 7px;
+    border-radius: 9px;
+    font-weight: 500;
+  }
+  .picker-modal[data-mode="qbank"] .picker-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .picker-modal[data-mode="qbank"] .picker-count strong { color: var(--ink); font-weight: 800; }
+  .btn-primary:disabled {
+    background: var(--bg-2); color: var(--ink-4); cursor: not-allowed;
+  }
+  .btn-primary:disabled:hover { background: var(--bg-2); }
+
+  /* ========== Content Preview Modal ========== */
+  .preview-modal {
+    max-width: 720px;
+    background: var(--paper);
+  }
+  .preview-modal .modal-header {
+    padding: 22px 28px 16px;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .preview-modal .preview-type {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--bg-2);
+    color: var(--ink-2);
+    letter-spacing: -0.01em;
+  }
+  .preview-modal .preview-type.subjective { background: #FDF0D0; color: #8A6010; }
+  .preview-modal .preview-type.manip      { background: var(--mint-soft);       color: var(--mint-dark); }
+  .preview-modal .preview-type.curriculum { background: var(--curriculum-soft); color: var(--curriculum); }
+  .preview-modal .preview-title {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    flex: 1;
+  }
+  .preview-modal .preview-body {
+    padding: 22px 28px 18px;
+  }
+  .preview-stage {
+    background: linear-gradient(180deg, #F8FAFB 0%, #ECEFF3 100%);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    overflow: hidden;
+    padding: 36px 32px 32px;
+    display: flex; flex-direction: column;
+  }
+  .preview-stage-text {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.6;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .preview-stage-illust {
+    position: absolute;
+    inset: 60px 32px 32px 32px;
+    pointer-events: none;
+  }
+  .preview-meta {
+    display: flex; gap: 22px;
+    padding: 14px 0 0;
+    margin-top: 14px;
+    border-top: 1px solid var(--line-2);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+  .preview-meta strong { color: var(--ink-2); font-weight: 700; margin-right: 4px; }
+  .preview-tags-row { display: flex; align-items: center; gap: 6px; }
+  .preview-modal .modal-footer {
+    margin-top: 0;
+    padding: 14px 28px 22px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+
+  /* ========== Toast ========== */
+  .toast {
+    position: fixed;
+    bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 13px; font-weight: 600;
+    padding: 11px 18px;
+    border-radius: 9px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 200;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }
+
+  @media (max-width: 1280px) {
+    .row-grid { grid-template-columns: repeat(4, 1fr); }
+    .row-grid .card:nth-child(5),
+    .row-grid .tool-tile:nth-child(5) { display: none; }
+    .catalog-grid { grid-template-columns: repeat(3, 1fr); }
+    .tpl-grid-4 { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 980px) {
+    .layout-catalog { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .landing-top { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== TOP BAR (GNB) ========== -->
+<div class="topbar-wrap">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">A</div>
+      <div class="brand-text">
+        <strong>AI저작툴</strong>
+        <span>Powered by 매쓰캔버스</span>
+      </div>
+    </div>
+
+    <nav class="tabbar" id="tabbar">
+      <button class="tab active" data-section="home">홈</button>
+      <button class="tab" data-section="manipulative">조작형 콘텐츠 <span class="count">128</span></button>
+      <button class="tab" data-section="lesson">차시 콘텐츠 <span class="count">324</span></button>
+      <button class="tab" data-section="canvas">매쓰캔버스 <span class="count">86</span></button>
+      <button class="tab" data-section="qbank">문제은행 <span class="count">1,204</span></button>
+    </nav>
+
+    <div class="topbar-actions">
+      <button class="top-btn primary" id="open-create-modal">+ 수업 만들기</button>
+    </div>
+  </header>
+</div>
+
+<!-- ========== CONTEXT BAR ========== -->
+<div class="context-wrap">
+  <div class="context-bar">
+    <span class="context-label">학습 설정</span>
+    <div class="context-group">
+      <span class="group-name">학교급</span>
+      <select class="ctx-select" id="ctx-school">
+        <option>초등</option>
+        <option>중등</option>
+        <option>고등</option>
+      </select>
+    </div>
+    <div class="context-divider"></div>
+    <div class="context-group">
+      <span class="group-name">학년</span>
+      <select class="ctx-select" id="ctx-grade">
+        <option>1학년</option>
+        <option>2학년</option>
+        <option>3학년</option>
+        <option>4학년</option>
+        <option>5학년</option>
+        <option>6학년</option>
+      </select>
+    </div>
+    <div class="ctx-divider"></div>
+    <div class="context-group">
+      <span class="group-name">교과목</span>
+      <select class="ctx-select" id="ctx-subject">
+        <option>수학</option>
+        <option>국어</option>
+        <option>영어</option>
+        <option>과학</option>
+        <option>사회</option>
+      </select>
+    </div>
+    <input type="text" class="top-search" placeholder="수업, 단원, 도구 검색…" />
+  </div>
+</div>
+
+<!-- ========== HERO ========== -->
+<div class="hero-wrap">
+  <section class="hero">
+    <h1 class="hero-title">오늘 수업, <em>한 장</em>으로 시작하세요</h1>
+    <p class="hero-sub">선생님이 그대로 가져가 쓸 수 있는 AI저작툴 수업 슬라이드 모음 · 클릭 한 번으로 편집화면으로 이동합니다.</p>
+  </section>
+</div>
+
+<!-- ========== APP ========== -->
+<div id="app">
+
+<!-- HOME LANDING -->
+<div class="layout-home" id="view-home">
+  <div class="landing">
+
+    <!-- 공지 + 통계 -->
+    <div class="landing-top">
+      <div class="notice-panel">
+        <div class="notice-eyebrow">
+          <span class="notice-pulse"></span> NEW · 2026.05.19
+        </div>
+        <h2 class="notice-title">AI저작툴 2.0,<br/><em>콘텐츠 포털</em>과 함께 오픈했습니다</h2>
+        <p class="notice-desc">교과 단원, 디지털 교구, 핵심 개념별 콘텐츠를 한 곳에서 찾고, 클릭 한 번으로 슬라이드 편집 화면으로 이어집니다.</p>
+      </div>
+
+      <div class="stats-panel">
+        <div class="stats-header">
+          <span class="stats-label">전체 콘텐츠</span>
+          <span class="stats-period">2026 · 5월</span>
+        </div>
+        <div class="stats-total">
+          <span class="stats-total-num">528</span>
+          <span class="stats-total-unit">건</span>
+        </div>
+        <div class="stats-sub">이번 주 <strong>+24</strong>건 신규 등록</div>
+        <div class="stats-bar">
+          <div class="stats-bar-seg curriculum" style="width: 42%"></div>
+          <div class="stats-bar-seg tool"       style="width: 24%"></div>
+          <div class="stats-bar-seg theme"      style="width: 20%"></div>
+          <div class="stats-bar-seg creative"   style="width: 14%"></div>
+        </div>
+        <div class="stats-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:var(--curriculum)"></span>차시 콘텐츠<span class="num">221</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--tool)"></span>조작형<span class="num">128</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--theme)"></span>매쓰캔버스<span class="num">105</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--creative)"></span>문제은행<span class="num">74</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 1: 오늘 수업 바로 쓰기 -->
+    <section class="row-section">
+      <div class="row-header">
+        <div class="row-header-left">
+          <span class="row-eyebrow" style="--row-accent: var(--curriculum)">RECOMMEND</span>
+          <h2 class="row-title">오늘 수업 바로 쓰기</h2>
+          <span class="row-desc">선택한 학년·교과목에 맞춰 큐레이션된 슬라이드</span>
+        </div>
+        <button class="row-link" data-go="lesson">더보기 →</button>
+      </div>
+      <div class="row-grid" id="row-today"></div>
+    </section>
+
+    <!-- Row 2: 조작형 콘텐츠 (도구별) -->
+    <section class="row-section">
+      <div class="row-header">
+        <div class="row-header-left">
+          <span class="row-eyebrow" style="--row-accent: var(--tool)">TOOLS · 47종</span>
+          <h2 class="row-title">조작형 콘텐츠</h2>
+          <span class="row-desc">손쉽게 가져다 쓰는 디지털 교구 수업</span>
+        </div>
+        <button class="row-link" data-go="manipulative">더보기 →</button>
+      </div>
+      <div class="row-grid" id="row-tool"></div>
+    </section>
+
+    <!-- Row 3: 차시 콘텐츠 -->
+    <section class="row-section">
+      <div class="row-header">
+        <div class="row-header-left">
+          <span class="row-eyebrow" style="--row-accent: var(--curriculum)">CURRICULUM</span>
+          <h2 class="row-title">차시 콘텐츠</h2>
+          <span class="row-desc">교과서 단원 흐름에 맞춘 한 차시 분량 슬라이드</span>
+        </div>
+        <button class="row-link" data-go="lesson">더보기 →</button>
+      </div>
+      <div class="row-grid" id="row-lesson"></div>
+    </section>
+
+    <!-- Row 4: 매쓰캔버스 -->
+    <section class="row-section">
+      <div class="row-header">
+        <div class="row-header-left">
+          <span class="row-eyebrow" style="--row-accent: var(--theme)">MATHCANVAS</span>
+          <h2 class="row-title">매쓰캔버스</h2>
+          <span class="row-desc">공유 캔버스로 만든 협업·탐구 활동</span>
+        </div>
+        <button class="row-link" data-go="canvas">더보기 →</button>
+      </div>
+      <div class="row-grid" id="row-canvas"></div>
+    </section>
+
+    <!-- Row 5: 문제은행 -->
+    <section class="row-section">
+      <div class="row-header">
+        <div class="row-header-left">
+          <span class="row-eyebrow" style="--row-accent: var(--creative)">QUESTION BANK</span>
+          <h2 class="row-title">문제은행</h2>
+          <span class="row-desc">단원·난이도별 문제 슬라이드 모음</span>
+        </div>
+        <button class="row-link" data-go="qbank">더보기 →</button>
+      </div>
+      <div class="row-grid" id="row-qbank"></div>
+    </section>
+  </div>
+</div>
+
+<!-- CATALOG VIEW (other tabs) -->
+<div class="layout-catalog" id="view-catalog" style="display:none;">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">필터</span>
+      <button class="sidebar-reset">전체 초기화</button>
+    </div>
+    <div class="filter-group">
+      <div class="filter-group-title">학교급</div>
+      <div class="filter-options">
+        <label class="filter-option"><input type="checkbox" checked> 초등 <span class="count">324</span></label>
+        <label class="filter-option"><input type="checkbox"> 중등 <span class="count">142</span></label>
+        <label class="filter-option"><input type="checkbox"> 고등 <span class="count">62</span></label>
+      </div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-group-title">학년</div>
+      <div class="filter-options">
+        <label class="filter-option"><input type="checkbox"> 1학년 <span class="count">48</span></label>
+        <label class="filter-option"><input type="checkbox"> 2학년 <span class="count">56</span></label>
+        <label class="filter-option"><input type="checkbox"> 3학년 <span class="count">62</span></label>
+        <label class="filter-option"><input type="checkbox"> 4학년 <span class="count">58</span></label>
+        <label class="filter-option"><input type="checkbox"> 5학년 <span class="count">52</span></label>
+        <label class="filter-option"><input type="checkbox"> 6학년 <span class="count">48</span></label>
+      </div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-group-title">교과목</div>
+      <div class="filter-options">
+        <label class="filter-option active"><input type="checkbox" checked> 수학 <span class="count">412</span></label>
+        <label class="filter-option"><input type="checkbox"> 영어 <span class="count">62</span></label>
+        <label class="filter-option"><input type="checkbox"> 국어 <span class="count">28</span></label>
+        <label class="filter-option"><input type="checkbox"> 과학 <span class="count">14</span></label>
+      </div>
+    </div>
+    <div class="filter-group">
+      <div class="filter-group-title">영역</div>
+      <div class="filter-options">
+        <label class="filter-option"><input type="checkbox"> 수와 연산 <span class="count">186</span></label>
+        <label class="filter-option"><input type="checkbox"> 도형과 측정 <span class="count">122</span></label>
+        <label class="filter-option"><input type="checkbox"> 변화와 관계 <span class="count">88</span></label>
+        <label class="filter-option"><input type="checkbox"> 자료와 가능성 <span class="count">64</span></label>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="content-header">
+      <div>
+        <div class="content-title" id="catalog-title">조작형 콘텐츠</div>
+      </div>
+      <div class="content-sort">
+        <span class="content-count">총 <strong id="catalog-count">128</strong>건</span>
+        <select class="sort-select">
+          <option>추천순</option>
+          <option>최신순</option>
+          <option>학년 순</option>
+        </select>
+      </div>
+    </div>
+    <div class="catalog-grid" id="catalog-grid"></div>
+  </main>
+</div>
+</div><!-- /#app -->
+
+<!-- ========== MODAL 1: 슬라이드 만들기 (기본정보) ========== -->
+<div class="modal-backdrop" id="modal-create" onclick="if(event.target===this) closeModal('modal-create')">
+  <div class="modal sm">
+    <button class="modal-close" onclick="closeModal('modal-create')">×</button>
+    <div class="modal-header">
+      <h3 class="modal-title">슬라이드 만들기</h3>
+    </div>
+    <div class="modal-tab-row">
+      <button class="modal-tab active">기본 정보</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <span class="form-label">슬라이드 이름</span>
+        <input type="text" class="form-input" id="f-name" placeholder="예: 5학년 분수의 덧셈" value="2026-05-19 제작">
+
+        <span class="form-label">학교급</span>
+        <select class="ctx-select" id="f-school">
+          <option>초등</option><option>중등</option><option>고등</option>
+        </select>
+
+        <span class="form-label">학년</span>
+        <select class="ctx-select" id="f-grade">
+          <option>1학년</option><option>2학년</option><option>3학년</option>
+          <option>4학년</option><option>5학년</option><option>6학년</option>
+        </select>
+
+        <span class="form-label">교과목</span>
+        <select class="ctx-select" id="f-subject">
+          <option>수학</option><option>영어</option><option>국어</option>
+          <option>과학</option><option>사회</option>
+        </select>
+
+        <span class="form-label">차시(단원)</span>
+        <select class="ctx-select" id="f-unit"></select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('modal-create')">취소</button>
+        <button class="btn-primary" id="go-template">슬라이드 만들기 →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL 2: 콘텐츠 선택하기 ========== -->
+<div class="modal-backdrop" id="modal-template" onclick="if(event.target===this) closeModal('modal-template')">
+  <div class="modal lg tpl-modal">
+    <button class="modal-close" onclick="closeModal('modal-template')">×</button>
+    <div class="modal-header">
+      <h3 class="modal-title">콘텐츠 선택하기</h3>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:6px;">슬라이드에 담을 콘텐츠나 템플릿을 선택해 주세요.</p>
+    </div>
+
+    <!-- 상위 탭: 완성형 콘텐츠 / 템플릿 -->
+    <div class="tpl-modal-tabs" id="tpl-toptabs">
+      <button class="tpl-modal-tab active" data-pane="content">
+        <span class="tab-ico">✓</span>완성형 콘텐츠 불러오기
+      </button>
+      <button class="tpl-modal-tab" data-pane="template">
+        <span class="tab-ico">＋</span>템플릿 불러오기
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Pane 1: 완성형 콘텐츠 (4 large buttons) -->
+      <div class="tpl-pane active" id="pane-content">
+        <div class="tpl-grid-2">
+          <button class="tpl-big-btn" data-accent="tool" data-import="manipulative">
+            <div class="bb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg>
+            </div>
+            <div class="bb-text">
+              <strong>조작형 콘텐츠</strong>
+              <span>4,000여 종의 학생 조작형 콘텐츠</span>
+            </div>
+            <span class="bb-arrow">→</span>
+          </button>
+
+          <button class="tpl-big-btn" data-accent="curriculum" data-import="lesson">
+            <div class="bb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="16" y2="7"/><line x1="9" y1="11" x2="14" y2="11"/></svg>
+            </div>
+            <div class="bb-text">
+              <strong>수업자료 콘텐츠</strong>
+              <span>교과서 단원, 차시 흐름에 맞춰 제작된 콘텐츠</span>
+            </div>
+            <span class="bb-arrow">→</span>
+          </button>
+
+          <button class="tpl-big-btn" data-accent="theme" data-import="canvas">
+            <div class="bb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="bb-text">
+              <strong>매쓰캔버스</strong>
+              <span>47종의 디지털 교구를 활용한 공유 캔버스</span>
+            </div>
+            <span class="bb-arrow">→</span>
+          </button>
+
+          <button class="tpl-big-btn" data-accent="creative" data-import="qbank">
+            <div class="bb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="bb-text">
+              <strong>문제은행</strong>
+              <span>비상교육 스마트 문제은행 연동</span>
+            </div>
+            <span class="bb-arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pane 2: 템플릿 불러오기 — 카테고리 사이드바 + 썸네일 갤러리 -->
+      <div class="tpl-pane" id="pane-template">
+        <div class="gallery">
+          <aside class="gallery-side">
+            <div class="gallery-side-eyebrow">카테고리</div>
+            <div id="tpl-cats"></div>
+          </aside>
+          <main class="gallery-main">
+            <div class="gallery-head">
+              <div class="gallery-head-left">
+                <div class="gallery-head-title" id="tpl-cat-title">1분 퀴즈 만들기</div>
+                <div class="gallery-head-sub"   id="tpl-cat-sub">간단한 활동들을 손쉽게 만들어 보세요.</div>
+              </div>
+            </div>
+            <div class="thumb-grid" id="tpl-thumbs"></div>
+          </main>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <span style="font-size:11.5px;color:var(--ink-3);">선택한 항목: <strong id="tpl-selected-name" style="color:var(--ink);font-weight:700;">없음</strong></span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-secondary" onclick="closeModal('modal-template')">취소</button>
+          <button class="btn-primary" id="apply-template">선택 완료</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL 3: 완성형 콘텐츠 불러오기 (Article Picker) ========== -->
+<div class="modal-backdrop" id="modal-picker" onclick="if(event.target===this) closeModal('modal-picker')">
+  <div class="modal picker-modal">
+    <button class="modal-close" onclick="closeModal('modal-picker')">×</button>
+    <div class="picker-header">
+      <h3 class="picker-title" id="picker-title">콘텐츠 불러오기</h3>
+    </div>
+
+    <!-- 서브 탭 -->
+    <div class="picker-subtabs" id="picker-subtabs">
+      <button class="picker-subtab active" data-sub="mine">나의 콘텐츠</button>
+      <button class="picker-subtab" data-sub="shared">공유 콘텐츠</button>
+    </div>
+
+    <!-- 필터 (openPicker에서 모드별 동적 주입) -->
+    <div class="picker-filter"></div>
+
+    <!-- 메타 영역 -->
+    <div class="picker-meta">
+      <div class="picker-view-toggle">
+        <button class="picker-view-btn active" title="그리드">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        </button>
+        <button class="picker-view-btn" title="리스트">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+      <span class="picker-count">총 <strong id="picker-count">0</strong>개의 콘텐츠가 검색되었습니다.</span>
+    </div>
+
+    <!-- 카드 그리드 -->
+    <div class="picker-grid" id="picker-grid"></div>
+
+    <!-- 푸터: 페이지네이션 + 적용 버튼 -->
+    <div class="picker-footer">
+      <div class="picker-pagination">
+        <button class="pg-btn">‹</button>
+        <button class="pg-btn active">1</button>
+        <button class="pg-btn">2</button>
+        <button class="pg-btn">3</button>
+        <button class="pg-btn">›</button>
+      </div>
+      <button class="btn-primary" id="picker-apply" disabled>슬라이드에 적용하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL 4: 콘텐츠 미리보기 ========== -->
+<div class="modal-backdrop" id="modal-preview" onclick="if(event.target===this) closeModal('modal-preview')">
+  <div class="modal preview-modal">
+    <button class="modal-close" onclick="closeModal('modal-preview')">×</button>
+    <div class="modal-header">
+      <span class="preview-type" id="prev-type">객관식</span>
+      <h3 class="preview-title" id="prev-title">콘텐츠 미리보기</h3>
+    </div>
+    <div class="preview-body">
+      <div class="preview-stage">
+        <div class="preview-stage-text" id="prev-stage-text"></div>
+        <div class="preview-stage-illust" id="prev-stage-illust"></div>
+      </div>
+      <div class="preview-meta">
+        <div><strong>출처</strong><span id="prev-source">교과서 QR 문항</span></div>
+        <div class="preview-tags-row"><strong>태그</strong><span id="prev-tags"></span></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modal-preview')">닫기</button>
+      <button class="btn-primary" id="prev-pick">이 콘텐츠 선택</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">편집화면으로 이동합니다…</div>
+
+<script>
+  // ===== Data =====
+  const TODAY_SLIDES = [
+    { area: '수와 연산', stage: '초5 · 1단원 1차시', title: '분수의 덧셈, 1분 만에 감 잡기', subtitle: '시각 모델로 같은 분모 덧셈의 원리를 빠르게 익혀요.', tags: ['도입', '시각화'] },
+    { area: '도형과 측정', stage: '초5 · 3단원 2차시', title: '다각형의 넓이, 자르고 옮겨 보기', subtitle: '평행사변형·삼각형 넓이 공식을 직접 만들어 봅니다.', tags: ['탐구', '활동'] },
+    { area: '변화와 관계', stage: '초6 · 4단원 1차시', title: '비례식과 그래프의 관계', subtitle: '비례식을 좌표평면에서 직선으로 표현해 봅니다.', tags: ['그래프'] },
+    { area: '자료와 가능성', stage: '초5 · 4단원 1차시', title: '평균, 데이터로 말하기', subtitle: '학급 자료로 평균의 의미를 이해해요.', tags: ['실생활'] },
+    { area: '수와 연산', stage: '초6 · 1단원 3차시', title: '소수의 나눗셈, 단계별로', subtitle: '몫의 자리 맞춤을 시각적으로 익힙니다.', tags: ['연산'] },
+  ];
+
+  const TOOLS = [
+    { area: '수와 연산',     name: '분수 모형',      desc: '띠·원 모형으로 분수의 크기와 연산을 다룹니다.', uses: 1240 },
+    { area: '수와 연산',     name: '수직선 카드',     desc: '수직선 위에서 정수·소수의 위치를 비교해요.',  uses:  982 },
+    { area: '도형과 측정',   name: '컴퍼스',         desc: '원·각·삼각형을 직접 그리며 성질을 탐구합니다.', uses: 1156 },
+    { area: '변화와 관계',   name: '함수 그래프',     desc: '슬라이더로 함수의 변화를 실시간 관찰해요.',     uses:  784 },
+    { area: '자료와 가능성', name: '확률 돌림판',     desc: '돌림판을 돌려 실험확률과 이론확률을 비교해요.', uses:  612 },
+  ];
+
+  const LESSON_SLIDES = [
+    { area: '수와 연산',     stage: '초5 · 1단원',  title: '약분과 통분의 흐름',         subtitle: '약분→통분→덧셈으로 이어지는 단원 도입 슬라이드.',     tags: ['도입','정리'] },
+    { area: '수와 연산',     stage: '초5 · 2단원',  title: '소수의 곱셈, 자리 맞추기',    subtitle: '자릿값으로 소수 곱셈을 설명합니다.',                   tags: ['연산'] },
+    { area: '도형과 측정',   stage: '초5 · 3단원',  title: '다각형 넓이 공식 만들기',     subtitle: '직사각형에서 출발해 평행사변형·삼각형으로 확장.',     tags: ['탐구'] },
+    { area: '변화와 관계',   stage: '초6 · 4단원',  title: '비례식과 비례배분',           subtitle: '실생활 자료로 비례 관계를 정리합니다.',                 tags: ['실생활'] },
+    { area: '자료와 가능성', stage: '초6 · 5단원',  title: '띠그래프, 자료를 한눈에',     subtitle: '비율을 띠그래프로 표현하는 방법을 익혀요.',             tags: ['그래프'] },
+  ];
+
+  const CANVAS_SLIDES = [
+    { area: '도형과 측정', stage: '협업 캔버스', title: '교실에서 함께 그리는 사각형',     subtitle: '학생들이 한 캔버스에서 사각형의 분류를 토의합니다.', tags: ['협업'] },
+    { area: '수와 연산', stage: '협업 캔버스',   title: '분수 모형 같이 색칠하기',         subtitle: '분수 모형을 함께 색칠하며 크기를 비교해요.',           tags: ['시각화'] },
+    { area: '변화와 관계', stage: '협업 캔버스', title: '비례식 그래프 같이 만들기',       subtitle: '학생별 데이터를 좌표평면에 함께 찍어봅니다.',           tags: ['그래프'] },
+    { area: '자료와 가능성', stage: '협업 캔버스', title: '학급 평균 데이터 모으기',         subtitle: '한 캔버스에서 모둠별 평균을 비교 분석합니다.',          tags: ['실생활'] },
+    { area: '수와 연산', stage: '협업 캔버스',   title: '소수의 자리 함께 정리',           subtitle: '소수 자릿값을 모둠별로 색깔로 정리합니다.',             tags: ['정리'] },
+  ];
+
+  const QBANK_SLIDES = [
+    { area: '수와 연산',     stage: '초5 · 1단원',  title: '분수의 덧셈 · 5문항',     subtitle: '기본·심화 난이도가 섞인 5문항 슬라이드.',               tags: ['연산','5문항'] },
+    { area: '도형과 측정',   stage: '초5 · 3단원',  title: '다각형 넓이 · 10문항',    subtitle: '공식 적용형과 응용형이 균형 잡힌 문항 묶음.',           tags: ['공식','10문항'] },
+    { area: '변화와 관계',   stage: '초6 · 4단원',  title: '비례식 · 8문항',           subtitle: '비례식과 비례배분이 골고루 포함된 문항.',                tags: ['8문항'] },
+    { area: '자료와 가능성', stage: '초6 · 5단원',  title: '띠그래프 해석 · 6문항',    subtitle: '띠그래프를 보고 비율을 해석하는 문항입니다.',           tags: ['해석','6문항'] },
+    { area: '수와 연산',     stage: '초6 · 1단원',  title: '소수의 나눗셈 · 7문항',    subtitle: '단계별 난이도로 구성된 소수 나눗셈 문항.',               tags: ['7문항'] },
+  ];
+
+  const CATALOG_DATA = {
+    manipulative: { title: '조작형 콘텐츠', count: 128, items: TOOLS },
+    lesson:       { title: '차시 콘텐츠',   count: 324, items: LESSON_SLIDES },
+    canvas:       { title: '매쓰캔버스',    count:  86, items: CANVAS_SLIDES },
+    qbank:        { title: '문제은행',      count:1204, items: QBANK_SLIDES },
+  };
+
+  function iconSvg(kind) {
+    const map = {
+      blank: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/></svg>',
+      quiz:  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+      tool:  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+      qmark: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>',
+    };
+    return map[kind] || map.blank;
+  }
+
+  function toolIconSvg() {
+    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15 1.65 1.65 0 0 0 3.09 14H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+  }
+
+  function cardHTML(d) {
+    return `
+    <article class="card" data-area="${d.area}">
+      <div class="card-thumb">
+        <div class="thumb-badge">${d.stage}</div>
+        <div class="thumb-dot"></div>
+        <div class="thumb-illust">${d.area.charAt(0)}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta-line"><span class="card-stage">${d.area}</span></div>
+        <h3 class="card-title">${d.title}</h3>
+        <p class="card-subtitle">${d.subtitle}</p>
+        <div class="card-tags">
+          ${(d.tags||[]).map(t => `<span class="card-tag">#${t}</span>`).join('')}
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function toolTileHTML(d) {
+    return `
+    <article class="tool-tile" data-area="${d.area}">
+      <div class="tool-tile-area">${d.area}</div>
+      <div class="tool-tile-icon">${toolIconSvg()}</div>
+      <h3 class="tool-tile-name">${d.name}</h3>
+      <p class="tool-tile-desc">${d.desc}</p>
+      <div class="tool-tile-foot">
+        <span><span class="uses">${d.uses.toLocaleString()}</span> 회 사용</span>
+        <span class="arrow">→</span>
+      </div>
+    </article>`;
+  }
+
+  function renderHome() {
+    document.getElementById('row-today' ).innerHTML = TODAY_SLIDES.map(cardHTML).join('');
+    document.getElementById('row-tool'  ).innerHTML = TOOLS.map(toolTileHTML).join('');
+    document.getElementById('row-lesson').innerHTML = LESSON_SLIDES.map(cardHTML).join('');
+    document.getElementById('row-canvas').innerHTML = CANVAS_SLIDES.map(cardHTML).join('');
+    document.getElementById('row-qbank' ).innerHTML = QBANK_SLIDES.map(cardHTML).join('');
+    bindCardClick();
+  }
+
+  function renderCatalog(section) {
+    const conf = CATALOG_DATA[section];
+    document.getElementById('catalog-title').textContent = conf.title;
+    document.getElementById('catalog-count').textContent = conf.count.toLocaleString();
+    const isTool = section === 'manipulative';
+    document.getElementById('catalog-grid').innerHTML = isTool
+      ? conf.items.map(toolTileHTML).join('')
+      : conf.items.map(cardHTML).join('');
+    bindCardClick();
+  }
+
+  function bindCardClick() {
+    document.querySelectorAll('#view-home .card, #view-home .tool-tile, #view-catalog .card, #view-catalog .tool-tile').forEach(el => {
+      el.addEventListener('click', () => showToast('편집화면으로 이동합니다…'));
+    });
+  }
+
+  // ===== Tab routing =====
+  function activateTab(section) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.section === section));
+    if (section === 'home') {
+      document.getElementById('view-home').style.display = '';
+      document.getElementById('view-catalog').style.display = 'none';
+    } else {
+      document.getElementById('view-home').style.display = 'none';
+      document.getElementById('view-catalog').style.display = 'grid';
+      renderCatalog(section);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => activateTab(t.dataset.section));
+  });
+
+  // 더보기 → 해당 GNB 탭으로 이동
+  document.querySelectorAll('.row-link[data-go]').forEach(btn => {
+    btn.addEventListener('click', () => activateTab(btn.dataset.go));
+  });
+
+  // ===== Template Gallery (NEW: 카테고리 사이드바 + 썸네일 그리드) =====
+  const TPL_CATS = [
+    { id: 'blank', name: '일반 페이지',     sub: '기본 템플릿으로 자유롭게 시작해 보세요.',           accent: 'blank', icon: 'blank',
+      leaves: [
+        { name: '일반 페이지', meta: '백지 16:9', thumb: 'blank' }
+      ]
+    },
+    { id: 'quiz',  name: '1분 퀴즈 만들기', sub: '간단한 활동들을 손쉽게 만들어 보세요.',             accent: 'quiz',  icon: 'quiz',
+      leaves: [
+        { name: '선지형',   meta: '4지선다 · 자동 채점', thumb: 'choice',  tag: 'NEW' },
+        { name: 'O/X 퀴즈', meta: '단일 OX · 즉시 응답',  thumb: 'ox' },
+        { name: '돌림판',   meta: '랜덤 추첨 · 게임형',    thumb: 'spin',    tag: 'HOT' },
+        { name: '사다리',   meta: '경로 분기 · 게임형',    thumb: 'ladder' },
+      ]
+    },
+    { id: 'manip', name: '조작형 템플릿',   sub: '학생 참여형 인터렉티브 활동을 제작해 보세요.',      accent: 'manip', icon: 'tool',
+      leaves: [
+        { name: '영단어 퀴즈',       meta: '단어 의미 매칭',       thumb: 'word' },
+        { name: '발음 연습',         meta: '듣고 따라하기',         thumb: 'mic' },
+        { name: '빈칸 맞추기',       meta: '클로즈 테스트',         thumb: 'blank2' },
+        { name: '롤플레잉',           meta: '역할극 대화',          thumb: 'roleplay' },
+        { name: '영단어 플래시카드',  meta: '카드 학습',            thumb: 'flash',  tag: 'NEW' },
+        { name: '카드 뒤집기',       meta: '메모리 매칭 게임',      thumb: 'flip' },
+        { name: 'AI와 대화하기',     meta: 'AI 챗봇 상호작용',      thumb: 'chat',   tag: 'HOT' },
+      ]
+    },
+    { id: 'item',  name: '문항 템플릿',     sub: '수업, 평가, 과제용 문항을 직접 제작해 보세요.',     accent: 'item',  icon: 'qmark',
+      leaves: [
+        { name: '선택형',     meta: '여러 보기 중 선택',     thumb: 'choice' },
+        { name: '단답형',     meta: '짧은 답 입력',           thumb: 'short' },
+        { name: '연쇄형',     meta: '단계별 풀이',           thumb: 'chain' },
+        { name: 'OX형',       meta: '참/거짓 선택',           thumb: 'ox' },
+        { name: 'TF형',       meta: 'True / False',           thumb: 'tf' },
+        { name: '순서입력형', meta: '순서대로 입력',          thumb: 'order' },
+        { name: '순서조합형', meta: '항목 재배치',           thumb: 'reorder' },
+        { name: '연결형',     meta: '선으로 연결',           thumb: 'connect' },
+      ]
+    },
+  ];
+
+  // 미니 SVG 썸네일 (간단한 미리보기 일러스트)
+  function thumbSvg(kind) {
+    const s = {
+      blank: `<svg viewBox="0 0 220 130" fill="none">
+        <ellipse cx="112" cy="116" rx="62" ry="5" fill="rgba(31,30,27,0.07)"/>
+        <g transform="translate(0 4) rotate(-4 110 60)">
+          <rect x="74" y="22" width="92" height="80" rx="4" fill="#E5E7EB"/>
+          <rect x="66" y="14" width="92" height="80" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1.2"/>
+          <path d="M144 14 L158 14 L158 28 Z" fill="#F3F4F6"/>
+          <path d="M144 14 L144 28 L158 28" fill="none" stroke="#D1D5DB" stroke-width="1.2"/>
+          <line x1="78" y1="40" x2="124" y2="40" stroke="#E5E7EB" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="78" y1="52" x2="146" y2="52" stroke="#E5E7EB" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="78" y1="64" x2="138" y2="64" stroke="#E5E7EB" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="78" y1="76" x2="110" y2="76" stroke="#E5E7EB" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="98" cy="86" r="9" fill="#CCEFEF"/>
+          <path d="M98 81 L98 91 M93 86 L103 86" stroke="#00B8B6" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <g transform="translate(150 56) rotate(38)">
+          <rect x="-2" y="-5" width="42" height="10" rx="2" fill="#FBBF24"/>
+          <rect x="34" y="-5" width="2" height="10" fill="#A16207"/>
+          <polygon points="36,-5 48,0 36,5" fill="#FCD34D"/>
+          <polygon points="44,-1.6 48,0 44,1.6" fill="#1F2937"/>
+          <rect x="-10" y="-5" width="8" height="10" rx="2" fill="#F472B6"/>
+          <rect x="-12" y="-5" width="2" height="10" fill="#9CA3AF"/>
+        </g>
+        <g fill="#00B8B6">
+          <path d="M44 36 L46.2 42 L52 44 L46.2 46 L44 52 L41.8 46 L36 44 L41.8 42 Z" opacity="0.8"/>
+        </g>
+        <g fill="#80DCDB">
+          <path d="M198 84 L199.3 87.2 L202.5 88.5 L199.3 89.8 L198 93 L196.7 89.8 L193.5 88.5 L196.7 87.2 Z"/>
+        </g>
+        <g fill="#FBBF24">
+          <path d="M186 26 L187 29 L190 30 L187 31 L186 34 L185 31 L182 30 L185 29 Z" opacity="0.85"/>
+        </g>
+      </svg>`,
+      choice: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="22" cy="18" r="4"/><circle cx="22" cy="32" r="4" fill="currentColor"/><circle cx="22" cy="46" r="4"/><line x1="34" y1="18" x2="86" y2="18"/><line x1="34" y1="32" x2="86" y2="32"/><line x1="34" y1="46" x2="86" y2="46"/></svg>`,
+      ox: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="32" cy="30" r="14"/><line x1="58" y1="16" x2="86" y2="44"/><line x1="86" y1="16" x2="58" y2="44"/></svg>`,
+      spin: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="50" cy="30" r="20"/><line x1="50" y1="10" x2="50" y2="50"/><line x1="30" y1="30" x2="70" y2="30"/><line x1="35" y1="15" x2="65" y2="45"/><line x1="65" y1="15" x2="35" y2="45"/><polygon points="50,4 46,12 54,12" fill="currentColor"/></svg>`,
+      ladder: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="6" x2="22" y2="54"/><line x1="44" y1="6" x2="44" y2="54"/><line x1="66" y1="6" x2="66" y2="54"/><line x1="22" y1="16" x2="44" y2="16"/><line x1="44" y1="28" x2="66" y2="28"/><line x1="22" y1="40" x2="44" y2="40"/><line x1="44" y1="48" x2="66" y2="48"/></svg>`,
+      word: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><text x="50" y="36" font-family="Pretendard,sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none">ABC</text><line x1="22" y1="46" x2="78" y2="46"/></svg>`,
+      mic: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="44" y="10" width="12" height="22" rx="6"/><path d="M36 28a14 14 0 0 0 28 0"/><line x1="50" y1="42" x2="50" y2="50"/><line x1="42" y1="50" x2="58" y2="50"/></svg>`,
+      blank2: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="24" x2="34" y2="24"/><rect x="38" y="16" width="22" height="16" rx="3" stroke-dasharray="3 3"/><line x1="64" y1="24" x2="82" y2="24"/><line x1="18" y1="40" x2="82" y2="40"/></svg>`,
+      roleplay: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 14h36v22H30l-6 8v-8H14z"/><path d="M50 26h36v22H72l-6 8v-8H50z"/></svg>`,
+      flash: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="22" y="14" width="40" height="32" rx="3" transform="rotate(-6 42 30)"/><rect x="36" y="14" width="40" height="32" rx="3" fill="rgba(255,255,255,0.5)"/><line x1="44" y1="26" x2="68" y2="26"/><line x1="44" y1="34" x2="60" y2="34"/></svg>`,
+      flip: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="14" y="12" width="32" height="36" rx="3"/><rect x="54" y="12" width="32" height="36" rx="3" fill="rgba(255,255,255,0.4)"/><path d="M44 30c4-3 8-3 12 0" stroke-linecap="round"/><polygon points="56,28 56,32 60,30" fill="currentColor"/></svg>`,
+      chat: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M16 14h44v22H38l-6 8v-8H16z"/><circle cx="74" cy="18" r="3" fill="currentColor"/><path d="M70 22l4 4 4-4" stroke-linecap="round"/><text x="80" y="42" font-family="Pretendard,sans-serif" font-size="14" font-weight="800" fill="currentColor" stroke="none">AI</text></svg>`,
+      short: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="14" y="22" width="72" height="16" rx="3"/><line x1="20" y1="30" x2="46" y2="30"/><line x1="48" y1="30" x2="50" y2="30" stroke-width="3"/></svg>`,
+      chain: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="10" y="22" width="20" height="16" rx="3"/><line x1="30" y1="30" x2="40" y2="30" stroke-linecap="round"/><rect x="40" y="22" width="20" height="16" rx="3"/><line x1="60" y1="30" x2="70" y2="30" stroke-linecap="round"/><rect x="70" y="22" width="20" height="16" rx="3"/></svg>`,
+      tf: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><text x="32" y="40" font-family="Pretendard,sans-serif" font-size="26" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none">T</text><text x="68" y="40" font-family="Pretendard,sans-serif" font-size="26" font-weight="800" text-anchor="middle" fill="currentColor" stroke="none">F</text><line x1="50" y1="12" x2="50" y2="48" stroke-dasharray="3 3" stroke-width="1.5"/></svg>`,
+      order: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><text x="20" y="22" font-family="Pretendard,sans-serif" font-size="11" font-weight="800" fill="currentColor" stroke="none">1</text><text x="20" y="36" font-family="Pretendard,sans-serif" font-size="11" font-weight="800" fill="currentColor" stroke="none">2</text><text x="20" y="50" font-family="Pretendard,sans-serif" font-size="11" font-weight="800" fill="currentColor" stroke="none">3</text><line x1="32" y1="20" x2="84" y2="20"/><line x1="32" y1="34" x2="84" y2="34"/><line x1="32" y1="48" x2="84" y2="48"/></svg>`,
+      reorder: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="14" y="14" width="72" height="10" rx="3"/><rect x="14" y="26" width="72" height="10" rx="3"/><rect x="14" y="38" width="72" height="10" rx="3"/><path d="M76 18l4 3-4 3M76 30l4 3-4 3M76 42l4 3-4 3" fill="none" stroke-linecap="round"/></svg>`,
+      connect: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="22" cy="18" r="3" fill="currentColor"/><circle cx="22" cy="42" r="3" fill="currentColor"/><circle cx="78" cy="18" r="3" fill="currentColor"/><circle cx="78" cy="42" r="3" fill="currentColor"/><path d="M22 18Q50 30 78 42"/><path d="M22 42Q50 30 78 18"/></svg>`,
+    };
+    return s[kind] || s.blank;
+  }
+
+  let currentTplCat = TPL_CATS[1].id; // 1분 퀴즈 default
+
+  function renderTemplateCats() {
+    const root = document.getElementById('tpl-cats');
+    root.innerHTML = TPL_CATS.map(c => `
+      <button class="cat-item ${c.id === currentTplCat ? 'active' : ''}" data-id="${c.id}">
+        <span class="cat-ico">${iconSvg(c.icon)}</span>
+        <span class="cat-text">
+          <span class="cat-name">${c.name}</span>
+        </span>
+        <svg class="cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    `).join('');
+    root.querySelectorAll('.cat-item').forEach(b => {
+      b.addEventListener('click', () => {
+        currentTplCat = b.dataset.id;
+        document.querySelectorAll('#tpl-cats .cat-item').forEach(x => x.classList.toggle('active', x.dataset.id === currentTplCat));
+        renderTemplateThumbs();
+      });
+    });
+  }
+
+  function renderTemplateThumbs(filter = '') {
+    const cat = TPL_CATS.find(c => c.id === currentTplCat);
+    document.getElementById('tpl-cat-title').textContent = cat.name;
+    document.getElementById('tpl-cat-sub').textContent   = cat.sub;
+
+    const root = document.getElementById('tpl-thumbs');
+    const list = filter
+      ? cat.leaves.filter(l => l.name.includes(filter) || (l.meta || '').includes(filter))
+      : cat.leaves;
+    if (cat.id === 'blank') root.classList.add('cols-1'); else root.classList.remove('cols-1');
+
+    if (!list.length) {
+      root.innerHTML = `<div class="gallery-empty">조건에 맞는 템플릿이 없습니다.</div>`;
+      return;
+    }
+    root.innerHTML = list.map(l => `
+      <article class="thumb-card" data-accent="${cat.accent}" data-name="${l.name}">
+        ${l.tag ? `<span class="tag ${l.tag.toLowerCase() === 'new' ? 'new' : 'hot'}">${l.tag}</span>` : ''}
+        <div class="thumb-preview">${thumbSvg(l.thumb)}</div>
+        <div class="thumb-body">
+          <span class="thumb-name">${l.name}</span>
+          <span class="thumb-meta">${l.meta || ''}</span>
+        </div>
+      </article>
+    `).join('');
+    root.querySelectorAll('.thumb-card').forEach(card => {
+      card.addEventListener('click', () => {
+        root.querySelectorAll('.thumb-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        const parent = TPL_CATS.find(c => c.id === currentTplCat).name;
+        const name = card.dataset.name;
+        setSelectedTemplate(parent === name ? name : `${parent} · ${name}`);
+      });
+    });
+  }
+
+  function renderTemplateTree() {
+    renderTemplateCats();
+    renderTemplateThumbs();
+  }
+
+  let selectedTemplate = null;
+  function setSelectedTemplate(name) {
+    selectedTemplate = name;
+    document.getElementById('tpl-selected-name').textContent = name;
+  }
+
+  // ===== 콘텐츠 선택하기 모달: 상위 탭 (완성형 / 템플릿) =====
+  document.querySelectorAll('#tpl-toptabs .tpl-modal-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pane = btn.dataset.pane;
+      document.querySelectorAll('#tpl-toptabs .tpl-modal-tab').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.tpl-pane').forEach(p => p.classList.toggle('active', p.id === `pane-${pane}`));
+    });
+  });
+
+  // ===== 완성형 콘텐츠 큰 버튼 → Article Picker 팝업으로 이동 =====
+  const IMPORT_LABEL = {
+    manipulative: '조작형 콘텐츠 불러오기',
+    lesson:       '차시 콘텐츠 불러오기',
+    canvas:       '매쓰캔버스 불러오기',
+    qbank:        '스마트 문제은행 불러오기',
+  };
+  const PICKER_TAGS = {
+    manipulative: ['수직선','분수 모형','컴퍼스','각도기','확률 돌림판','함수 그래프','대수 블록','도미노','다각형','다면체(3D)'],
+    lesson:       ['도입','전개','정리','형성평가','심화','보충','단원도입','차시정리'],
+    canvas:       ['공간좌표(3D)','그림그래프','꺾은선그래프','다각형','다면체(3D)','대수 막대','대수 블록','도미노','도수분포표'],
+    qbank:        ['선택형','단답형','연쇄형','OX형','TF형','순서입력형','순서조합형','연결형','기본','심화'],
+  };
+  const PICKER_DATA = {
+    manipulative: [
+      { type: '조작형', title: '분수 모형 활용 카드',     source: '디지털 교구', tags: ['분수', '모형'],         preview: 'icon',    snippet: 'box' },
+      { type: '조작형', title: '수직선 위 정수 비교',     source: '디지털 교구', tags: ['수직선', '정수'],       preview: 'lines',   snippet: '수직선에서 정수의 위치를 비교해 보세요' },
+      { type: '조작형', title: '컴퍼스로 정삼각형',       source: '디지털 교구', tags: ['컴퍼스', '도형'],       preview: 'geom',    snippet: 'triangle' },
+      { type: '조작형', title: '확률 돌림판 실험',        source: '디지털 교구', tags: ['확률', '돌림판'],       preview: 'chart',   snippet: 'bar' },
+      { type: '조작형', title: '함수 그래프 슬라이더',    source: '디지털 교구', tags: ['함수', '그래프'],       preview: 'chart',   snippet: 'bar' },
+      { type: '조작형', title: '각도기 활용 카드',        source: '디지털 교구', tags: ['각도', '도형'],         preview: 'geom',    snippet: 'triangle' },
+      { type: '조작형', title: '대수 블록 식 만들기',     source: '디지털 교구', tags: ['대수', '블록'],         preview: 'icon',    snippet: 'box' },
+      { type: '조작형', title: '도미노 곱셈 카드',        source: '디지털 교구', tags: ['곱셈', '도미노'],       preview: 'grid',    snippet: '곱셈표' },
+      { type: '조작형', title: '도형 만들기 칠교판',      source: '디지털 교구', tags: ['칠교', '도형'],         preview: 'geom',    snippet: 'symmetric' },
+      { type: '조작형', title: '확률 동전 던지기',        source: '디지털 교구', tags: ['확률', '동전'],         preview: 'icon',    snippet: 'bag' },
+      { type: '조작형', title: '시계 만들기',             source: '디지털 교구', tags: ['시간', '시계'],         preview: 'geom',    snippet: 'cube' },
+      { type: '조작형', title: '도형 분할 퍼즐',          source: '디지털 교구', tags: ['도형', '분할'],         preview: 'lines',   snippet: '도형을 분할해 보세요' },
+    ],
+    lesson: [
+      { type: '수업자료', title: '분수의 덧셈 · 1차시 도입',   source: '교사용 지도서', tags: ['분수', '도입'],         preview: 'lines',   snippet: '오늘 수업의 학습 목표를 알아봅시다' },
+      { type: '수업자료', title: '약분과 통분 · 2차시 전개',    source: '교사용 지도서', tags: ['약분', '통분'],        preview: 'grid',    snippet: '약분 통분 표' },
+      { type: '수업자료', title: '다각형 넓이 · 3차시 탐구',    source: '교사용 지도서', tags: ['다각형', '넓이'],      preview: 'geom',    snippet: 'triangle' },
+      { type: '수업자료', title: '비례식 · 4차시 정리',         source: '교사용 지도서', tags: ['비례식'],              preview: 'chain',   snippet: '비례 풀이' },
+      { type: '수업자료', title: '띠그래프 · 5차시 형성평가',   source: '교사용 지도서', tags: ['띠그래프', '평가'],    preview: 'chart',   snippet: 'bar' },
+      { type: '수업자료', title: '소수의 곱셈 · 2차시 전개',    source: '교사용 지도서', tags: ['소수', '곱셈'],        preview: 'chain',   snippet: '소수 곱셈' },
+      { type: '수업자료', title: '직육면체의 부피 · 3차시',     source: '교사용 지도서', tags: ['부피', '직육면체'],   preview: 'geom',    snippet: 'cube' },
+      { type: '수업자료', title: '평균과 가능성 · 도입',        source: '교사용 지도서', tags: ['평균', '가능성'],     preview: 'longtext',snippet: '평균을 구해 봅시다' },
+      { type: '수업자료', title: '비와 비율 · 1차시',           source: '교사용 지도서', tags: ['비', '비율'],          preview: 'lines',   snippet: '비와 비율의 의미' },
+      { type: '수업자료', title: '도형의 합동 · 2차시',         source: '교사용 지도서', tags: ['합동', '도형'],        preview: 'geom',    snippet: 'symmetric' },
+    ],
+    canvas: [
+      { title: '2026-05-18 제작', area: '수와 연산', new: true, date: '26. 05. 18' },
+      { title: '2026-05-18 제작', area: '도형과 측정', new: true, date: '26. 05. 18' },
+    ],
+    qbank: [
+      { type: '객관식', title: '올림을 알아보아요',           source: '교과서 QR 문항', tags: ['올림'],                preview: 'lines',    snippet: '에서 나만난 수가 (00)인 수를 모두 고르세요' },
+      { type: '객관식', title: '반올림을 알아보아요',          source: '교과서 QR 문항', tags: ['반올림'],              preview: 'lines',    snippet: '에서 나만난 십(00)이 되는 수를 모두 고르세요' },
+      { type: '객관식', title: '2. 분수의 곱셈',              source: '교과서 QR 문항', tags: ['분수의 곱셈'],         preview: 'lines',    snippet: '를 미시고 나타내면 ㉠ 안에 들어갈 수 있는 수는?' },
+      { type: '객관식', title: '4. 약분과 통분',              source: '교과서 QR 문항', tags: ['약분과 통분'],         preview: 'grid',     snippet: '약분과 통분 표 1' },
+      { type: '주관식', title: '소수 한 자리 수의 곱셈',       source: '교과서 QR 문항', tags: ['소수', '나눗셈'],      preview: 'chain',    snippet: '소수 곱셈 연쇄' },
+      { type: '객관식', title: '평균을 알아볼까요',           source: '교과서 QR 문항', tags: ['평균'],                preview: 'longtext', snippet: '한 학기 동안 도서 대출 횟수의 평균은 50회라고 합니다.' },
+      { type: '객관식', title: '가능성을 수로 표현해 볼까요 1', source: '교과서 QR 문항', tags: ['가능성'],              preview: 'icon',     snippet: 'bag' },
+      { type: '객관식', title: '가능성을 수로 표현해 볼까요 2', source: '교과서 QR 문항', tags: ['가능성'],              preview: 'icon',     snippet: 'box' },
+      { type: '객관식', title: '서로 합동인 도형',            source: '교과서 QR 문항', tags: ['합동', '도형'],        preview: 'geom',     snippet: 'triangle' },
+      { type: '객관식', title: '선대칭도형에 대하여 알아보아요', source: '교과서 QR 문항', tags: ['선대칭', '도형'],     preview: 'geom',     snippet: 'symmetric' },
+      { type: '객관식', title: '여러 가지 사각형',           source: '교과서 QR 문항', tags: ['사각형'],              preview: 'lines',    snippet: '사각형의 분류' },
+      { type: '주관식', title: '직육면체의 부피',             source: '교과서 QR 문항', tags: ['부피', '직육면체'],   preview: 'geom',     snippet: 'cube' },
+      { type: '객관식', title: '띠그래프와 원그래프',         source: '교과서 QR 문항', tags: ['띠그래프'],            preview: 'chart',    snippet: 'bar' },
+      { type: '객관식', title: '비와 비율',                  source: '교과서 QR 문항', tags: ['비율'],                preview: 'lines',    snippet: '비율 설명' },
+      { type: '주관식', title: '비례식과 비례배분',           source: '교과서 QR 문항', tags: ['비례식'],              preview: 'chain',    snippet: '비례식 풀이' },
+    ],
+  };
+
+  // 문제 카드 썸네일 SVG (preview 종류별)
+  function qbankPreviewSvg(item, idx) {
+    const snippetText = item.snippet || '';
+    switch (item.preview) {
+      case 'lines':
+        return `
+          <div style="font-size:9.5px;color:#9CA3AF;line-height:1.45;letter-spacing:-0.02em;font-weight:500;">${snippetText}</div>
+          <svg viewBox="0 0 220 90" preserveAspectRatio="none" style="position:absolute;left:14px;right:14px;bottom:34px;width:calc(100% - 28px);height:auto;" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round">
+            <line x1="0" y1="10" x2="200" y2="10"/>
+            <line x1="0" y1="26" x2="160" y2="26"/>
+            <line x1="0" y1="42" x2="180" y2="42"/>
+          </svg>`;
+      case 'grid':
+        return `
+          <svg viewBox="0 0 220 110" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:30px 14px 30px 14px;width:calc(100% - 28px);height:auto;" fill="none" stroke="#94A3B8" stroke-width="1.2">
+            <rect x="6"  y="6"  width="40" height="14" fill="#FDF0D0"/>
+            <rect x="46" y="6"  width="40" height="14"/>
+            <rect x="6"  y="20" width="40" height="14"/>
+            <rect x="46" y="20" width="40" height="14" fill="#FDF0D0"/>
+            <rect x="6"  y="34" width="40" height="14"/>
+            <rect x="46" y="34" width="40" height="14"/>
+            <line x1="100" y1="14" x2="160" y2="14" stroke="#E5E7EB"/>
+            <line x1="100" y1="28" x2="180" y2="28" stroke="#E5E7EB"/>
+            <line x1="100" y1="42" x2="150" y2="42" stroke="#E5E7EB"/>
+          </svg>`;
+      case 'chain':
+        return `
+          <svg viewBox="0 0 220 110" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:30px 14px 30px 14px;width:calc(100% - 28px);height:auto;" fill="none" stroke-width="1.3">
+            <circle cx="22"  cy="22" r="14" fill="#FCE7DA" stroke="#E05C3A"/>
+            <text x="22" y="26" text-anchor="middle" font-size="10" font-weight="700" fill="#E05C3A" stroke="none">22</text>
+            <line x1="36"  y1="22" x2="56"  y2="22" stroke="#CBD5E1"/>
+            <polygon points="56,18 64,22 56,26" fill="#CBD5E1" stroke="none"/>
+            <circle cx="78"  cy="22" r="14" fill="#FCE7DA" stroke="#E05C3A"/>
+            <text x="78" y="26" text-anchor="middle" font-size="10" font-weight="700" fill="#E05C3A" stroke="none">62</text>
+            <line x1="92"  y1="22" x2="112" y2="22" stroke="#CBD5E1"/>
+            <polygon points="112,18 120,22 112,26" fill="#CBD5E1" stroke="none"/>
+            <circle cx="134" cy="22" r="14" fill="#FCE7DA" stroke="#E05C3A"/>
+            <text x="134" y="26" text-anchor="middle" font-size="10" font-weight="700" fill="#E05C3A" stroke="none">11</text>
+            <line x1="22" y1="40" x2="22" y2="56" stroke="#CBD5E1"/>
+            <line x1="78" y1="40" x2="78" y2="56" stroke="#CBD5E1"/>
+            <circle cx="22" cy="74" r="14" fill="#FFF1E5" stroke="#E05C3A"/>
+            <text x="22" y="78" text-anchor="middle" font-size="10" font-weight="700" fill="#E05C3A" stroke="none">8</text>
+            <circle cx="78" cy="74" r="14" fill="#FFF1E5" stroke="#E05C3A"/>
+            <text x="78" y="78" text-anchor="middle" font-size="10" font-weight="700" fill="#E05C3A" stroke="none">5</text>
+          </svg>`;
+      case 'longtext':
+        return `
+          <div style="font-size:9.5px;color:#6B7280;line-height:1.5;letter-spacing:-0.02em;font-weight:500;">한 학기 동안 도서 대출 횟수의 평균은 50회라고 합니다.</div>
+          <div style="position:absolute;left:14px;right:14px;bottom:34px;display:flex;flex-direction:column;gap:5px;">
+            <div style="height:5px;background:#E5E7EB;border-radius:3px;width:96%;"></div>
+            <div style="height:5px;background:#E5E7EB;border-radius:3px;width:88%;"></div>
+            <div style="height:5px;background:#E5E7EB;border-radius:3px;width:92%;"></div>
+            <div style="height:5px;background:#E5E7EB;border-radius:3px;width:60%;"></div>
+          </div>`;
+      case 'icon':
+        if (snippetText === 'bag') {
+          return `
+            <svg viewBox="0 0 100 80" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:30px 14px 30px 14px;width:calc(100% - 28px);height:auto;">
+              <path d="M40 28 L60 28 L66 70 Q66 76 60 76 L40 76 Q34 76 34 70 Z" fill="#FCD34D" stroke="#D97706" stroke-width="1.5"/>
+              <path d="M44 24 Q50 18 56 24" fill="none" stroke="#D97706" stroke-width="1.5"/>
+              <text x="50" y="55" text-anchor="middle" font-size="14" font-weight="800" fill="#92400E">$</text>
+            </svg>`;
+        }
+        return `
+          <svg viewBox="0 0 100 80" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:30px 14px 30px 14px;width:calc(100% - 28px);height:auto;">
+            <rect x="22" y="24" width="56" height="44" rx="4" fill="#F4D9F7" stroke="#9B4FA0" stroke-width="1.5"/>
+            <circle cx="36" cy="44" r="5" fill="#F472B6"/>
+            <circle cx="50" cy="44" r="5" fill="#3D9E6E"/>
+            <circle cx="64" cy="44" r="5" fill="#60A5FA"/>
+            <circle cx="42" cy="56" r="5" fill="#FBBF24"/>
+            <circle cx="58" cy="56" r="5" fill="#A78BFA"/>
+          </svg>`;
+      case 'geom':
+        if (snippetText === 'cube') {
+          return `
+            <svg viewBox="0 0 100 80" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:30px 14px 30px 14px;width:calc(100% - 28px);height:auto;" fill="none" stroke="#475569" stroke-width="1.5">
+              <path d="M30 35 L60 35 L72 25 L42 25 Z" fill="#F1F5F9"/>
+              <path d="M30 35 L60 35 L60 65 L30 65 Z" fill="#FFFFFF"/>
+              <path d="M60 35 L72 25 L72 55 L60 65 Z" fill="#E2E8F0"/>
+            </svg>`;
+        }
+        if (snippetText === 'symmetric') {
+          return `
+            <svg viewBox="0 0 100 80" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:30px 14px 30px 14px;width:calc(100% - 28px);height:auto;" fill="none" stroke="#475569" stroke-width="1.5">
+              <polygon points="30,60 50,20 70,60" fill="#F1F5F9"/>
+              <line x1="50" y1="20" x2="50" y2="60" stroke-dasharray="3 3"/>
+            </svg>`;
+        }
+        return `
+          <svg viewBox="0 0 100 80" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:30px 14px 30px 14px;width:calc(100% - 28px);height:auto;" fill="none" stroke="#475569" stroke-width="1.5">
+            <polygon points="50,18 30,62 70,62" fill="#F1F5F9"/>
+            <polygon points="74,30 92,30 92,70 74,70" fill="#F1F5F9" transform="translate(-66, 0)"/>
+          </svg>`;
+      case 'chart':
+        return `
+          <svg viewBox="0 0 100 60" preserveAspectRatio="xMidYMid meet" style="position:absolute;inset:30px 14px 30px 14px;width:calc(100% - 28px);height:auto;" fill="none">
+            <rect x="14" y="20" width="14" height="34" fill="#3D9E6E"/>
+            <rect x="32" y="14" width="14" height="40" fill="#D05A35"/>
+            <rect x="50" y="28" width="14" height="26" fill="#C08A20"/>
+            <rect x="68" y="22" width="14" height="32" fill="#7060C8"/>
+            <line x1="10" y1="54" x2="86" y2="54" stroke="#94A3B8" stroke-width="1"/>
+          </svg>`;
+      default:
+        return `<div style="font-size:9.5px;color:#9CA3AF;">${snippetText}</div>`;
+    }
+  }
+
+  // 문제 종이 모양 썸네일 SVG (qbank용)
+  function qbankThumbSvg(idx) {
+    const variants = [
+      `<svg viewBox="0 0 100 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="14" y="6" width="72" height="68" rx="3" fill="#FAFBFC"/><line x1="22" y1="18" x2="64" y2="18"/><line x1="22" y1="28" x2="78" y2="28" stroke="%23D8DCE2"/><line x1="22" y1="36" x2="74" y2="36" stroke="%23D8DCE2"/><rect x="22" y="44" width="10" height="10" rx="2" stroke="%23B8BFC9"/><line x1="36" y1="49" x2="78" y2="49" stroke="%23D8DCE2"/><rect x="22" y="58" width="10" height="10" rx="2" stroke="%23B8BFC9"/><line x1="36" y1="63" x2="70" y2="63" stroke="%23D8DCE2"/></svg>`,
+      `<svg viewBox="0 0 100 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="14" y="6" width="72" height="68" rx="3" fill="#FAFBFC"/><circle cx="28" cy="22" r="5" stroke="%23B8BFC9"/><line x1="38" y1="22" x2="76" y2="22"/><circle cx="28" cy="38" r="5" stroke="%23B8BFC9" fill="%23E5E7EB"/><line x1="38" y1="38" x2="70" y2="38" stroke="%23D8DCE2"/><circle cx="28" cy="54" r="5" stroke="%23B8BFC9"/><line x1="38" y1="54" x2="74" y2="54" stroke="%23D8DCE2"/></svg>`,
+      `<svg viewBox="0 0 100 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="14" y="6" width="72" height="68" rx="3" fill="#FAFBFC"/><line x1="22" y1="16" x2="74" y2="16"/><line x1="22" y1="24" x2="60" y2="24" stroke="%23D8DCE2"/><rect x="22" y="34" width="56" height="20" rx="2" stroke="%23B8BFC9" fill="#F4F5F7"/><line x1="22" y1="62" x2="56" y2="62" stroke="%23D8DCE2"/></svg>`,
+      `<svg viewBox="0 0 100 80" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="14" y="6" width="72" height="68" rx="3" fill="#FAFBFC"/><line x1="22" y1="16" x2="78" y2="16"/><line x1="22" y1="24" x2="66" y2="24" stroke="%23D8DCE2"/><polyline points="24,46 36,38 48,46 60,32 72,42" stroke="%2300B8B6" fill="none"/><line x1="22" y1="60" x2="78" y2="60" stroke="%23D8DCE2"/><line x1="22" y1="68" x2="58" y2="68" stroke="%23D8DCE2"/></svg>`,
+    ];
+    return variants[idx % variants.length];
+  }
+
+  let pickerCurrent = null;
+  let pickerSelectedIdx = null;        // 단일 선택 (canvas 모드)
+  let pickerSelectedIdxs = new Set();  // 복수 선택 (qbank 모드 — 문제은행/조작형/수업자료)
+  const QBANK_MODES = new Set(['qbank', 'manipulative', 'lesson']);
+  const QBANK_LABELS = { qbank: '스마트 문제은행', manipulative: '조작형 콘텐츠', lesson: '수업자료 콘텐츠' };
+  const QBANK_UNITS  = { qbank: '문항',          manipulative: '콘텐츠',     lesson: '콘텐츠' };
+  const QBANK_TOTALS = { qbank: '35,448',        manipulative: '4,124',      lesson: '2,318' };
+
+  function buildQbankFilterRow() {
+    return `
+      <div class="qb-filter">
+        <div class="qb-field">
+          <span class="qb-field-label">학교급</span>
+          <select class="ctx-select">
+            <option>초등학교</option><option>중학교</option><option>고등학교</option>
+          </select>
+        </div>
+        <div class="qb-field">
+          <span class="qb-field-label">학년</span>
+          <select class="ctx-select">
+            <option>전체</option><option>1학년</option><option>2학년</option>
+            <option>3학년</option><option>4학년</option><option>5학년</option><option>6학년</option>
+          </select>
+        </div>
+        <div class="qb-field">
+          <span class="qb-field-label">교과목</span>
+          <select class="ctx-select">
+            <option>수학</option><option>국어</option><option>영어</option>
+            <option>과학</option><option>사회</option>
+          </select>
+        </div>
+        <div class="qb-field">
+          <span class="qb-field-label">교과과정(단원명)</span>
+          <select class="ctx-select">
+            <option>전체</option>
+            <option>1단원 · 분수의 덧셈과 뺄셈</option>
+            <option>2단원 · 약수와 배수</option>
+            <option>3단원 · 다각형의 넓이</option>
+            <option>4단원 · 평균과 가능성</option>
+            <option>5단원 · 직육면체의 부피</option>
+          </select>
+        </div>
+        <div class="qb-field">
+          <span class="qb-field-label">검색</span>
+          <div class="qb-search-row">
+            <select class="ctx-select">
+              <option>콘텐츠명</option>
+              <option>해시태그</option>
+            </select>
+            <input type="text" class="picker-search" placeholder="검색어를 입력하세요" />
+          </div>
+        </div>
+        <button class="qb-reset picker-reset">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          초기화
+        </button>
+      </div>
+    `;
+  }
+
+  function buildDefaultFilterRow() {
+    return `
+      <div class="picker-filter-row">
+        <div class="field">
+          <span class="field-label">학교급</span>
+          <select class="ctx-select">
+            <option>전체</option><option>초등</option><option>중등</option><option>고등</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="field-label">영역구분</span>
+          <select class="ctx-select">
+            <option>전체</option>
+            <option>수와 연산</option><option>도형과 측정</option>
+            <option>변화와 관계</option><option>자료와 가능성</option>
+          </select>
+        </div>
+        <div class="field" style="flex:1; min-width: 240px;">
+          <span class="field-label">검색</span>
+          <input type="text" class="picker-search" placeholder="제목·키워드로 검색" />
+        </div>
+        <button class="picker-reset">⟳ 초기화</button>
+      </div>
+      <div class="picker-filter-row picker-tags">
+        <span class="field-label">태그</span>
+        <button class="picker-tag-arrow" id="picker-tag-left">‹</button>
+        <div class="picker-tag-track" id="picker-tag-track"></div>
+        <button class="picker-tag-arrow" id="picker-tag-right">›</button>
+      </div>
+    `;
+  }
+
+  function openPicker(kind) {
+    pickerCurrent = kind;
+    pickerSelectedIdx = null;
+    pickerSelectedIdxs = new Set();
+
+    const isQbank = QBANK_MODES.has(kind);
+    const modal = document.querySelector('#modal-picker .picker-modal');
+    modal.dataset.mode = isQbank ? 'qbank' : 'default';
+
+    // 타이틀
+    const titleMap = {
+      qbank:        '스마트 문제은행 불러오기',
+      manipulative: '조작형 콘텐츠 불러오기',
+      lesson:       '수업자료 콘텐츠 불러오기',
+      canvas:       '매쓰캔버스 불러오기',
+    };
+    document.getElementById('picker-title').textContent = titleMap[kind] || '콘텐츠 불러오기';
+
+    // tabs label adapts to canvas
+    const subtabs = document.querySelectorAll('#picker-subtabs .picker-subtab');
+    if (kind === 'canvas') {
+      subtabs[0].textContent = '나의 캔버스';
+      subtabs[1].textContent = '공유 캔버스';
+    } else {
+      subtabs[0].textContent = '나의 콘텐츠';
+      subtabs[1].textContent = '공유 콘텐츠';
+    }
+    subtabs.forEach((t, i) => t.classList.toggle('active', i === 0));
+
+    // filter row
+    const filterEl = document.querySelector('#modal-picker .picker-filter');
+    filterEl.innerHTML = isQbank ? buildQbankFilterRow() : buildDefaultFilterRow();
+
+    // wire reset
+    filterEl.querySelector('.picker-reset').addEventListener('click', () => {
+      filterEl.querySelectorAll('.ctx-select').forEach(s => s.selectedIndex = 0);
+      const search = filterEl.querySelector('.picker-search'); if (search) search.value = '';
+      filterEl.querySelectorAll('.picker-tag').forEach(t => t.classList.remove('selected'));
+    });
+
+    // tag track (default mode only)
+    if (!isQbank) {
+      const tagTrack = filterEl.querySelector('#picker-tag-track');
+      tagTrack.innerHTML = (PICKER_TAGS[kind] || []).map(t => `<button class="picker-tag" data-tag="${t}">${t}</button>`).join('');
+      tagTrack.querySelectorAll('.picker-tag').forEach(t => {
+        t.addEventListener('click', () => t.classList.toggle('selected'));
+      });
+      filterEl.querySelector('#picker-tag-left' ).addEventListener('click', () => tagTrack.scrollBy({ left: -200, behavior: 'smooth' }));
+      filterEl.querySelector('#picker-tag-right').addEventListener('click', () => tagTrack.scrollBy({ left:  200, behavior: 'smooth' }));
+    }
+
+    // count text + suffix
+    const items = PICKER_DATA[kind] || [];
+    const totalText = isQbank ? QBANK_TOTALS[kind] : items.length.toLocaleString();
+    const unit = isQbank ? QBANK_UNITS[kind] : (kind === 'canvas' ? '캔버스' : '콘텐츠');
+    document.querySelector('.picker-count').innerHTML = `총 <strong>${totalText}</strong>개의 ${unit}이 검색되었습니다.`;
+
+    // grid
+    const grid = document.getElementById('picker-grid');
+    if (isQbank) {
+      const typeAccent = { 객관식: '', 주관식: 'subjective', 조작형: 'manip', 수업자료: 'curriculum' };
+      grid.innerHTML = items.map((it, i) => `
+        <article class="picker-card" data-idx="${i}">
+          <span class="check"></span>
+          <span class="qb-type-badge ${typeAccent[it.type] || ''}">${it.type}</span>
+          <div class="picker-card-thumb">
+            ${qbankPreviewSvg(it, i)}
+            <button class="qb-preview-btn" data-idx="${i}">${kind === 'qbank' ? '문제 미리보기' : '콘텐츠 미리보기'}</button>
+          </div>
+          <div class="picker-card-body">
+            <h4 class="picker-card-title">[${it.type}] ${it.title}</h4>
+            <span class="qb-source">${it.source}</span>
+            <div class="qb-tags">
+              ${(it.tags || []).map(t => `<span class="qb-tag"># ${t}</span>`).join('')}
+            </div>
+          </div>
+        </article>
+      `).join('');
+    } else {
+      grid.innerHTML = items.map((it, i) => `
+        <article class="picker-card" data-area="${it.area}" data-idx="${i}">
+          <span class="check"></span>
+          ${it.new ? '<span class="new-badge">✦ NEW</span>' : ''}
+          <div class="picker-card-thumb"><span>${it.area}</span></div>
+          <div class="picker-card-body">
+            <h4 class="picker-card-title">${it.title}</h4>
+            <div class="picker-card-meta">
+              <span>${it.date}</span>
+              <button class="preview-btn">미리보기</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    grid.querySelectorAll('.picker-card').forEach(card => {
+      card.addEventListener('click', e => {
+        // 미리보기 버튼 → 미리보기 팝업
+        if (e.target.closest('.qb-preview-btn')) {
+          openContentPreview(kind, Number(card.dataset.idx));
+          return;
+        }
+        if (e.target.closest('.preview-btn')) {
+          showToast('미리보기를 표시합니다…');
+          return;
+        }
+        const idx = Number(card.dataset.idx);
+        if (isQbank) {
+          // 복수 선택 토글
+          if (pickerSelectedIdxs.has(idx)) {
+            pickerSelectedIdxs.delete(idx);
+            card.classList.remove('selected');
+          } else {
+            pickerSelectedIdxs.add(idx);
+            card.classList.add('selected');
+          }
+          updateApplyButton();
+        } else {
+          // 단일 선택 (canvas)
+          grid.querySelectorAll('.picker-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          pickerSelectedIdx = idx;
+          document.getElementById('picker-apply').disabled = false;
+        }
+      });
+    });
+
+    updateApplyButton();
+    openModal('modal-picker');
+  }
+
+  let previewContextIdx = null;
+  function openContentPreview(kind, idx) {
+    const item = (PICKER_DATA[kind] || [])[idx];
+    if (!item) return;
+    previewContextIdx = idx;
+
+    const typeAccent = { 객관식: '', 주관식: 'subjective', 조작형: 'manip', 수업자료: 'curriculum' };
+    const typeEl = document.getElementById('prev-type');
+    typeEl.textContent = item.type;
+    typeEl.className = 'preview-type ' + (typeAccent[item.type] || '');
+
+    document.getElementById('prev-title').textContent = `[${item.type}] ${item.title}`;
+    document.getElementById('prev-source').textContent = item.source || '';
+
+    // 본문 텍스트
+    const stageText = {
+      lines:    item.snippet || '',
+      longtext: item.snippet || '',
+      grid:     '아래 표를 보고 빈 칸에 알맞은 수를 써넣으세요.',
+      chain:    '아래 단계별 풀이 과정을 완성하세요.',
+      chart:    '오른쪽 그래프를 보고 물음에 답하세요.',
+      geom:     '주어진 도형에 대해 다음 물음에 답하세요.',
+      icon:     '아래 그림을 보고 물음에 답하세요.',
+    }[item.preview] || '';
+    document.getElementById('prev-stage-text').textContent = stageText;
+
+    // 일러스트 (작은 썸네일 SVG 재활용, 크게)
+    const illust = document.getElementById('prev-stage-illust');
+    illust.innerHTML = `
+      <div style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+        <div style="width:90%; max-width:520px; height:90%;">
+          ${qbankPreviewSvg(item, idx)}
+        </div>
+      </div>`;
+
+    document.getElementById('prev-tags').innerHTML =
+      (item.tags || []).map(t => `<span class="qb-tag" style="margin-left:4px;"># ${t}</span>`).join('');
+
+    // “이 콘텐츠 선택” 버튼: 미리보기에서 직접 선택 추가
+    const pickBtn = document.getElementById('prev-pick');
+    pickBtn.onclick = () => {
+      if (QBANK_MODES.has(pickerCurrent)) {
+        pickerSelectedIdxs.add(idx);
+        const card = document.querySelector(`#picker-grid .picker-card[data-idx="${idx}"]`);
+        if (card) card.classList.add('selected');
+      } else {
+        pickerSelectedIdx = idx;
+        const grid = document.getElementById('picker-grid');
+        grid.querySelectorAll('.picker-card').forEach(c => c.classList.remove('selected'));
+        const card = grid.querySelector(`.picker-card[data-idx="${idx}"]`);
+        if (card) card.classList.add('selected');
+      }
+      updateApplyButton();
+      closeModal('modal-preview');
+    };
+
+    openModal('modal-preview');
+  }
+
+  function updateApplyButton() {
+    const btn = document.getElementById('picker-apply');
+    const isQbank = QBANK_MODES.has(pickerCurrent);
+    if (isQbank) {
+      const n = pickerSelectedIdxs.size;
+      btn.disabled = n === 0;
+      btn.textContent = n > 0 ? `슬라이드에 적용하기 (${n})` : '슬라이드에 적용하기';
+    } else {
+      btn.disabled = pickerSelectedIdx == null;
+      btn.textContent = '슬라이드에 적용하기';
+    }
+  }
+
+  // wire big buttons (완성형 콘텐츠 4 buttons)
+  document.querySelectorAll('#pane-content .tpl-big-btn').forEach(el => {
+    el.addEventListener('click', () => openPicker(el.dataset.import));
+  });
+
+  // subtabs inside picker
+  document.querySelectorAll('#picker-subtabs .picker-subtab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#picker-subtabs .picker-subtab').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  // picker view toggle
+  document.querySelectorAll('.picker-view-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.picker-view-btn').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  // picker apply
+  document.getElementById('picker-apply').addEventListener('click', () => {
+    const isQbank = QBANK_MODES.has(pickerCurrent);
+    if (isQbank) {
+      if (!pickerSelectedIdxs.size) return;
+      showToast(`${pickerSelectedIdxs.size}개 콘텐츠를 슬라이드에 적용합니다…`);
+    } else {
+      if (pickerSelectedIdx == null) return;
+      const item = PICKER_DATA[pickerCurrent][pickerSelectedIdx];
+      showToast(`"${item.title}"을(를) 슬라이드에 적용합니다…`);
+    }
+    setTimeout(() => {
+      closeModal('modal-picker');
+      closeModal('modal-template');
+    }, 700);
+  });
+
+  // picker pagination
+  document.querySelectorAll('.pg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!/^\d+$/.test(btn.textContent)) return;
+      document.querySelectorAll('.pg-btn').forEach(b => {
+        if (/^\d+$/.test(b.textContent)) b.classList.toggle('active', b === btn);
+      });
+    });
+  });
+
+  // ===== Modal helpers =====
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('open-create-modal').addEventListener('click', () => {
+    fillUnitSelect(document.getElementById('f-subject').value);
+    openModal('modal-create');
+  });
+  document.getElementById('go-template').addEventListener('click', () => {
+    closeModal('modal-create');
+    setSelectedTemplate('없음');
+    document.querySelectorAll('.tpl-item').forEach(n => n.classList.remove('open','selected'));
+    document.querySelectorAll('.tpl-leaf').forEach(n => n.classList.remove('selected'));
+    openModal('modal-template');
+  });
+  document.getElementById('apply-template').addEventListener('click', () => {
+    if (!selectedTemplate || selectedTemplate === '없음') {
+      showToast('템플릿을 먼저 선택해 주세요.');
+      return;
+    }
+    showToast(`"${selectedTemplate}" 템플릿으로 편집화면으로 이동합니다…`);
+    setTimeout(() => closeModal('modal-template'), 700);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      ['modal-create','modal-template','modal-picker','modal-preview'].forEach(id => closeModal(id));
+    }
+  });
+
+  // ===== Toast =====
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  // ===== 단원(차시) 옵션: 교과목별 동적 변경 =====
+  const UNIT_OPTIONS = {
+    '영어': [
+      'Lesson 1. Nice to Meet You',
+      'Lesson 2. My School Life',
+      'Lesson 3. Around the Town',
+      'Lesson 4. Healthy Habits',
+      'Lesson 5. Special Days',
+      'Lesson 6. Around the World',
+      'Lesson 7. Stories to Share',
+      'Lesson 8. Save Our Planet',
+    ],
+    '수학': [
+      '1단원 · 분수의 덧셈과 뺄셈',
+      '2단원 · 약수와 배수',
+      '3단원 · 다각형의 넓이',
+      '4단원 · 평균과 가능성',
+      '5단원 · 직육면체의 부피',
+      '6단원 · 비와 비율',
+    ],
+    '국어': [
+      '1단원 · 이야기를 간추려요',
+      '2단원 · 의견을 조정하며 토의해요',
+      '3단원 · 글의 짜임',
+      '4단원 · 글쓴이의 주장',
+      '5단원 · 매체로 의사소통해요',
+    ],
+    '과학': [
+      '1단원 · 온도와 열',
+      '2단원 · 태양계와 별',
+      '3단원 · 용해와 용액',
+      '4단원 · 다양한 생물과 우리 생활',
+      '5단원 · 산과 염기',
+    ],
+    '사회': [
+      '1단원 · 국토와 우리 생활',
+      '2단원 · 인권 존중과 정의로운 사회',
+      '3단원 · 옛사람들의 삶과 문화',
+      '4단원 · 사회의 새로운 변화와 오늘날의 우리',
+    ],
+  };
+
+  function fillUnitSelect(subject) {
+    const sel = document.getElementById('f-unit');
+    if (!sel) return;
+    const opts = UNIT_OPTIONS[subject] || UNIT_OPTIONS['수학'];
+    sel.innerHTML = opts.map(o => `<option>${o}</option>`).join('');
+  }
+
+  // ===== Context bar updates form defaults =====
+  ['ctx-school','ctx-grade','ctx-subject'].forEach(id => {
+    document.getElementById(id).addEventListener('change', e => {
+      const targetId = { 'ctx-school':'f-school','ctx-grade':'f-grade','ctx-subject':'f-subject' }[id];
+      const target = document.getElementById(targetId);
+      if (target) target.value = e.target.value;
+      if (id === 'ctx-subject') fillUnitSelect(e.target.value);
+    });
+  });
+
+  // 모달 내 교과목 변경 → 단원 옵션 갱신
+  document.getElementById('f-subject').addEventListener('change', e => {
+    fillUnitSelect(e.target.value);
+  });
+
+  // 초기 단원 옵션 세팅 (모달 열릴 때 현재 교과목 기준 재구성)
+  fillUnitSelect(document.getElementById('f-subject').value);
+
+  // Sidebar filter checkbox active styling
+  document.querySelectorAll('.filter-option input').forEach(input => {
+    input.addEventListener('change', () => {
+      input.closest('.filter-option').classList.toggle('active', input.checked);
+    });
+  });
+
+  // ===== Init =====
+  renderHome();
+  renderTemplateTree();
+</script>
+</body>
+</html>
