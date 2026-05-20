@@ -1166,34 +1166,43 @@
     display: flex; flex-direction: column; gap: 10px;
   }
   .picker-filter-row {
-    display: flex; align-items: center; gap: 14px;
-    flex-wrap: wrap;
+    display: flex; align-items: center; gap: 18px;
+    flex-wrap: nowrap;
   }
-  .picker-filter-row .field { display: flex; align-items: center; gap: 8px; }
+  .picker-filter-row .field { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .picker-filter-row .field.search-field {
+    flex: 1;
+    min-width: 0;
+  }
   .picker-filter-row .field-label {
-    font-size: 12px; color: var(--ink-2); font-weight: 700;
-    min-width: 50px;
+    font-size: 13px; color: var(--ink-2); font-weight: 700;
+    flex-shrink: 0;
   }
-  .picker-filter-row .ctx-select { min-width: 130px; }
+  .picker-filter-row .ctx-select { min-width: 140px; padding: 9px 28px 9px 12px; font-size: 13px; }
   .picker-filter-row .picker-search {
-    flex: 1; min-width: 220px;
-    padding: 8px 12px;
+    flex: 1; width: 100%; min-width: 0;
+    padding: 9px 14px;
     border: 1px solid var(--line);
     border-radius: 7px;
     background: var(--paper);
     font-family: inherit;
-    font-size: 12.5px;
+    font-size: 13px;
     color: var(--ink);
   }
   .picker-filter-row .picker-search::placeholder { color: var(--ink-4); }
   .picker-reset {
     background: none; border: none;
-    color: var(--ink-3);
-    font-size: 12px; font-weight: 600;
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 6px 8px; border-radius: 6px;
+    color: var(--ink-2);
+    font-size: 13px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 8px 10px; border-radius: 7px;
+    flex-shrink: 0;
+    margin-left: 4px;
+    white-space: nowrap;
   }
+  .picker-reset svg { color: var(--ink-3); }
   .picker-reset:hover { color: var(--ink); background: var(--bg-2); }
+  .picker-reset:hover svg { color: var(--ink-2); }
 
   .picker-tags {
     display: flex; align-items: center; gap: 8px;
@@ -1268,7 +1277,7 @@
 
   .picker-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 14px;
     padding: 8px 28px 18px;
   }
@@ -1323,11 +1332,17 @@
   }
   .picker-card-thumb {
     aspect-ratio: 16 / 10;
-    background: linear-gradient(135deg, #EAF4F7 0%, #DCE9EF 100%);
+    background: linear-gradient(180deg, #F4F8FA 0%, #E8EFF3 100%);
     display: grid; place-items: center;
     color: var(--ink-4);
     font-size: 11px;
     font-weight: 600;
+    overflow: hidden;
+    position: relative;
+  }
+  .picker-card-thumb svg {
+    width: 100%; height: 100%;
+    display: block;
   }
   .picker-card[data-area="수와 연산"] .picker-card-thumb { background: linear-gradient(135deg, #D4EDE5 0%, #EAECF0 100%); }
   .picker-card[data-area="도형과 측정"] .picker-card-thumb { background: linear-gradient(135deg, #FAEAE4 0%, #EAECF0 100%); }
@@ -1643,6 +1658,352 @@
     display: flex; justify-content: flex-end; gap: 8px;
   }
 
+  /* ========== EDITOR (슬라이드 편집 화면) ========== */
+  .editor {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-2);
+    z-index: 90;
+    display: none;
+    grid-template-rows: 56px 1fr 44px;
+    grid-template-columns: 280px 1fr 300px;
+    grid-template-areas:
+      "etop etop etop"
+      "eslides ecanvas epanel"
+      "ebottom ebottom ebottom";
+  }
+  .editor.open { display: grid; }
+
+  /* top bar */
+  .ed-top {
+    grid-area: etop;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 18px;
+  }
+  .ed-back {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: none; border: none;
+    display: grid; place-items: center;
+    color: var(--ink-2);
+  }
+  .ed-back:hover { background: var(--bg-2); }
+  .ed-name {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-right: 6px;
+  }
+  .ed-divider { width: 1px; height: 22px; background: var(--line); }
+  .ed-icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: none; border: none;
+    display: grid; place-items: center;
+    color: var(--ink-3);
+  }
+  .ed-icon-btn:hover { background: var(--bg-2); color: var(--ink-2); }
+  .ed-top-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .ed-ghost-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink-2);
+    font-size: 13px; font-weight: 600;
+  }
+  .ed-ghost-btn:hover { border-color: var(--ink-3); }
+  .ed-play-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--mint);
+    color: #FFFFFF;
+    font-size: 13px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .ed-play-btn:hover { background: var(--mint-dark); }
+  .ed-play-split {
+    width: 32px; height: 36px;
+    border-radius: 8px;
+    background: var(--mint);
+    color: #FFFFFF; border: none;
+    display: grid; place-items: center;
+  }
+  .ed-play-split:hover { background: var(--mint-dark); }
+
+  /* slide sidebar */
+  .ed-slides {
+    grid-area: eslides;
+    background: var(--paper);
+    border-right: 1px solid var(--line);
+    overflow-y: auto;
+    padding: 16px 16px 40px;
+  }
+  .ed-slide {
+    display: flex; gap: 8px;
+    margin-bottom: 4px;
+  }
+  .ed-slide-num {
+    width: 16px;
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-3);
+    padding-top: 4px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .ed-slide.active .ed-slide-num { color: var(--mint-dark); font-weight: 800; }
+  .ed-slide-thumb {
+    flex: 1;
+    aspect-ratio: 16 / 10;
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    display: grid; place-items: center;
+    transition: border-color 0.12s;
+  }
+  .ed-slide-thumb:hover { border-color: var(--ink-3); }
+  .ed-slide.active .ed-slide-thumb {
+    border-color: var(--mint);
+    box-shadow: 0 0 0 2px var(--mint-soft);
+  }
+  .ed-slide-thumb svg.thumb-art { width: 100%; height: 100%; }
+  .ed-slide-label {
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 600;
+    padding: 0 8px;
+    pointer-events: none;
+  }
+  .ed-slide-type {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: grid; place-items: center;
+    z-index: 2;
+  }
+  .ed-slide-handle {
+    width: 14px;
+    display: grid; place-items: center;
+    color: var(--ink-4);
+    font-size: 12px;
+    cursor: grab;
+    flex-shrink: 0;
+  }
+  .ed-slide-add {
+    margin-left: 24px;
+    margin-top: 8px;
+    aspect-ratio: 16 / 10;
+    border: 1.5px dashed var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    display: grid; place-items: center;
+    color: var(--ink-3);
+    font-size: 22px;
+    cursor: pointer;
+  }
+  .ed-slide-add:hover { border-color: var(--mint); color: var(--mint); }
+
+  /* canvas */
+  .ed-canvas-wrap {
+    grid-area: ecanvas;
+    overflow: auto;
+    display: grid; place-items: center;
+    padding: 28px;
+  }
+  .ed-canvas {
+    width: 100%;
+    max-width: 920px;
+    aspect-ratio: 16 / 9;
+    background: var(--paper);
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .ed-canvas-empty {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    color: var(--ink-4);
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .ed-canvas-article {
+    flex: 1;
+    display: flex; flex-direction: column;
+    padding: 38px 46px;
+    min-height: 0;
+  }
+  .ed-article-badge {
+    align-self: flex-start;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 11px 4px 6px;
+    border-radius: 12px;
+    font-size: 12px; font-weight: 700;
+    background: var(--bg-2);
+    color: var(--ink-2);
+    margin-bottom: 14px;
+  }
+  .ed-inline-ico {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    display: inline-grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .ed-article-title {
+    font-size: 24px; font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .ed-article-source {
+    font-size: 13px; color: var(--ink-3); font-weight: 500;
+    margin-bottom: 18px;
+  }
+  .ed-article-visual {
+    flex: 1;
+    min-height: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: linear-gradient(180deg, #FBFCFD 0%, #F2F5F8 100%);
+    display: grid; place-items: center;
+    overflow: hidden;
+    padding: 18px;
+  }
+  .ed-preview-frame {
+    position: relative;
+    width: 360px; max-width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #FFFFFF;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px var(--line);
+  }
+  .ed-preview-frame.canvas,
+  .ed-preview-frame.template {
+    display: grid; place-items: center;
+  }
+  .ed-preview-frame.canvas svg,
+  .ed-preview-frame.template svg { width: 100%; height: 100%; }
+  /* 문제/조작형/수업자료: picker 카드 썸네일과 동일 비율로 렌더 */
+  .ed-preview-frame.qbank,
+  .ed-preview-frame.lesson,
+  .ed-preview-frame.manipulative {
+    background: linear-gradient(180deg, #F8FAFB 0%, #F1F4F7 100%);
+    padding: 30px 16px 16px;
+  }
+  .ed-preview-frame.qbank > div[style],
+  .ed-preview-frame.lesson > div[style],
+  .ed-preview-frame.manipulative > div[style] { font-size: 12px !important; }
+  .ed-preview-frame svg { display: block; }
+  .ed-slide-label {
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 600;
+    padding: 0 10px;
+    pointer-events: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .ed-article-tags { display: flex; gap: 6px; margin-top: 16px; flex-wrap: wrap; }
+  .ed-article-tag {
+    font-size: 11.5px; color: var(--ink-2);
+    background: var(--bg); border: 1px solid var(--line);
+    padding: 3px 9px; border-radius: 10px; font-weight: 500;
+  }
+
+  /* right context panel */
+  .ed-panel {
+    grid-area: epanel;
+    background: var(--paper);
+    border-left: 1px solid var(--line);
+    padding: 22px 20px;
+    overflow-y: auto;
+  }
+  .ed-panel-head {
+    display: flex; align-items: center; gap: 9px;
+    margin-bottom: 18px;
+  }
+  .ed-panel-ico { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; }
+  .ed-panel-title { font-size: 15px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+  .ed-panel-load {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--paper);
+    color: var(--ink-2);
+    font-size: 13px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    letter-spacing: -0.015em;
+  }
+  .ed-panel-load:hover { border-color: var(--mint); color: var(--mint-dark); background: var(--mint-soft); }
+  .ed-panel-empty {
+    text-align: center;
+    color: var(--ink-3);
+    font-size: 13px;
+    padding: 80px 10px;
+  }
+  .ed-panel-info {
+    margin-top: 18px;
+    border-top: 1px solid var(--line-2);
+    padding-top: 16px;
+  }
+  .ed-panel-info-row {
+    display: flex; justify-content: space-between;
+    font-size: 12.5px;
+    padding: 7px 0;
+  }
+  .ed-panel-info-row .k { color: var(--ink-3); font-weight: 500; }
+  .ed-panel-info-row .v { color: var(--ink); font-weight: 600; }
+
+  /* bottom bar */
+  .ed-bottom {
+    grid-area: ebottom;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 18px;
+  }
+  .ed-bottom-left { display: flex; align-items: center; gap: 16px; }
+  .ed-note-btn {
+    background: none; border: none;
+    color: var(--ink-2);
+    font-size: 13px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .ed-note-btn:hover { color: var(--ink); }
+  .ed-grid-btn {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    background: none; border: none;
+    display: grid; place-items: center;
+    color: var(--ink-3);
+  }
+  .ed-grid-btn:hover { background: var(--bg-2); }
+  .ed-zoom { display: flex; align-items: center; gap: 10px; color: var(--ink-3); }
+  .ed-zoom input { width: 120px; accent-color: var(--mint); }
+  .ed-zoom-val { font-size: 12.5px; font-weight: 600; color: var(--ink-2); min-width: 36px; text-align: right; }
+
   /* ========== Toast ========== */
   .toast {
     position: fixed;
@@ -1673,6 +2034,8 @@
     .row-grid .tool-tile:nth-child(5) { display: none; }
     .catalog-grid { grid-template-columns: repeat(3, 1fr); }
     .tpl-grid-4 { grid-template-columns: repeat(3, 1fr); }
+    .picker-grid { grid-template-columns: repeat(4, 1fr); }
+    .picker-modal[data-mode="qbank"] .picker-grid { grid-template-columns: repeat(4, 1fr); }
   }
   @media (max-width: 980px) {
     .layout-catalog { grid-template-columns: 1fr; }
@@ -2118,6 +2481,48 @@
   </div>
 </div>
 
+<!-- ========== EDITOR (슬라이드 편집 화면) ========== -->
+<div class="editor" id="editor">
+  <header class="ed-top">
+    <button class="ed-back" id="ed-back" title="뒤로">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span class="ed-name" id="ed-name">2026-05-20 제작</span>
+    <span class="ed-divider"></span>
+    <button class="ed-icon-btn" title="실행 취소"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></button>
+    <button class="ed-icon-btn" title="다시 실행"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 14 20 9 15 4"/><path d="M4 20v-7a4 4 0 0 1 4-4h12"/></svg></button>
+    <span class="ed-divider"></span>
+    <button class="ed-icon-btn" title="저장됨"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><polyline points="9 13 11 15 15 11"/></svg></button>
+    <div class="ed-top-right">
+      <button class="ed-icon-btn" title="설정"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <button class="ed-ghost-btn">활동 만들기</button>
+      <button class="ed-play-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg> 수업하기</button>
+      <button class="ed-play-split"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+    </div>
+  </header>
+
+  <aside class="ed-slides" id="ed-slides"></aside>
+
+  <div class="ed-canvas-wrap">
+    <div class="ed-canvas" id="ed-canvas"></div>
+  </div>
+
+  <aside class="ed-panel" id="ed-panel"></aside>
+
+  <footer class="ed-bottom">
+    <div class="ed-bottom-left">
+      <button class="ed-grid-btn" title="전체 보기"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+      <button class="ed-note-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> 발표자 노트</button>
+    </div>
+    <div class="ed-zoom">
+      <span>−</span>
+      <input type="range" min="40" max="120" value="79" id="ed-zoom-range">
+      <span>＋</span>
+      <span class="ed-zoom-val" id="ed-zoom-val">79%</span>
+    </div>
+  </footer>
+</div>
+
 <!-- ========== MODAL 4: 콘텐츠 미리보기 ========== -->
 <div class="modal-backdrop" id="modal-preview" onclick="if(event.target===this) closeModal('modal-preview')">
   <div class="modal preview-modal">
@@ -2438,9 +2843,11 @@
       card.addEventListener('click', () => {
         root.querySelectorAll('.thumb-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
-        const parent = TPL_CATS.find(c => c.id === currentTplCat).name;
+        const cat = TPL_CATS.find(c => c.id === currentTplCat);
         const name = card.dataset.name;
-        setSelectedTemplate(parent === name ? name : `${parent} · ${name}`);
+        const leaf = cat.leaves.find(l => l.name === name);
+        setSelectedTemplate(cat.name === name ? name : `${cat.name} · ${name}`);
+        selectedTemplateData = { catId: cat.id, catName: cat.name, accent: cat.accent, name, meta: leaf ? leaf.meta : '', thumb: leaf ? leaf.thumb : 'blank' };
       });
     });
   }
@@ -2451,6 +2858,7 @@
   }
 
   let selectedTemplate = null;
+  let selectedTemplateData = null;
   function setSelectedTemplate(name) {
     selectedTemplate = name;
     document.getElementById('tpl-selected-name').textContent = name;
@@ -2475,7 +2883,7 @@
   const PICKER_TAGS = {
     manipulative: ['수직선','분수 모형','컴퍼스','각도기','확률 돌림판','함수 그래프','대수 블록','도미노','다각형','다면체(3D)'],
     lesson:       ['도입','전개','정리','형성평가','심화','보충','단원도입','차시정리'],
-    canvas:       ['공간좌표(3D)','그림그래프','꺾은선그래프','다각형','다면체(3D)','대수 막대','대수 블록','도미노','도수분포표'],
+    canvas:       ['공간좌표(3D)','그림그래프','꺾은선그래프','다각형','다면체(3D)','대수 막대','대수 블록','도미노','도수분포다각형','막대그래프','분수 막대','수직선'],
     qbank:        ['선택형','단답형','연쇄형','OX형','TF형','순서입력형','순서조합형','연결형','기본','심화'],
   };
   const PICKER_DATA = {
@@ -2506,8 +2914,16 @@
       { type: '수업자료', title: '도형의 합동 · 2차시',         source: '교사용 지도서', tags: ['합동', '도형'],        preview: 'geom',    snippet: 'symmetric' },
     ],
     canvas: [
-      { title: '2026-05-18 제작', area: '수와 연산', new: true, date: '26. 05. 18' },
-      { title: '2026-05-18 제작', area: '도형과 측정', new: true, date: '26. 05. 18' },
+      { title: 'test01의 test',                       area: '수와 연산',     new: true, date: '26. 05. 19', cv: 'blocks' },
+      { title: '2026-05-19 제작',                      area: '수와 연산',     new: true, date: '26. 05. 19', cv: 'beads' },
+      { title: '2026-05-19 제작',                      area: '수와 연산',     new: true, date: '26. 05. 19', cv: 'beadcube' },
+      { title: '[1-2 덧셈과 뺄셈] 세 수의 덧셈',        area: '수와 연산',     new: true, date: '26. 05. 18', cv: 'inputrow' },
+      { title: '[중1-1 순서쌍과 좌표] 순서쌍',          area: '변화와 관계',   new: true, date: '26. 05. 18', cv: 'coord' },
+      { title: '[3-2 곱셈] (몇십몇)×(몇)',              area: '수와 연산',     new: true, date: '26. 05. 18', cv: 'multgrid' },
+      { title: '[중2-2 피타고라스 정리] 직각삼각형',     area: '도형과 측정',   new: true, date: '26. 05. 18', cv: 'sticky' },
+      { title: '[4-2 소수의 덧셈과 뺄셈] 소수 한 자리',  area: '수와 연산',     new: true, date: '26. 05. 18', cv: 'decimal' },
+      { title: '[4-2 소수의 덧셈과 뺄셈] 자릿값',        area: '수와 연산',     new: true, date: '26. 05. 18', cv: 'decimal2' },
+      { title: '[4-2 소수의 덧셈과 뺄셈] 크기 비교',     area: '수와 연산',     new: true, date: '26. 05. 18', cv: 'compare' },
     ],
     qbank: [
       { type: '객관식', title: '올림을 알아보아요',           source: '교과서 QR 문항', tags: ['올림'],                preview: 'lines',    snippet: '에서 나만난 수가 (00)인 수를 모두 고르세요' },
@@ -2527,6 +2943,103 @@
       { type: '주관식', title: '비례식과 비례배분',           source: '교과서 QR 문항', tags: ['비례식'],              preview: 'chain',    snippet: '비례식 풀이' },
     ],
   };
+
+  // 매쓰캔버스 카드 썸네일 SVG (캔버스 콘텐츠 미니 미리보기)
+  function canvasThumbSvg(cv) {
+    const wrap = inner => `<svg viewBox="0 0 200 125" preserveAspectRatio="xMidYMid meet" style="background:#FFFFFF;">${inner}</svg>`;
+    const grid = (ox, oy, cols, rows, cell, fillCount, on, off) => {
+      let r = '';
+      for (let i = 0; i < cols * rows; i++) {
+        const x = ox + (i % cols) * cell;
+        const y = oy + Math.floor(i / cols) * cell;
+        r += `<rect x="${x}" y="${y}" width="${cell - 0.6}" height="${cell - 0.6}" fill="${i < fillCount ? on : off}" stroke="#CBD5E1" stroke-width="0.4"/>`;
+      }
+      return r;
+    };
+    switch (cv) {
+      case 'blocks': // 자릿값 블록: 주황 정육면체 + 초록 격자
+        return wrap(`
+          <g transform="translate(30 38)">
+            <path d="M0 24 L34 24 L50 12 L16 12 Z" fill="#FCD34D" stroke="#B45309" stroke-width="1"/>
+            <path d="M0 24 L34 24 L34 60 L0 60 Z" fill="#F97316" stroke="#C2410C" stroke-width="1"/>
+            <path d="M34 24 L50 12 L50 48 L34 60 Z" fill="#EA580C" stroke="#9A3412" stroke-width="1"/>
+          </g>
+          ${`<g transform="translate(108 36)">${grid(0,0,6,6,11,36,'#4ADE80','#4ADE80')}</g>`}
+        `);
+      case 'beads': // 수직선 + 빨간 구슬
+        return wrap(`
+          <rect x="18" y="78" width="164" height="3" fill="#E5E7EB"/>
+          <rect x="18" y="78" width="104" height="3" fill="#1F2937"/>
+          ${Array.from({length:10},(_,i)=>{const x=24+i*16.5;const on=i<7;return `<circle cx="${x}" cy="79.5" r="6.5" fill="${on?'#EF4444':'#FEE2E2'}" stroke="${on?'#B91C1C':'#FCA5A5'}" stroke-width="0.8"/>`;}).join('')}
+        `);
+      case 'beadcube': // 수직선 + 구슬 + 위에 파란 블록
+        return wrap(`
+          <rect x="74" y="26" width="16" height="16" fill="#3B82F6" stroke="#1E40AF" stroke-width="0.8"/>
+          <rect x="18" y="80" width="164" height="3" fill="#1F2937"/>
+          ${Array.from({length:10},(_,i)=>{const x=24+i*16.5;return `<circle cx="${x}" cy="81.5" r="6" fill="#EF4444" stroke="#B91C1C" stroke-width="0.7"/>`;}).join('')}
+        `);
+      case 'inputrow': // 문제 + 입력 칸 줄
+        return wrap(`
+          <text x="20" y="34" font-family="Pretendard,sans-serif" font-size="8.5" fill="#9CA3AF">세 수의 덧셈을 계산하세요</text>
+          <g transform="translate(28 50)">
+            <rect x="0" y="0" width="22" height="22" rx="3" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+            <text x="11" y="15" font-family="Pretendard,sans-serif" font-size="11" font-weight="800" text-anchor="middle" fill="#92400E">0</text>
+            ${Array.from({length:9},(_,i)=>`<rect x="${30+i*16}" y="0" width="14" height="22" rx="3" fill="#FFFFFF" stroke="#9CA3AF" stroke-width="0.8"/><text x="${37+i*16}" y="15" font-family="Pretendard,sans-serif" font-size="9" text-anchor="middle" fill="#374151">${i+1}</text>`).join('')}
+          </g>
+          <g transform="translate(28 84)">
+            <rect x="0" y="0" width="16" height="16" rx="2" fill="#DBEAFE" stroke="#3B82F6" stroke-width="0.8"/>
+            <text x="8" y="11" font-family="Pretendard,sans-serif" font-size="8" text-anchor="middle" fill="#1E40AF">＋</text>
+          </g>
+        `);
+      case 'coord': // 좌표평면
+        return wrap(`
+          ${Array.from({length:9},(_,i)=>`<line x1="${24+i*19}" y1="20" x2="${24+i*19}" y2="108" stroke="#EEF2F6" stroke-width="0.6"/>`).join('')}
+          ${Array.from({length:5},(_,i)=>`<line x1="20" y1="${24+i*20}" x2="186" y2="${24+i*20}" stroke="#EEF2F6" stroke-width="0.6"/>`).join('')}
+          <line x1="20" y1="64" x2="186" y2="64" stroke="#94A3B8" stroke-width="1"/>
+          <line x1="100" y1="18" x2="100" y2="110" stroke="#94A3B8" stroke-width="1"/>
+          <circle cx="138" cy="44" r="2.6" fill="#E05C3A"/><text x="142" y="42" font-family="Pretendard,sans-serif" font-size="7.5" fill="#374151">A(4,3)</text>
+          <circle cx="64" cy="54" r="2.6" fill="#2E7D60"/><text x="40" y="52" font-family="Pretendard,sans-serif" font-size="7.5" fill="#374151">C(−5,1)</text>
+          <circle cx="148" cy="88" r="2.6" fill="#6A5ACD"/><text x="120" y="100" font-family="Pretendard,sans-serif" font-size="7.5" fill="#374151">B(7,−4)</text>
+        `);
+      case 'multgrid': // 곱셈 영역 모델 (색 타일)
+        return wrap(`
+          <g transform="translate(48 32)">
+            <rect x="0"  y="0"  width="56" height="40" fill="#FBBF24" stroke="#92400E" stroke-width="1"/>
+            <rect x="56" y="0"  width="34" height="40" fill="#34D399" stroke="#065F46" stroke-width="1"/>
+            <rect x="0"  y="40" width="56" height="26" fill="#F472B6" stroke="#9D174D" stroke-width="1"/>
+            <rect x="56" y="40" width="34" height="26" fill="#60A5FA" stroke="#1E40AF" stroke-width="1"/>
+            <text x="28" y="24" font-family="Pretendard,sans-serif" font-size="11" font-weight="800" text-anchor="middle" fill="#FFFFFF">30×4</text>
+          </g>
+        `);
+      case 'sticky': // 포스트잇/도형 조각
+        return wrap(`
+          ${Array.from({length:9},(_,i)=>`<line x1="${30+i*18}" y1="22" x2="${30+i*18}" y2="104" stroke="#EEF2F6" stroke-width="0.6"/>`).join('')}
+          <rect x="44" y="44" width="26" height="30" rx="2" fill="#FBBF24" transform="rotate(-9 57 59)"/>
+          <rect x="86" y="38" width="26" height="30" rx="2" fill="#34D399" transform="rotate(6 99 53)"/>
+          <rect x="128" y="46" width="26" height="30" rx="2" fill="#F472B6" transform="rotate(-4 141 61)"/>
+        `);
+      case 'decimal': // 소수 모형 (파랑/분홍 100칸)
+        return wrap(`
+          <g transform="translate(36 30)">${grid(0,0,10,10,4.2,73,'#3B82F6','#FFFFFF')}</g>
+          <g transform="translate(118 30)">${grid(0,0,10,10,4.2,24,'#EC4899','#FFFFFF')}</g>
+        `);
+      case 'decimal2': // 소수 자릿값 막대
+        return wrap(`
+          <rect x="24" y="48" width="64" height="30" fill="#BFDBFE" stroke="#1D4ED8" stroke-width="1"/>
+          <rect x="92" y="48" width="34" height="30" fill="#FBCFE8" stroke="#BE185D" stroke-width="1"/>
+          <text x="56"  y="92" font-family="Pretendard,sans-serif" font-size="8" text-anchor="middle" fill="#374151">0.73</text>
+          <text x="109" y="92" font-family="Pretendard,sans-serif" font-size="8" text-anchor="middle" fill="#374151">0.24</text>
+        `);
+      case 'compare': // 크기 비교 (부등호)
+        return wrap(`
+          <g transform="translate(34 34)">${grid(0,0,10,8,3.6,46,'#3B82F6','#FFFFFF')}</g>
+          <text x="100" y="70" font-family="Pretendard,sans-serif" font-size="14" font-weight="800" text-anchor="middle" fill="#E05C3A">&gt; / &lt;</text>
+          <g transform="translate(118 34)">${grid(0,0,10,8,3.6,28,'#EC4899','#FFFFFF')}</g>
+        `);
+      default:
+        return wrap(`<rect x="40" y="40" width="120" height="45" rx="4" fill="#EAF4F7" stroke="#CBD5E1"/>`);
+    }
+  }
 
   // 문제 카드 썸네일 SVG (preview 종류별)
   function qbankPreviewSvg(item, idx) {
@@ -2723,11 +3236,14 @@
             <option>변화와 관계</option><option>자료와 가능성</option>
           </select>
         </div>
-        <div class="field" style="flex:1; min-width: 240px;">
+        <div class="field search-field">
           <span class="field-label">검색</span>
           <input type="text" class="picker-search" placeholder="제목·키워드로 검색" />
         </div>
-        <button class="picker-reset">⟳ 초기화</button>
+        <button class="picker-reset">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          초기화
+        </button>
       </div>
       <div class="picker-filter-row picker-tags">
         <span class="field-label">태그</span>
@@ -2791,9 +3307,9 @@
 
     // count text + suffix
     const items = PICKER_DATA[kind] || [];
-    const totalText = isQbank ? QBANK_TOTALS[kind] : items.length.toLocaleString();
+    const totalText = isQbank ? QBANK_TOTALS[kind] : (kind === 'canvas' ? '304' : items.length.toLocaleString());
     const unit = isQbank ? QBANK_UNITS[kind] : (kind === 'canvas' ? '캔버스' : '콘텐츠');
-    document.querySelector('.picker-count').innerHTML = `총 <strong>${totalText}</strong>개의 ${unit}이 검색되었습니다.`;
+    document.querySelector('.picker-count').innerHTML = `총 <strong>${totalText}</strong>개의 ${unit}가 검색되었습니다.`;
 
     // grid
     const grid = document.getElementById('picker-grid');
@@ -2817,16 +3333,17 @@
         </article>
       `).join('');
     } else {
+      const previewLabel = kind === 'canvas' ? '캔버스 미리보기' : '미리보기';
       grid.innerHTML = items.map((it, i) => `
         <article class="picker-card" data-area="${it.area}" data-idx="${i}">
           <span class="check"></span>
           ${it.new ? '<span class="new-badge">✦ NEW</span>' : ''}
-          <div class="picker-card-thumb"><span>${it.area}</span></div>
+          <div class="picker-card-thumb">${kind === 'canvas' ? canvasThumbSvg(it.cv) : `<span>${it.area}</span>`}</div>
           <div class="picker-card-body">
             <h4 class="picker-card-title">${it.title}</h4>
             <div class="picker-card-meta">
               <span>${it.date}</span>
-              <button class="preview-btn">미리보기</button>
+              <button class="preview-btn">${previewLabel}</button>
             </div>
           </div>
         </article>
@@ -2943,7 +3460,10 @@
 
   // wire big buttons (완성형 콘텐츠 4 buttons)
   document.querySelectorAll('#pane-content .tpl-big-btn').forEach(el => {
-    el.addEventListener('click', () => openPicker(el.dataset.import));
+    el.addEventListener('click', () => {
+      editorReplaceTargetIdx = null;
+      openPicker(el.dataset.import);
+    });
   });
 
   // subtabs inside picker
@@ -2960,21 +3480,37 @@
     });
   });
 
-  // picker apply
+  // picker apply → 선택 항목을 슬라이드로 (1슬라이드 = 1아티클)
   document.getElementById('picker-apply').addEventListener('click', () => {
     const isQbank = QBANK_MODES.has(pickerCurrent);
+    const data = PICKER_DATA[pickerCurrent] || [];
+    let chosen = [];
     if (isQbank) {
       if (!pickerSelectedIdxs.size) return;
-      showToast(`${pickerSelectedIdxs.size}개 콘텐츠를 슬라이드에 적용합니다…`);
+      chosen = [...pickerSelectedIdxs].sort((a, b) => a - b).map(i => makeSlideFromPickerItem(pickerCurrent, data[i], i));
     } else {
       if (pickerSelectedIdx == null) return;
-      const item = PICKER_DATA[pickerCurrent][pickerSelectedIdx];
-      showToast(`"${item.title}"을(를) 슬라이드에 적용합니다…`);
+      chosen = [makeSlideFromPickerItem(pickerCurrent, data[pickerSelectedIdx], pickerSelectedIdx)];
     }
-    setTimeout(() => {
+
+    // 패널의 "불러오기"로 진입한 경우: 현재 슬라이드를 채우고 나머지는 뒤에 추가
+    if (editorReplaceTargetIdx != null && editorSlides[editorReplaceTargetIdx]) {
+      editorSlides[editorReplaceTargetIdx] = chosen[0];
+      if (chosen.length > 1) {
+        editorSlides.splice(editorReplaceTargetIdx + 1, 0, ...chosen.slice(1));
+      }
+      activeSlideIdx = editorReplaceTargetIdx;
+      editorReplaceTargetIdx = null;
       closeModal('modal-picker');
       closeModal('modal-template');
-    }, 700);
+      openEditor();
+      renderEditor();
+      showToast(`${chosen.length}개 콘텐츠를 슬라이드에 적용했습니다.`);
+      return;
+    }
+
+    showToast(`${chosen.length}개 콘텐츠를 슬라이드에 적용합니다…`);
+    applySlidesToEditor(chosen);
   });
 
   // picker pagination
@@ -3008,17 +3544,203 @@
     openModal('modal-template');
   });
   document.getElementById('apply-template').addEventListener('click', () => {
-    if (!selectedTemplate || selectedTemplate === '없음') {
+    if (!selectedTemplate || selectedTemplate === '없음' || !selectedTemplateData) {
       showToast('템플릿을 먼저 선택해 주세요.');
       return;
     }
-    showToast(`"${selectedTemplate}" 템플릿으로 편집화면으로 이동합니다…`);
-    setTimeout(() => closeModal('modal-template'), 700);
+    const slide = makeSlideFromTemplate(selectedTemplateData);
+    showToast(`"${selectedTemplate}" 템플릿을 슬라이드에 적용합니다…`);
+    applySlidesToEditor([slide]);
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       ['modal-create','modal-template','modal-picker','modal-preview'].forEach(id => closeModal(id));
     }
+  });
+
+  // ============================================================
+  // ===== EDITOR (슬라이드 편집 화면) =====
+  // ============================================================
+  const SLIDE_TYPE_META = {
+    canvas:       { label: '매쓰캔버스',     loadLabel: '매쓰캔버스 불러오기',     emptyMsg: '캔버스를 선택해 주세요.', pickerKind: 'canvas' },
+    qbank:        { label: '문제은행',       loadLabel: '스마트 문제은행 불러오기', emptyMsg: '문제를 선택해 주세요.',   pickerKind: 'qbank' },
+    lesson:       { label: '수업자료',       loadLabel: '수업자료 콘텐츠 불러오기', emptyMsg: '수업자료를 선택해 주세요.', pickerKind: 'lesson' },
+    manipulative: { label: '조작형 콘텐츠',   loadLabel: '조작형 콘텐츠 불러오기',   emptyMsg: '콘텐츠를 선택해 주세요.', pickerKind: 'manipulative' },
+    template:     { label: '템플릿',         loadLabel: '템플릿 선택',             emptyMsg: '템플릿을 편집해 보세요.', pickerKind: null },
+  };
+
+  // 슬라이드 타입 아이콘 (배경색 + SVG). cls로 위치/크기 변형
+  function slideTypeIcon(kind, cls = 'ed-slide-type') {
+    const map = {
+      canvas:       { bg: '#DBEAFE', svg: `<svg width="62%" height="62%" viewBox="0 0 24 24" fill="none"><path d="M4 19V6.5L9 14l5-7.5V19" stroke="#2563EB" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>` },
+      qbank:        { bg: '#FEF3C7', svg: `<svg width="68%" height="68%" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7c-1-1.5-3-2.5-6-2.5C8 4.5 4 7.5 4 11.5c0 2 1 3.8 2.6 5L6 19h2.5l.7-1.4c.9.3 1.8.4 2.8.4s1.9-.1 2.8-.4L15.5 19H18l-.6-2.5c1-.7 1.8-1.7 2.2-2.8H22v-4h-2C19.7 8.8 19.4 8 19 7z"/><circle cx="9" cy="10.5" r="1" fill="#D97706"/></svg>` },
+      lesson:       { bg: '#D4EDE5', svg: `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#2E7D60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>` },
+      manipulative: { bg: '#CCEFEF', svg: `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#009A98" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>` },
+      template:     { bg: '#E4E1F8', svg: `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#6A5ACD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>` },
+    };
+    const m = map[kind];
+    if (!m) return '';
+    return `<span class="${cls}" style="background:${m.bg};">${m.svg}</span>`;
+  }
+
+  // 슬라이드 시각 콘텐츠 (캔버스용 프레임)
+  function slideVisualInner(slide) {
+    if (slide.kind === 'canvas') return canvasThumbSvg(slide.cv);
+    if (slide.kind === 'template') return thumbSvg(slide.thumb);
+    if (slide.item) return qbankPreviewSvg(slide.item, slide.idx || 0);
+    return '';
+  }
+
+  let editorSlides = [];
+  let activeSlideIdx = 0;
+
+  function makeSlideFromPickerItem(kind, item, idx) {
+    return { kind, item, idx, cv: item.cv, title: item.title, type: item.type, source: item.source, tags: item.tags || [], filled: true };
+  }
+  function makeSlideFromTemplate(tpl) {
+    return { kind: 'template', accent: tpl.accent, thumb: tpl.thumb, title: tpl.name, source: tpl.catName, meta: tpl.meta, tags: [], filled: tpl.thumb === 'blank' ? false : true, catName: tpl.catName };
+  }
+
+  // 팝업에서 적용 → 슬라이드로 추가하고 에디터 진입
+  function applySlidesToEditor(newSlides) {
+    if (!newSlides.length) return;
+    editorReplaceTargetIdx = null;
+    const wasEmpty = editorSlides.length === 0;
+    editorSlides = editorSlides.concat(newSlides);
+    activeSlideIdx = wasEmpty ? 0 : editorSlides.length - newSlides.length;
+    const nameInput = document.getElementById('f-name');
+    if (nameInput && nameInput.value) document.getElementById('ed-name').textContent = nameInput.value;
+    closeModal('modal-picker');
+    closeModal('modal-template');
+    openEditor();
+    renderEditor();
+  }
+
+  function openEditor() {
+    document.getElementById('editor').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeEditor() {
+    document.getElementById('editor').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function renderEditor() {
+    renderSlideList();
+    renderCanvas();
+    renderContextPanel();
+  }
+
+  function renderSlideList() {
+    const root = document.getElementById('ed-slides');
+    root.innerHTML = editorSlides.map((s, i) => {
+      const meta = SLIDE_TYPE_META[s.kind] || {};
+      const labelText = s.filled ? (s.title || meta.label) : meta.label;
+      return `
+        <div class="ed-slide ${i === activeSlideIdx ? 'active' : ''}" data-idx="${i}">
+          <span class="ed-slide-num">${i + 1}</span>
+          <div class="ed-slide-thumb">
+            ${slideTypeIcon(s.kind)}
+            <span class="ed-slide-label">${labelText || ''}</span>
+          </div>
+          <span class="ed-slide-handle">⋮</span>
+        </div>`;
+    }).join('') + `
+      <div class="ed-slide-add" id="ed-add-slide" title="슬라이드 추가">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>`;
+
+    root.querySelectorAll('.ed-slide').forEach(el => {
+      el.addEventListener('click', () => {
+        activeSlideIdx = Number(el.dataset.idx);
+        renderEditor();
+      });
+    });
+    document.getElementById('ed-add-slide').addEventListener('click', () => {
+      // 빈 슬라이드: 콘텐츠 선택하기 모달을 다시 열어 추가
+      openModal('modal-template');
+      const firstTab = document.querySelector('#tpl-toptabs .tpl-modal-tab');
+      if (firstTab) firstTab.click();
+    });
+  }
+
+  function renderCanvas() {
+    const canvas = document.getElementById('ed-canvas');
+    const slide = editorSlides[activeSlideIdx];
+    if (!slide) { canvas.innerHTML = `<div class="ed-canvas-empty">슬라이드를 추가해 주세요.</div>`; return; }
+    const meta = SLIDE_TYPE_META[slide.kind] || {};
+    if (!slide.filled) {
+      canvas.innerHTML = `<div class="ed-canvas-empty">${meta.emptyMsg || '콘텐츠를 선택해 주세요.'}</div>`;
+      return;
+    }
+    canvas.innerHTML = `
+      <div class="ed-canvas-article">
+        <span class="ed-article-badge">${slideTypeIcon(slide.kind, 'ed-inline-ico')} ${meta.label}${slide.type ? ' · ' + slide.type : ''}</span>
+        <h2 class="ed-article-title">${slide.title || ''}</h2>
+        ${slide.source ? `<div class="ed-article-source">${slide.source}</div>` : ''}
+        <div class="ed-article-visual">
+          <div class="ed-preview-frame ${slide.kind}">${slideVisualInner(slide)}</div>
+        </div>
+        ${(slide.tags && slide.tags.length) ? `<div class="ed-article-tags">${slide.tags.map(t => `<span class="ed-article-tag"># ${t}</span>`).join('')}</div>` : ''}
+      </div>`;
+  }
+
+  function renderContextPanel() {
+    const panel = document.getElementById('ed-panel');
+    const slide = editorSlides[activeSlideIdx];
+    if (!slide) { panel.innerHTML = ''; return; }
+    const meta = SLIDE_TYPE_META[slide.kind] || {};
+    const iconHtml = slideTypeIcon(slide.kind, 'ed-panel-ico');
+    let body;
+    if (slide.filled) {
+      body = `
+        <button class="ed-panel-load" data-kind="${slide.kind}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+          ${meta.loadLabel}
+        </button>
+        <div class="ed-panel-info">
+          <div class="ed-panel-info-row"><span class="k">제목</span><span class="v">${slide.title || '-'}</span></div>
+          ${slide.type ? `<div class="ed-panel-info-row"><span class="k">유형</span><span class="v">${slide.type}</span></div>` : ''}
+          ${slide.source ? `<div class="ed-panel-info-row"><span class="k">출처</span><span class="v">${slide.source}</span></div>` : ''}
+          ${(slide.tags && slide.tags.length) ? `<div class="ed-panel-info-row"><span class="k">태그</span><span class="v">${slide.tags.map(t=>'#'+t).join(' ')}</span></div>` : ''}
+        </div>`;
+    } else {
+      body = `
+        <button class="ed-panel-load" data-kind="${slide.kind}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+          ${meta.loadLabel}
+        </button>
+        <div class="ed-panel-empty">${meta.emptyMsg || '콘텐츠를 선택해 주세요.'}</div>`;
+    }
+    panel.innerHTML = `
+      <div class="ed-panel-head">${iconHtml}<span class="ed-panel-title">${meta.label}</span></div>
+      ${body}`;
+
+    const loadBtn = panel.querySelector('.ed-panel-load');
+    if (loadBtn) {
+      loadBtn.addEventListener('click', () => {
+        const k = loadBtn.dataset.kind;
+        if (SLIDE_TYPE_META[k] && SLIDE_TYPE_META[k].pickerKind) {
+          editorReplaceTargetIdx = activeSlideIdx;
+          openPicker(SLIDE_TYPE_META[k].pickerKind);
+        } else {
+          showToast('템플릿 편집 화면으로 이동합니다…');
+        }
+      });
+    }
+  }
+
+  // 패널의 "불러오기"로 진입한 경우 현재 슬라이드를 교체/채움
+  let editorReplaceTargetIdx = null;
+
+  document.getElementById('ed-back').addEventListener('click', () => {
+    closeEditor();
+    activateTab('home');
+  });
+  document.getElementById('ed-zoom-range').addEventListener('input', e => {
+    document.getElementById('ed-zoom-val').textContent = e.target.value + '%';
+    const c = document.getElementById('ed-canvas');
+    c.style.transform = `scale(${Math.max(0.5, e.target.value / 79)})`;
   });
 
   // ===== Toast =====
