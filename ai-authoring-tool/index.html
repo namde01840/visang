@@ -3254,10 +3254,11 @@
     `;
   }
 
-  function openPicker(kind) {
+  function openPicker(kind, replaceIdx = null) {
     pickerCurrent = kind;
     pickerSelectedIdx = null;
     pickerSelectedIdxs = new Set();
+    editorReplaceTargetIdx = replaceIdx;
 
     const isQbank = QBANK_MODES.has(kind);
     const modal = document.querySelector('#modal-picker .picker-modal');
@@ -3460,10 +3461,7 @@
 
   // wire big buttons (완성형 콘텐츠 4 buttons)
   document.querySelectorAll('#pane-content .tpl-big-btn').forEach(el => {
-    el.addEventListener('click', () => {
-      editorReplaceTargetIdx = null;
-      openPicker(el.dataset.import);
-    });
+    el.addEventListener('click', () => openPicker(el.dataset.import, null));
   });
 
   // subtabs inside picker
@@ -3533,6 +3531,10 @@
     document.body.style.overflow = '';
   }
   document.getElementById('open-create-modal').addEventListener('click', () => {
+    // 새 수업 = 새 슬라이드 덱: 이전 상태 초기화
+    editorSlides = [];
+    activeSlideIdx = 0;
+    editorReplaceTargetIdx = null;
     fillUnitSelect(document.getElementById('f-subject').value);
     openModal('modal-create');
   });
@@ -3721,8 +3723,7 @@
       loadBtn.addEventListener('click', () => {
         const k = loadBtn.dataset.kind;
         if (SLIDE_TYPE_META[k] && SLIDE_TYPE_META[k].pickerKind) {
-          editorReplaceTargetIdx = activeSlideIdx;
-          openPicker(SLIDE_TYPE_META[k].pickerKind);
+          openPicker(SLIDE_TYPE_META[k].pickerKind, activeSlideIdx);
         } else {
           showToast('템플릿 편집 화면으로 이동합니다…');
         }
