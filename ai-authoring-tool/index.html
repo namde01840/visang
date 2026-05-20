@@ -54,7 +54,7 @@
   .topbar {
     max-width: 1440px; margin: 0 auto;
     padding: 12px 32px;
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center;
     gap: 24px;
   }
   .brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
@@ -72,9 +72,23 @@
   .brand-text strong { font-size: 15px; letter-spacing: -0.02em; font-weight: 700; }
   .brand-text span { font-size: 10px; color: var(--ink-3); margin-top: 3px; letter-spacing: 0.04em; font-weight: 500; }
 
+  /* 학습 설정 인라인 그룹 (상단바) */
+  .context-inline {
+    display: flex; align-items: center; gap: 16px;
+    flex-wrap: wrap;
+  }
+  /* GNB 바 (하단) */
+  .gnb-wrap {
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .gnb-wrap .tabbar {
+    max-width: 1440px; margin: 0 auto;
+    padding: 0 32px;
+    justify-content: flex-start;
+  }
   .tabbar {
     display: flex; align-items: stretch;
-    flex: 1; justify-content: center;
     gap: 2px;
   }
   .tab {
@@ -99,7 +113,8 @@
   .tab .count { font-size: 11px; color: var(--ink-4); font-weight: 500; }
   .tab.active .count { color: var(--mint); }
 
-  .topbar-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; margin-left: auto; }
+  .math-only.hidden, .math-only[hidden] { display: none !important; }
   .top-search {
     background: var(--bg-2);
     border: 1px solid var(--line);
@@ -1128,6 +1143,24 @@
     font-size: 13px;
   }
 
+  /* 활동 템플릿 호버 안내 툴팁 (카드 overflow:hidden 안쪽 오버레이) */
+  .thumb-tip {
+    position: absolute;
+    left: 8px; right: 8px; bottom: 8px;
+    background: rgba(17, 24, 39, 0.92);
+    color: #FFFFFF;
+    font-size: 10.5px; font-weight: 500;
+    line-height: 1.4;
+    padding: 8px 10px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 4;
+  }
+  .thumb-card.no-score:hover .thumb-tip { opacity: 1; transform: translateY(0); }
+
   /* ========== ARTICLE PICKER POPUP ========== */
   .picker-modal { max-width: 1080px; }
   .picker-header {
@@ -1816,6 +1849,65 @@
   }
   .ed-slide-add:hover { border-color: var(--mint); color: var(--mint); }
 
+  /* 슬라이드 추가 템플릿 사이드바 */
+  .ed-add-backdrop {
+    position: absolute;
+    inset: 56px 0 44px 280px;
+    background: rgba(17,24,39,0.04);
+    z-index: 15;
+    display: none;
+  }
+  .ed-add-backdrop.open { display: block; }
+  .ed-add-panel {
+    position: absolute;
+    left: 280px; top: 56px; bottom: 44px;
+    width: 440px;
+    background: var(--paper);
+    border-right: 1px solid var(--line);
+    box-shadow: 10px 0 30px rgba(17,24,39,0.10);
+    z-index: 16;
+    overflow-y: auto;
+    padding: 22px 22px 30px;
+    display: none;
+    animation: addPanelIn 0.18s ease;
+  }
+  .ed-add-panel.open { display: block; }
+  @keyframes addPanelIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+  .ed-add-sec-title {
+    font-size: 13px; font-weight: 700; color: var(--ink-3);
+    letter-spacing: -0.01em;
+    margin: 8px 2px 12px;
+  }
+  .ed-add-sec + .ed-add-sec { margin-top: 22px; }
+  .ed-add-item {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    overflow: hidden;
+    position: relative;
+  }
+  .ed-add-item:hover {
+    border-color: var(--mint);
+    background: var(--mint-soft);
+    transform: translateY(-1px);
+  }
+  .ed-add-item .txt { z-index: 1; }
+  .ed-add-item .txt strong { display: block; font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+  .ed-add-item .txt span { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; display: block; }
+  .ed-add-item .ill {
+    width: 70px; height: 50px;
+    opacity: 0.45;
+    color: var(--ink-3);
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .ed-add-item .ill svg { width: 100%; height: 100%; }
+
   /* canvas */
   .ed-canvas-wrap {
     grid-area: ecanvas;
@@ -2049,7 +2141,7 @@
 </head>
 <body>
 
-<!-- ========== TOP BAR (GNB) ========== -->
+<!-- ========== TOP: 학습 설정(sorting) + 검색 ========== -->
 <div class="topbar-wrap">
   <header class="topbar">
     <div class="brand">
@@ -2060,57 +2152,46 @@
       </div>
     </div>
 
-    <nav class="tabbar" id="tabbar">
-      <button class="tab active" data-section="home">홈</button>
-      <button class="tab" data-section="manipulative">조작형 콘텐츠 <span class="count">128</span></button>
-      <button class="tab" data-section="lesson">차시 콘텐츠 <span class="count">324</span></button>
-      <button class="tab" data-section="canvas">매쓰캔버스 <span class="count">86</span></button>
-      <button class="tab" data-section="qbank">문제은행 <span class="count">1,204</span></button>
-    </nav>
+    <div class="context-inline">
+      <span class="context-label">학습 설정</span>
+      <div class="context-group">
+        <span class="group-name">학교급</span>
+        <select class="ctx-select" id="ctx-school">
+          <option>초등</option><option>중등</option><option>고등</option>
+        </select>
+      </div>
+      <div class="context-group">
+        <span class="group-name">학년</span>
+        <select class="ctx-select" id="ctx-grade">
+          <option>1학년</option><option>2학년</option><option>3학년</option>
+          <option>4학년</option><option>5학년</option><option>6학년</option>
+        </select>
+      </div>
+      <div class="context-group">
+        <span class="group-name">교과목</span>
+        <select class="ctx-select" id="ctx-subject">
+          <option>수학</option><option>국어</option><option>영어</option>
+          <option>과학</option><option>사회</option>
+        </select>
+      </div>
+    </div>
 
     <div class="topbar-actions">
+      <input type="text" class="top-search" placeholder="수업, 단원, 도구 검색…" />
       <button class="top-btn primary" id="open-create-modal">+ 수업 만들기</button>
     </div>
   </header>
 </div>
 
-<!-- ========== CONTEXT BAR ========== -->
-<div class="context-wrap">
-  <div class="context-bar">
-    <span class="context-label">학습 설정</span>
-    <div class="context-group">
-      <span class="group-name">학교급</span>
-      <select class="ctx-select" id="ctx-school">
-        <option>초등</option>
-        <option>중등</option>
-        <option>고등</option>
-      </select>
-    </div>
-    <div class="context-divider"></div>
-    <div class="context-group">
-      <span class="group-name">학년</span>
-      <select class="ctx-select" id="ctx-grade">
-        <option>1학년</option>
-        <option>2학년</option>
-        <option>3학년</option>
-        <option>4학년</option>
-        <option>5학년</option>
-        <option>6학년</option>
-      </select>
-    </div>
-    <div class="ctx-divider"></div>
-    <div class="context-group">
-      <span class="group-name">교과목</span>
-      <select class="ctx-select" id="ctx-subject">
-        <option>수학</option>
-        <option>국어</option>
-        <option>영어</option>
-        <option>과학</option>
-        <option>사회</option>
-      </select>
-    </div>
-    <input type="text" class="top-search" placeholder="수업, 단원, 도구 검색…" />
-  </div>
+<!-- ========== GNB (하단) ========== -->
+<div class="gnb-wrap">
+  <nav class="tabbar" id="tabbar">
+    <button class="tab active" data-section="home">홈</button>
+    <button class="tab" data-section="manipulative">조작형 콘텐츠 <span class="count">128</span></button>
+    <button class="tab" data-section="lesson">수업자료 콘텐츠 <span class="count">324</span></button>
+    <button class="tab math-only" data-section="canvas">매쓰캔버스 <span class="count">86</span></button>
+    <button class="tab" data-section="qbank">문제은행 <span class="count">1,204</span></button>
+  </nav>
 </div>
 
 <!-- ========== HERO ========== -->
@@ -2155,9 +2236,9 @@
           <div class="stats-bar-seg creative"   style="width: 14%"></div>
         </div>
         <div class="stats-legend">
-          <div class="legend-item"><span class="legend-dot" style="background:var(--curriculum)"></span>차시 콘텐츠<span class="num">221</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--curriculum)"></span>수업자료 콘텐츠<span class="num">221</span></div>
           <div class="legend-item"><span class="legend-dot" style="background:var(--tool)"></span>조작형<span class="num">128</span></div>
-          <div class="legend-item"><span class="legend-dot" style="background:var(--theme)"></span>매쓰캔버스<span class="num">105</span></div>
+          <div class="legend-item math-only"><span class="legend-dot" style="background:var(--theme)"></span>매쓰캔버스<span class="num">105</span></div>
           <div class="legend-item"><span class="legend-dot" style="background:var(--creative)"></span>문제은행<span class="num">74</span></div>
         </div>
       </div>
@@ -2194,7 +2275,7 @@
       <div class="row-header">
         <div class="row-header-left">
           <span class="row-eyebrow" style="--row-accent: var(--curriculum)">CURRICULUM</span>
-          <h2 class="row-title">차시 콘텐츠</h2>
+          <h2 class="row-title">수업자료 콘텐츠</h2>
           <span class="row-desc">교과서 단원 흐름에 맞춘 한 차시 분량 슬라이드</span>
         </div>
         <button class="row-link" data-go="lesson">더보기 →</button>
@@ -2203,7 +2284,7 @@
     </section>
 
     <!-- Row 4: 매쓰캔버스 -->
-    <section class="row-section">
+    <section class="row-section math-only">
       <div class="row-header">
         <div class="row-header-left">
           <span class="row-eyebrow" style="--row-accent: var(--theme)">MATHCANVAS</span>
@@ -2302,9 +2383,6 @@
     <div class="modal-header">
       <h3 class="modal-title">슬라이드 만들기</h3>
     </div>
-    <div class="modal-tab-row">
-      <button class="modal-tab active">기본 정보</button>
-    </div>
     <div class="modal-body">
       <div class="form-grid">
         <span class="form-label">슬라이드 이름</span>
@@ -2383,7 +2461,7 @@
             <span class="bb-arrow">→</span>
           </button>
 
-          <button class="tpl-big-btn" data-accent="theme" data-import="canvas">
+          <button class="tpl-big-btn math-only" data-accent="theme" data-import="canvas">
             <div class="bb-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </div>
@@ -2512,6 +2590,10 @@
 
   <aside class="ed-panel" id="ed-panel"></aside>
 
+  <!-- 슬라이드 추가 템플릿 선택 사이드바 -->
+  <div class="ed-add-backdrop" id="ed-add-backdrop"></div>
+  <div class="ed-add-panel" id="ed-add-panel"></div>
+
   <footer class="ed-bottom">
     <div class="ed-bottom-left">
       <button class="ed-grid-btn" title="전체 보기"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
@@ -2609,6 +2691,7 @@
       quiz:  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
       tool:  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
       qmark: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>',
+      activity: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="14" y2="13"/><circle cx="7" cy="9" r="0.6" fill="currentColor"/></svg>',
     };
     return map[kind] || map.blank;
   }
@@ -2737,6 +2820,14 @@
         { name: '연결형',     meta: '선으로 연결',           thumb: 'connect' },
       ]
     },
+    { id: 'activity', name: '활동 템플릿', sub: '학생 참여를 이끄는 활동형 콘텐츠를 만들어 보세요.', accent: 'item', icon: 'activity', noScore: true,
+      leaves: [
+        { name: '선택형 활동', meta: '활동지 · 보기 선택',   thumb: 'choice' },
+        { name: '단답형 활동', meta: '활동지 · 짧은 답 입력', thumb: 'short' },
+        { name: '서술형 활동', meta: '활동지 · 자유 서술',   thumb: 'longwrite' },
+        { name: '연쇄형 활동', meta: '활동지 · 단계별 풀이', thumb: 'chain' },
+      ]
+    },
   ];
 
   // 미니 SVG 썸네일 (간단한 미리보기 일러스트)
@@ -2791,6 +2882,7 @@
       order: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><text x="20" y="22" font-family="Pretendard,sans-serif" font-size="11" font-weight="800" fill="currentColor" stroke="none">1</text><text x="20" y="36" font-family="Pretendard,sans-serif" font-size="11" font-weight="800" fill="currentColor" stroke="none">2</text><text x="20" y="50" font-family="Pretendard,sans-serif" font-size="11" font-weight="800" fill="currentColor" stroke="none">3</text><line x1="32" y1="20" x2="84" y2="20"/><line x1="32" y1="34" x2="84" y2="34"/><line x1="32" y1="48" x2="84" y2="48"/></svg>`,
       reorder: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="14" y="14" width="72" height="10" rx="3"/><rect x="14" y="26" width="72" height="10" rx="3"/><rect x="14" y="38" width="72" height="10" rx="3"/><path d="M76 18l4 3-4 3M76 30l4 3-4 3M76 42l4 3-4 3" fill="none" stroke-linecap="round"/></svg>`,
       connect: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="22" cy="18" r="3" fill="currentColor"/><circle cx="22" cy="42" r="3" fill="currentColor"/><circle cx="78" cy="18" r="3" fill="currentColor"/><circle cx="78" cy="42" r="3" fill="currentColor"/><path d="M22 18Q50 30 78 42"/><path d="M22 42Q50 30 78 18"/></svg>`,
+      longwrite: `<svg viewBox="0 0 100 60" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="10" width="46" height="40" rx="3"/><line x1="28" y1="22" x2="58" y2="22"/><line x1="28" y1="30" x2="58" y2="30"/><line x1="28" y1="38" x2="46" y2="38"/><path d="M60 46 L74 32 L80 38 L66 52 Z" fill="rgba(0,0,0,0.04)"/><path d="M60 46 L74 32 L80 38 L66 52 Z"/></svg>`,
     };
     return s[kind] || s.blank;
   }
@@ -2833,13 +2925,14 @@
       return;
     }
     root.innerHTML = list.map(l => `
-      <article class="thumb-card" data-accent="${cat.accent}" data-name="${l.name}">
+      <article class="thumb-card${cat.noScore ? ' no-score' : ''}" data-accent="${cat.accent}" data-name="${l.name}">
         ${l.tag ? `<span class="tag ${l.tag.toLowerCase() === 'new' ? 'new' : 'hot'}">${l.tag}</span>` : ''}
         <div class="thumb-preview">${thumbSvg(l.thumb)}</div>
         <div class="thumb-body">
           <span class="thumb-name">${l.name}</span>
           <span class="thumb-meta">${l.meta || ''}</span>
         </div>
+        ${cat.noScore ? `<span class="thumb-tip">문항 템플릿과는 달리 결과 채점이 되지 않습니다.</span>` : ''}
       </article>
     `).join('');
     root.querySelectorAll('.thumb-card').forEach(card => {
@@ -3560,6 +3653,7 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       ['modal-create','modal-template','modal-picker','modal-preview'].forEach(id => closeModal(id));
+      closeAddPanel();
     }
   });
 
@@ -3628,6 +3722,7 @@
   function closeEditor() {
     document.getElementById('editor').classList.remove('open');
     document.body.style.overflow = '';
+    closeAddPanel();
   }
 
   function renderEditor() {
@@ -3661,13 +3756,68 @@
         renderEditor();
       });
     });
-    document.getElementById('ed-add-slide').addEventListener('click', () => {
-      // 빈 슬라이드: 콘텐츠 선택하기 모달을 다시 열어 추가
-      openModal('modal-template');
-      const firstTab = document.querySelector('#tpl-toptabs .tpl-modal-tab');
-      if (firstTab) firstTab.click();
+    document.getElementById('ed-add-slide').addEventListener('click', openAddPanel);
+  }
+
+  // ===== 슬라이드 추가 템플릿 사이드바 =====
+  const ADD_PANEL = [
+    { title: '페이지 만들기', items: [
+      { label: '일반 페이지', desc: '손 쉽게 페이지 만들기',   kind: 'template', tpl: { catName:'일반 페이지', name:'일반 페이지', accent:'blank', thumb:'blank', meta:'백지 16:9' }, ill: 'blank' },
+      { label: '매쓰캔버스',  desc: '공유 캔버스 불러오기',     kind: 'canvas',   mathOnly: true, ill: 'canvas' },
+      { label: '문제은행',    desc: '단원·난이도별 문항',       kind: 'qbank',    ill: 'qbank' },
+    ]},
+    { title: '퀴즈 만들기', items: [
+      { label: '선지형',   desc: '4지선다 · 자동 채점', kind:'template', tpl:{catName:'1분 퀴즈 만들기', name:'선지형',   accent:'quiz', thumb:'choice', meta:'4지선다'}, ill:'choice' },
+      { label: 'O/X 퀴즈', desc: '단일 OX · 즉시 응답',  kind:'template', tpl:{catName:'1분 퀴즈 만들기', name:'O/X 퀴즈', accent:'quiz', thumb:'ox',     meta:'단일 OX'}, ill:'ox' },
+      { label: '돌림판',   desc: '랜덤 추첨 · 게임형',    kind:'template', tpl:{catName:'1분 퀴즈 만들기', name:'돌림판',   accent:'quiz', thumb:'spin',   meta:'랜덤 추첨'}, ill:'spin' },
+      { label: '사다리',   desc: '경로 분기 · 게임형',    kind:'template', tpl:{catName:'1분 퀴즈 만들기', name:'사다리',   accent:'quiz', thumb:'ladder', meta:'경로 분기'}, ill:'ladder' },
+    ]},
+  ];
+
+  function makeEmptyTypeSlide(kind) {
+    return { kind, filled: false, title: '', tags: [] };
+  }
+
+  function renderAddPanel() {
+    const hideCanvas = currentSubject() !== '수학';
+    const root = document.getElementById('ed-add-panel');
+    root.innerHTML = ADD_PANEL.map(sec => `
+      <div class="ed-add-sec">
+        <div class="ed-add-sec-title">${sec.title}</div>
+        ${sec.items.filter(it => !(it.mathOnly && hideCanvas)).map((it, i) => `
+          <div class="ed-add-item" data-sec="${sec.title}" data-label="${it.label}">
+            <div class="txt"><strong>${it.label}</strong><span>${it.desc}</span></div>
+            <div class="ill">${thumbSvg(it.ill === 'qbank' ? 'short' : (it.ill === 'canvas' ? 'flip' : it.ill))}</div>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+
+    // 클릭 → 슬라이드 추가
+    root.querySelectorAll('.ed-add-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const sec = ADD_PANEL.find(s => s.title === el.dataset.sec);
+        const item = sec.items.find(i => i.label === el.dataset.label);
+        const slide = item.kind === 'template' ? makeSlideFromTemplate(item.tpl) : makeEmptyTypeSlide(item.kind);
+        const insertAt = activeSlideIdx + 1;
+        editorSlides.splice(insertAt, 0, slide);
+        activeSlideIdx = insertAt;
+        closeAddPanel();
+        renderEditor();
+      });
     });
   }
+
+  function openAddPanel() {
+    renderAddPanel();
+    document.getElementById('ed-add-panel').classList.add('open');
+    document.getElementById('ed-add-backdrop').classList.add('open');
+  }
+  function closeAddPanel() {
+    document.getElementById('ed-add-panel').classList.remove('open');
+    document.getElementById('ed-add-backdrop').classList.remove('open');
+  }
+  document.getElementById('ed-add-backdrop').addEventListener('click', closeAddPanel);
 
   function renderCanvas() {
     const canvas = document.getElementById('ed-canvas');
@@ -3806,13 +3956,31 @@
     sel.innerHTML = opts.map(o => `<option>${o}</option>`).join('');
   }
 
+  // ===== 교과목별 매쓰캔버스 노출 제어 =====
+  // 수학 외 교과목 선택 시 매쓰캔버스 관련 GNB/디스플레이/팝업 요소(.math-only)를 숨김
+  function currentSubject() {
+    return document.getElementById('ctx-subject').value;
+  }
+  function applySubjectVisibility(subject) {
+    const hide = subject !== '수학';
+    document.querySelectorAll('.math-only').forEach(el => { el.hidden = hide; });
+    // 매쓰캔버스 탭이 활성 상태에서 숨겨지면 홈으로 이동
+    if (hide) {
+      const canvasTab = document.querySelector('.tab[data-section="canvas"]');
+      if (canvasTab && canvasTab.classList.contains('active')) activateTab('home');
+    }
+  }
+
   // ===== Context bar updates form defaults =====
   ['ctx-school','ctx-grade','ctx-subject'].forEach(id => {
     document.getElementById(id).addEventListener('change', e => {
       const targetId = { 'ctx-school':'f-school','ctx-grade':'f-grade','ctx-subject':'f-subject' }[id];
       const target = document.getElementById(targetId);
       if (target) target.value = e.target.value;
-      if (id === 'ctx-subject') fillUnitSelect(e.target.value);
+      if (id === 'ctx-subject') {
+        fillUnitSelect(e.target.value);
+        applySubjectVisibility(e.target.value);
+      }
     });
   });
 
@@ -3834,6 +4002,7 @@
   // ===== Init =====
   renderHome();
   renderTemplateTree();
+  applySubjectVisibility(currentSubject());
 </script>
 </body>
 </html>
