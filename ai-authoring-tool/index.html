@@ -1037,9 +1037,12 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
+    align-content: start;
   }
+  /* 일반 페이지(단일 카드): 전체 너비로 커지지 않도록 폭 제한 + 가로 가운데 */
   .thumb-grid.cols-1 {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 300px);
+    justify-content: center;
   }
   .thumb-card {
     background: var(--paper);
@@ -1087,7 +1090,7 @@
   .thumb-card .tag.hot   { background: var(--creative); }
 
   .thumb-preview {
-    aspect-ratio: 16 / 11;
+    aspect-ratio: 16 / 10;
     background: linear-gradient(180deg, #F8FAFB 0%, #ECEFF3 100%);
     display: grid; place-items: center;
     border-bottom: 1px solid var(--line-2);
