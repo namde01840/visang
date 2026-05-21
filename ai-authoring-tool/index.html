@@ -1849,65 +1849,6 @@
   }
   .ed-slide-add:hover { border-color: var(--mint); color: var(--mint); }
 
-  /* 슬라이드 추가 템플릿 사이드바 */
-  .ed-add-backdrop {
-    position: absolute;
-    inset: 56px 0 44px 280px;
-    background: rgba(17,24,39,0.04);
-    z-index: 15;
-    display: none;
-  }
-  .ed-add-backdrop.open { display: block; }
-  .ed-add-panel {
-    position: absolute;
-    left: 280px; top: 56px; bottom: 44px;
-    width: 440px;
-    background: var(--paper);
-    border-right: 1px solid var(--line);
-    box-shadow: 10px 0 30px rgba(17,24,39,0.10);
-    z-index: 16;
-    overflow-y: auto;
-    padding: 22px 22px 30px;
-    display: none;
-    animation: addPanelIn 0.18s ease;
-  }
-  .ed-add-panel.open { display: block; }
-  @keyframes addPanelIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
-  .ed-add-sec-title {
-    font-size: 13px; font-weight: 700; color: var(--ink-3);
-    letter-spacing: -0.01em;
-    margin: 8px 2px 12px;
-  }
-  .ed-add-sec + .ed-add-sec { margin-top: 22px; }
-  .ed-add-item {
-    display: flex; align-items: center; justify-content: space-between;
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 16px 18px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: all 0.15s;
-    overflow: hidden;
-    position: relative;
-  }
-  .ed-add-item:hover {
-    border-color: var(--mint);
-    background: var(--mint-soft);
-    transform: translateY(-1px);
-  }
-  .ed-add-item .txt { z-index: 1; }
-  .ed-add-item .txt strong { display: block; font-size: 15px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
-  .ed-add-item .txt span { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; display: block; }
-  .ed-add-item .ill {
-    width: 70px; height: 50px;
-    opacity: 0.45;
-    color: var(--ink-3);
-    display: grid; place-items: center;
-    flex-shrink: 0;
-  }
-  .ed-add-item .ill svg { width: 100%; height: 100%; }
-
   /* canvas */
   .ed-canvas-wrap {
     grid-area: ecanvas;
@@ -2589,10 +2530,6 @@
   </div>
 
   <aside class="ed-panel" id="ed-panel"></aside>
-
-  <!-- 슬라이드 추가 템플릿 선택 사이드바 -->
-  <div class="ed-add-backdrop" id="ed-add-backdrop"></div>
-  <div class="ed-add-panel" id="ed-add-panel"></div>
 
   <footer class="ed-bottom">
     <div class="ed-bottom-left">
@@ -3631,6 +3568,7 @@
     editorSlides = [];
     activeSlideIdx = 0;
     editorReplaceTargetIdx = null;
+    addInsertIdx = null;
     fillUnitSelect(document.getElementById('f-subject').value);
     openModal('modal-create');
   });
@@ -3692,6 +3630,7 @@
 
   let editorSlides = [];
   let activeSlideIdx = 0;
+  let addInsertIdx = null; // null = 끝에 추가, 숫자 = 해당 인덱스 뒤에 삽입(에디터 + 추가)
 
   function makeSlideFromPickerItem(kind, item, idx) {
     return { kind, item, idx, cv: item.cv, title: item.title, type: item.type, source: item.source, tags: item.tags || [], filled: true };
@@ -3705,10 +3644,18 @@
     if (!newSlides.length) return;
     editorReplaceTargetIdx = null;
     const wasEmpty = editorSlides.length === 0;
-    editorSlides = editorSlides.concat(newSlides);
-    activeSlideIdx = wasEmpty ? 0 : editorSlides.length - newSlides.length;
+    if (!wasEmpty && addInsertIdx != null) {
+      // 에디터 + 추가: 현재 슬라이드 다음 위치에 삽입
+      const at = Math.min(addInsertIdx + 1, editorSlides.length);
+      editorSlides.splice(at, 0, ...newSlides);
+      activeSlideIdx = at;
+    } else {
+      editorSlides = editorSlides.concat(newSlides);
+      activeSlideIdx = wasEmpty ? 0 : editorSlides.length - newSlides.length;
+    }
+    addInsertIdx = null;
     const nameInput = document.getElementById('f-name');
-    if (nameInput && nameInput.value) document.getElementById('ed-name').textContent = nameInput.value;
+    if (nameInput && nameInput.value && wasEmpty) document.getElementById('ed-name').textContent = nameInput.value;
     closeModal('modal-picker');
     closeModal('modal-template');
     openEditor();
@@ -3759,65 +3706,24 @@
     document.getElementById('ed-add-slide').addEventListener('click', openAddPanel);
   }
 
-  // ===== 슬라이드 추가 템플릿 사이드바 =====
-  const ADD_PANEL = [
-    { title: '페이지 만들기', items: [
-      { label: '일반 페이지', desc: '손 쉽게 페이지 만들기',   kind: 'template', tpl: { catName:'일반 페이지', name:'일반 페이지', accent:'blank', thumb:'blank', meta:'백지 16:9' }, ill: 'blank' },
-      { label: '매쓰캔버스',  desc: '공유 캔버스 불러오기',     kind: 'canvas',   mathOnly: true, ill: 'canvas' },
-      { label: '문제은행',    desc: '단원·난이도별 문항',       kind: 'qbank',    ill: 'qbank' },
-    ]},
-    { title: '퀴즈 만들기', items: [
-      { label: '선지형',   desc: '4지선다 · 자동 채점', kind:'template', tpl:{catName:'1분 퀴즈 만들기', name:'선지형',   accent:'quiz', thumb:'choice', meta:'4지선다'}, ill:'choice' },
-      { label: 'O/X 퀴즈', desc: '단일 OX · 즉시 응답',  kind:'template', tpl:{catName:'1분 퀴즈 만들기', name:'O/X 퀴즈', accent:'quiz', thumb:'ox',     meta:'단일 OX'}, ill:'ox' },
-      { label: '돌림판',   desc: '랜덤 추첨 · 게임형',    kind:'template', tpl:{catName:'1분 퀴즈 만들기', name:'돌림판',   accent:'quiz', thumb:'spin',   meta:'랜덤 추첨'}, ill:'spin' },
-      { label: '사다리',   desc: '경로 분기 · 게임형',    kind:'template', tpl:{catName:'1분 퀴즈 만들기', name:'사다리',   accent:'quiz', thumb:'ladder', meta:'경로 분기'}, ill:'ladder' },
-    ]},
-  ];
-
-  function makeEmptyTypeSlide(kind) {
-    return { kind, filled: false, title: '', tags: [] };
-  }
-
-  function renderAddPanel() {
-    const hideCanvas = currentSubject() !== '수학';
-    const root = document.getElementById('ed-add-panel');
-    root.innerHTML = ADD_PANEL.map(sec => `
-      <div class="ed-add-sec">
-        <div class="ed-add-sec-title">${sec.title}</div>
-        ${sec.items.filter(it => !(it.mathOnly && hideCanvas)).map((it, i) => `
-          <div class="ed-add-item" data-sec="${sec.title}" data-label="${it.label}">
-            <div class="txt"><strong>${it.label}</strong><span>${it.desc}</span></div>
-            <div class="ill">${thumbSvg(it.ill === 'qbank' ? 'short' : (it.ill === 'canvas' ? 'flip' : it.ill))}</div>
-          </div>
-        `).join('')}
-      </div>
-    `).join('');
-
-    // 클릭 → 슬라이드 추가
-    root.querySelectorAll('.ed-add-item').forEach(el => {
-      el.addEventListener('click', () => {
-        const sec = ADD_PANEL.find(s => s.title === el.dataset.sec);
-        const item = sec.items.find(i => i.label === el.dataset.label);
-        const slide = item.kind === 'template' ? makeSlideFromTemplate(item.tpl) : makeEmptyTypeSlide(item.kind);
-        const insertAt = activeSlideIdx + 1;
-        editorSlides.splice(insertAt, 0, slide);
-        activeSlideIdx = insertAt;
-        closeAddPanel();
-        renderEditor();
-      });
-    });
-  }
-
+  // ===== 슬라이드 추가: 콘텐츠 선택하기 팝업과 동일한 구성으로 진입 =====
   function openAddPanel() {
-    renderAddPanel();
-    document.getElementById('ed-add-panel').classList.add('open');
-    document.getElementById('ed-add-backdrop').classList.add('open');
+    addInsertIdx = activeSlideIdx;            // 현재 슬라이드 다음 위치에 삽입
+    setSelectedTemplate('없음');
+    selectedTemplateData = null;
+    document.querySelectorAll('#tpl-thumbs .thumb-card.selected').forEach(c => c.classList.remove('selected'));
+    const firstTab = document.querySelector('#tpl-toptabs .tpl-modal-tab');
+    if (firstTab) firstTab.click();           // 완성형 콘텐츠 탭부터 표시
+    openModal('modal-template');
   }
   function closeAddPanel() {
-    document.getElementById('ed-add-panel').classList.remove('open');
-    document.getElementById('ed-add-backdrop').classList.remove('open');
+    const p = document.getElementById('ed-add-panel');
+    const b = document.getElementById('ed-add-backdrop');
+    if (p) p.classList.remove('open');
+    if (b) b.classList.remove('open');
   }
-  document.getElementById('ed-add-backdrop').addEventListener('click', closeAddPanel);
+  const _addBackdrop = document.getElementById('ed-add-backdrop');
+  if (_addBackdrop) _addBackdrop.addEventListener('click', closeAddPanel);
 
   function renderCanvas() {
     const canvas = document.getElementById('ed-canvas');
