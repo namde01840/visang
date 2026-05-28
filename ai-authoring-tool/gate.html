@@ -904,6 +904,7 @@
 
   // device screen mockup per category
   function deviceScreen(cat) {
+    if (gateSubject === '영어') return deviceScreenEn(cat);
     if (cat.id === 'tool') return `
       <svg viewBox="0 0 400 262" width="100%">
         <rect width="400" height="262" fill="#fff"/>
@@ -1008,6 +1009,7 @@
   }
   function renderStage() {
     const c = CATS[activeCat];
+    const cd = catData(c);
     const stage = document.getElementById('stage');
     stage.style.setProperty('--c', c.c);
     stage.style.setProperty('--c-soft', c.soft);
@@ -1017,12 +1019,12 @@
       <div class="stage-grid">
         <div class="stage-left stage-pane active">
           <span class="stage-ey"><span class="pill"></span>${c.eyebrow}</span>
-          <h3>${c.title}</h3>
-          <p>${c.desc}</p>
+          <h3>${cd.title}</h3>
+          <p>${cd.desc}</p>
           <div class="stage-feats">
-            ${c.feats.map(f=>`<div class="feat"><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>${f}</div>`).join('')}
+            ${cd.feats.map(f=>`<div class="feat"><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>${f}</div>`).join('')}
           </div>
-          <div class="stage-tags">${c.tags.map(t=>`<span class="stage-tag">${t}</span>`).join('')}</div>
+          <div class="stage-tags">${cd.tags.map(t=>`<span class="stage-tag">${t}</span>`).join('')}</div>
           <a class="stage-cta" href="./index.html?cat=${SECTION_FOR[c.id]}">${c.name} 담기
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
@@ -1032,13 +1034,14 @@
             <div class="device-bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="t">${c.screenTag}</span></div>
             <div class="device-screen">${deviceScreen(c)}</div>
           </div>
+          ${gateSubject!=='수학'&&gateSubject!=='영어'?`<div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:11px;color:var(--ink-3);">${gateSubject} 콘텐츠는 순차 오픈 예정입니다</div>`:''}
         </div>
       </div>`;
   }
 
   // ===== showcase =====
   function renderShowcase() {
-    document.getElementById('show-rail').innerHTML = SHOWCASE.map(s=>{
+    document.getElementById('show-rail').innerHTML = showcaseData().map(s=>{
       const col = showVis(s.id);
       return `
       <article class="scard">
@@ -1162,6 +1165,8 @@
     DECK.grade=document.getElementById('gs-grade').value;
     DECK.subject=document.getElementById('gs-subject').value;
     DECK.unit=document.getElementById('gs-unit').value;
+    gateSubject = DECK.subject;          // 메인 콘텐츠를 교과목에 맞춰 갱신
+    renderStage(); renderShowcase();
     closeGS();
   });
   document.getElementById('open-gset').addEventListener('click', openGS);
@@ -1221,6 +1226,115 @@
     qbank:{ label:'스마트 문제은행', accent:'#FF7A52', unit:'문항' },
   };
   const TOTALS = { manipulative:'96,589', lesson:'9,672', canvas:'428', qbank:'171,668' };
+
+  // ===== 교과목별 콘텐츠 팩 (수학 기본 + 영어) =====
+  let gateSubject = '수학';
+  const MATH_AREAS = ['수와 연산','도형과 측정','변화와 관계','자료와 가능성'];
+  const EN_AREAS   = ['어휘','문법','듣기','말하기','읽기·쓰기'];
+
+  const PACKS = {
+    '영어': {
+      areas: EN_AREAS,
+      cats: {
+        tool:       { title:'듣고 말하며 익히는<br>영어 활동', desc:'영단어·발음·문장 활동으로 표현력을 키웁니다. 학생이 직접 말하고 조작하며 영어와 친해집니다.', feats:['단어 의미 매칭·플래시카드','원어민 발음 듣고 따라하기','AI와 영어로 대화하기'], tags:['영단어 퀴즈','발음 연습','빈칸 채우기','롤플레잉','플래시카드'] },
+        curriculum: { title:'Lesson 흐름 그대로,<br>바로 쓰는 영어 수업', desc:'교과서 Lesson 단원에 맞춰 설계된 완성형 수업자료. 듣기·말하기·읽기·쓰기를 한 흐름으로 이어줍니다.', feats:['교과서 Lesson 단원 정렬','말하기–듣기 통합 구성','형성평가까지 한 흐름'], tags:['Greetings','School Life','Around Town','Healthy Habits'] },
+        theme:      { title:'함께 쓰고 말하는<br>공유 캔버스', desc:'문장 카드와 그림을 올려놓고 학생들과 한 화면에서 영어로 표현하고 토의합니다.', feats:['실시간 공동 편집','문장 배열·그림 묘사','모둠별 발표 공유'], tags:['문장 배열','그림 묘사','마인드맵','역할극'] },
+        creative:   { title:'비상교육 영어 문항으로<br>스마트 평가', desc:'듣기·어휘·문법 문항을 학교급·난이도로 골라 담고, 응답은 자동으로 채점됩니다.', feats:['듣기·어휘·문법 출제','난이도별 정밀 필터','응답 자동 채점·분석'], tags:['어휘','문법','듣기','독해','말하기'] },
+      },
+      showcase: [
+        { id:'tool', cat:'활동형 콘텐츠', title:'영단어 플래시카드 — Animals', meta:'초3 · 어휘 · 1,120회 사용' },
+        { id:'curriculum', cat:'수업자료 콘텐츠', title:'Lesson 1. Nice to Meet You', meta:'중1 · 도입~정리' },
+        { id:'theme', cat:'매쓰캔버스', title:'문장 카드로 함께 만드는 대화', meta:'중1 · 협업 캔버스' },
+        { id:'creative', cat:'스마트 문제은행', title:'기초 어휘 형성평가 10문항', meta:'객관식·듣기 · 자동채점' },
+        { id:'tool', cat:'활동형 콘텐츠', title:'발음 따라하기 — Food', meta:'초4 · 말하기 · 880회 사용' },
+        { id:'curriculum', cat:'수업자료 콘텐츠', title:'Lesson 3. Around the Town', meta:'중1 · 말하기 활동' },
+        { id:'creative', cat:'스마트 문제은행', title:'현재시제 문법 8문항', meta:'객관식 · 자동채점' },
+      ],
+      picker: {
+        manipulative: [
+          { type:'활동형', title:'영단어 플래시카드 — Animals', source:'디지털 교구', area:'어휘', tags:['어휘','카드'], preview:'icon', snippet:'box' },
+          { type:'활동형', title:'발음 듣고 따라하기 — Food', source:'디지털 교구', area:'말하기', tags:['발음','말하기'], preview:'lines', snippet:'원어민 발음을 듣고 따라 말해 보세요' },
+          { type:'활동형', title:'빈칸 채우기 — be동사', source:'디지털 교구', area:'문법', tags:['문법','빈칸'], preview:'lines', snippet:'빈칸에 알맞은 be동사를 넣으세요' },
+          { type:'활동형', title:'롤플레잉 — At the Store', source:'디지털 교구', area:'말하기', tags:['대화','역할극'], preview:'lines', snippet:'상황에 맞게 역할을 정해 대화해 보세요' },
+          { type:'활동형', title:'카드 뒤집기 — Sight Words', source:'디지털 교구', area:'어휘', tags:['어휘','게임'], preview:'icon', snippet:'box' },
+          { type:'활동형', title:'AI와 영어로 대화하기', source:'디지털 교구', area:'말하기', tags:['AI','대화'], preview:'longtext', snippet:'AI 친구와 자유롭게 영어로 대화해요' },
+          { type:'활동형', title:'듣고 고르기 — Daily Life', source:'디지털 교구', area:'듣기', tags:['듣기'], preview:'chart', snippet:'bar' },
+        ],
+        lesson: [
+          { type:'수업자료', title:'Lesson 1. Nice to Meet You — 도입', source:'교사용 지도서', area:'말하기', tags:['Greetings','도입'], preview:'lines', snippet:'오늘 배울 인사 표현을 알아봅시다' },
+          { type:'수업자료', title:'Lesson 2. My School Life — 표현', source:'교사용 지도서', area:'읽기·쓰기', tags:['School Life'], preview:'grid', snippet:'학교생활 표현 정리' },
+          { type:'수업자료', title:'Lesson 3. Around the Town — 말하기', source:'교사용 지도서', area:'말하기', tags:['Around Town'], preview:'chain', snippet:'길 묻고 답하기' },
+          { type:'수업자료', title:'Lesson 4. Healthy Habits — 듣기', source:'교사용 지도서', area:'듣기', tags:['Healthy'], preview:'chart', snippet:'bar' },
+          { type:'수업자료', title:'Lesson 5. Special Days — 읽기', source:'교사용 지도서', area:'읽기·쓰기', tags:['Reading'], preview:'longtext', snippet:'특별한 날에 관한 글 읽기' },
+        ],
+        canvas: [
+          { title:'문장 카드 배열 — Word Order', area:'문법', cv:'inputrow', tags:['문장','문법'] },
+          { title:'그림 보고 말하기 — Describe It', area:'말하기', cv:'sticky', tags:['묘사','말하기'] },
+          { title:'어휘 마인드맵 — My Family', area:'어휘', cv:'coord', tags:['어휘','마인드맵'] },
+          { title:'역할극 대본 함께 쓰기', area:'쓰기', cv:'beads', tags:['역할극','쓰기'] },
+        ],
+        qbank: [
+          { type:'객관식', title:'기초 어휘 — Animals', source:'교과서 QR 문항', area:'어휘', tags:['어휘'], preview:'lines', snippet:'Choose the correct word.' },
+          { type:'객관식', title:'현재시제 문법', source:'교과서 QR 문항', area:'문법', tags:['문법'], preview:'lines', snippet:'Fill in the blank with the correct verb.' },
+          { type:'주관식', title:'듣고 받아쓰기 — Numbers', source:'교과서 QR 문항', area:'듣기', tags:['듣기','받아쓰기'], preview:'longtext', snippet:'Listen and write what you hear.' },
+          { type:'객관식', title:'독해 추론 — Short Story', source:'교과서 QR 문항', area:'읽기·쓰기', tags:['독해'], preview:'longtext', snippet:'Read and answer the question.' },
+          { type:'객관식', title:'be동사 문법', source:'교과서 QR 문항', area:'문법', tags:['문법','be동사'], preview:'lines', snippet:'Choose the correct be verb.' },
+        ],
+      },
+    },
+  };
+
+  // 교과목 인지 접근자 (팩 없으면 수학 기본)
+  function catData(c){
+    const p = PACKS[gateSubject] && PACKS[gateSubject].cats[c.id];
+    return p ? { title:p.title, desc:p.desc, feats:p.feats, tags:p.tags } : { title:c.title, desc:c.desc, feats:c.feats, tags:c.tags };
+  }
+  function showcaseData(){ return (PACKS[gateSubject] && PACKS[gateSubject].showcase) || SHOWCASE; }
+  function pickerData(kind){ return (PACKS[gateSubject] && PACKS[gateSubject].picker[kind]) || PICKER_DATA[kind]; }
+  function areaList(){ return (PACKS[gateSubject] && PACKS[gateSubject].areas) || MATH_AREAS; }
+
+  // 영어 디바이스 목업
+  function deviceScreenEn(cat){
+    if (cat.id === 'tool') return `
+      <svg viewBox="0 0 400 262" width="100%"><rect width="400" height="262" fill="#fff"/>
+        <text x="28" y="44" font-family="Pretendard" font-size="18" font-weight="800" fill="#0E1424">Flashcard · Animals</text>
+        <rect x="28" y="64" width="344" height="120" rx="12" fill="#E6FAF9" stroke="#1AD1C6" stroke-width="1.5"/>
+        <text x="200" y="120" text-anchor="middle" font-size="34" font-weight="900" fill="#0E8C86">RABBIT</text>
+        <text x="200" y="152" text-anchor="middle" font-size="15" fill="#0E1424">토끼</text>
+        <circle cx="350" cy="92" r="13" fill="#1AD1C6"/><path d="M345 92l8-5v10z" fill="#fff"/>
+        <rect x="28" y="200" width="160" height="36" rx="8" fill="#1AD1C6"/><text x="108" y="224" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">다음 카드 →</text>
+      </svg>`;
+    if (cat.id === 'curriculum') return `
+      <svg viewBox="0 0 400 262" width="100%"><rect width="400" height="262" fill="#fff"/>
+        <rect width="400" height="52" fill="#36D399"/><text x="24" y="33" font-family="Pretendard" font-size="16" font-weight="800" fill="#06281C">Lesson 1. Nice to Meet You</text>
+        <text x="28" y="90" font-size="13" font-weight="700" fill="#0E1424">Dialogue</text>
+        <rect x="28" y="102" width="250" height="28" rx="14" fill="#EAF7F1"/><text x="44" y="121" font-size="12" fill="#1C8C63">A: Hi, I'm Mina.</text>
+        <rect x="120" y="138" width="250" height="28" rx="14" fill="#F4F6F5"/><text x="136" y="157" font-size="12" fill="#374151">B: Nice to meet you!</text>
+        <rect x="28" y="180" width="250" height="28" rx="14" fill="#EAF7F1"/><text x="44" y="199" font-size="12" fill="#1C8C63">A: Nice to meet you, too.</text>
+      </svg>`;
+    if (cat.id === 'theme') return `
+      <svg viewBox="0 0 400 262" width="100%"><rect width="400" height="262" fill="#fff"/>
+        <defs><pattern id="gpe" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#EEF0FB" stroke-width="1"/></pattern></defs>
+        <rect width="400" height="262" fill="url(#gpe)"/>
+        <rect x="40" y="60" width="90" height="40" rx="8" fill="#9B8CFF" opacity="0.9"/><text x="85" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">I</text>
+        <rect x="150" y="60" width="90" height="40" rx="8" fill="#FF7A52" opacity="0.85"/><text x="195" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">like</text>
+        <rect x="260" y="60" width="100" height="40" rx="8" fill="#36D399" opacity="0.85"/><text x="310" y="85" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">apples</text>
+        <text x="40" y="150" font-size="13" fill="#6B7280">문장을 순서대로 배열해 보세요</text>
+        <circle cx="120" cy="200" r="10" fill="#9B8CFF"/><circle cx="300" cy="190" r="10" fill="#FF7A52"/>
+      </svg>`;
+    return `
+      <svg viewBox="0 0 400 262" width="100%"><rect width="400" height="262" fill="#fff"/>
+        <rect x="24" y="22" width="150" height="22" rx="11" fill="#FFE9E1"/><text x="40" y="38" font-family="Pretendard" font-size="12" font-weight="800" fill="#C24B2A">객관식 · 자동채점</text>
+        <text x="24" y="74" font-family="Pretendard" font-size="16" font-weight="800" fill="#0E1424">Choose the correct word.</text>
+        <g transform="translate(24 92)" font-family="Pretendard" font-size="13" fill="#0E1424">
+          <circle cx="12" cy="14" r="9" fill="none" stroke="#D9DEE6" stroke-width="2"/><text x="32" y="19">① He ___ a teacher.</text>
+          <g transform="translate(0 36)"><circle cx="12" cy="14" r="9" fill="#FF7A52"/><path d="M7 14l3.5 3.5L18 10" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="32" y="19" font-weight="700">② is</text></g>
+          <g transform="translate(0 72)"><circle cx="12" cy="14" r="9" fill="none" stroke="#D9DEE6" stroke-width="2"/><text x="32" y="19">③ are</text></g>
+          <g transform="translate(0 108)"><circle cx="12" cy="14" r="9" fill="none" stroke="#D9DEE6" stroke-width="2"/><text x="32" y="19">④ am</text></g>
+        </g>
+        <rect x="24" y="232" width="352" height="8" rx="4" fill="#F1F3F6"/><rect x="24" y="232" width="120" height="8" rx="4" fill="#FF7A52"/>
+      </svg>`;
+  }
 
   // ===== 슬라이드 빌더 (index 에디터와 동형) =====
   function slideFromContent(kind, item){
@@ -1312,6 +1426,7 @@
   function openLOAD(kind){
     loadKind=kind; loadSel=new Set();
     document.getElementById('gload-title').textContent = IMPORT_META[kind].label + ' 불러오기';
+    document.getElementById('glf-area').innerHTML = ['전체 영역', ...areaList()].map(a=>`<option>${a}</option>`).join('');
     renderLoad();
     document.getElementById('gm-loader').classList.add('open');
     document.body.style.overflow='hidden';
@@ -1321,7 +1436,7 @@
   function loadItems(){
     const area=document.getElementById('glf-area').value;
     const q=(document.getElementById('glf-q').value||'').trim();
-    return (PICKER_DATA[loadKind]||[]).map((it,i)=>({it,i}))
+    return (pickerData(loadKind)||[]).map((it,i)=>({it,i}))
       .filter(({it})=> (area==='전체 영역'||!area||it.area===area) && (!q||it.title.includes(q)));
   }
   function renderLoad(){
@@ -1350,7 +1465,8 @@
   document.getElementById('glf-q').addEventListener('input', renderLoad);
   document.getElementById('gload-apply').addEventListener('click', ()=>{
     if(!loadSel.size){ alert('콘텐츠를 선택해 주세요.'); return; }
-    const slides=[...loadSel].sort((a,b)=>a-b).map(i=> slideFromContent(loadKind, PICKER_DATA[loadKind][i]));
+    const data=pickerData(loadKind);
+    const slides=[...loadSel].sort((a,b)=>a-b).map(i=> slideFromContent(loadKind, data[i]));
     gotoEditor(slides);
   });
 
@@ -1364,7 +1480,7 @@
     document.documentElement.style.setProperty('--cv-soft', m.accent+'22');
     // 필터 칩
     document.getElementById('cvf-grade').innerHTML = ['전체','1학년','2학년','3학년','4학년','5학년','6학년'].map((g,i)=>`<button class="fchip ${i===0?'on':''}">${g}</button>`).join('');
-    document.getElementById('cvf-area').innerHTML = ['전체','수와 연산','도형과 측정','변화와 관계','자료와 가능성'].map((a,i)=>`<button class="fchip ${i===0?'on':''}">${a}</button>`).join('');
+    document.getElementById('cvf-area').innerHTML = ['전체', ...areaList()].map((a,i)=>`<button class="fchip ${i===0?'on':''}">${a}</button>`).join('');
     document.querySelectorAll('#cat-view .chip-row').forEach(row=>{
       row.querySelectorAll('.fchip').forEach(ch=> ch.addEventListener('click', ()=>{ row.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on')); ch.classList.add('on'); }));
     });
@@ -1376,7 +1492,7 @@
   function closeCat(){ document.getElementById('cat-view').classList.remove('open'); document.body.style.overflow=''; }
   function renderCatGrid(){
     const m=IMPORT_META[catKind]; const col=m.accent;
-    document.getElementById('cv-grid').innerHTML = (PICKER_DATA[catKind]||[]).map((it,i)=>`
+    document.getElementById('cv-grid').innerHTML = (pickerData(catKind)||[]).map((it,i)=>`
       <article class="cv-card" data-i="${i}">
         <div class="cvis" style="background:linear-gradient(135deg, ${col}26, #0C1019)">
           <svg viewBox="0 0 320 200" width="100%" height="100%" style="position:absolute;inset:0">
@@ -1395,7 +1511,7 @@
       </article>`).join('');
     document.querySelectorAll('#cv-grid .cv-card').forEach(el=>{
       el.addEventListener('click', ()=>{
-        const it=PICKER_DATA[catKind][+el.dataset.i];
+        const it=pickerData(catKind)[+el.dataset.i];
         gotoEditor([ slideFromContent(catKind, it) ]);
       });
     });
