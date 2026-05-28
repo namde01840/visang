@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI저작툴 · 수업을 살아있게, 한 장으로</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap">
+<style>
+  :root {
+    --bg:    #07090F;
+    --bg-2:  #0C1019;
+    --panel:  rgba(255,255,255,0.045);
+    --panel-2: rgba(255,255,255,0.07);
+    --line:  rgba(255,255,255,0.10);
+    --line-2: rgba(255,255,255,0.06);
+    --ink:   #F4F7FB;
+    --ink-2: #AAB3C5;
+    --ink-3: #6B7488;
+
+    --mint:  #19D3CF;
+    --tool:  #1AD1C6;
+    --curriculum: #36D399;
+    --theme: #9B8CFF;
+    --creative: #FF7A52;
+
+    --tool-2: #0E8C86;
+    --cur-2:  #1C8C63;
+    --theme-2:#5B49C9;
+    --crea-2: #C24B2A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  ::selection { background: rgba(25,211,207,0.35); }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 6px; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+  /* ===== reveal anim ===== */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: .08s; }
+  .reveal.d2 { transition-delay: .16s; }
+  .reveal.d3 { transition-delay: .24s; }
+  .reveal.d4 { transition-delay: .32s; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity:1; transform:none; transition:none; } }
+
+  /* ===== NAV ===== */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    transition: background .3s, backdrop-filter .3s, border-color .3s, padding .3s;
+    border-bottom: 1px solid transparent;
+  }
+  .nav.scrolled {
+    background: rgba(7,9,15,0.72);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 18px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav.scrolled .nav-inner { padding: 13px 24px; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand-logo {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--mint), var(--theme));
+    display: grid; place-items: center; color: #04121A; font-weight: 900; font-size: 17px;
+    box-shadow: 0 6px 20px rgba(25,211,207,0.35);
+  }
+  .brand-txt strong { display: block; font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
+  .brand-txt span { font-size: 10px; color: var(--ink-3); letter-spacing: 0.06em; font-weight: 600; }
+  .nav-links { display: flex; gap: 6px; align-items: center; }
+  .nav-link {
+    font-size: 13.5px; font-weight: 600; color: var(--ink-2);
+    padding: 8px 14px; border-radius: 9px; transition: color .15s, background .15s;
+  }
+  .nav-link:hover { color: var(--ink); background: var(--panel); }
+  .nav-cta {
+    font-size: 13.5px; font-weight: 700; color: #04121A;
+    background: var(--mint); padding: 10px 18px; border-radius: 10px;
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 6px 18px rgba(25,211,207,0.30);
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(25,211,207,0.45); }
+  @media (max-width: 820px){ .nav-links .nav-link { display:none; } }
+
+  /* ===== HERO ===== */
+  .hero { position: relative; padding: 168px 0 90px; overflow: hidden; }
+  .aurora { position: absolute; inset: -20% -10% auto -10%; height: 900px; z-index: 0; pointer-events: none; filter: blur(60px); opacity: .9; }
+  .blob { position: absolute; border-radius: 50%; mix-blend-mode: screen; animation: float 18s ease-in-out infinite; }
+  .blob.b1 { width: 540px; height: 540px; left: -6%; top: -8%; background: radial-gradient(circle, rgba(25,211,207,0.55), transparent 62%); }
+  .blob.b2 { width: 520px; height: 520px; right: -4%; top: -12%; background: radial-gradient(circle, rgba(155,140,255,0.50), transparent 62%); animation-delay: -6s; }
+  .blob.b3 { width: 460px; height: 460px; left: 38%; top: 6%; background: radial-gradient(circle, rgba(255,122,82,0.34), transparent 64%); animation-delay: -11s; }
+  @keyframes float { 0%,100%{ transform: translate(0,0) scale(1);} 33%{ transform: translate(36px,28px) scale(1.06);} 66%{ transform: translate(-28px,16px) scale(.96);} }
+  .grid-bg {
+    position: absolute; inset: 0; z-index: 0; opacity: .5;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 54px 54px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 35%, transparent 78%);
+  }
+  .hero-inner { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items: center; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 14px; border-radius: 100px;
+    background: var(--panel); border: 1px solid var(--line);
+    font-size: 12px; font-weight: 600; color: var(--ink-2); margin-bottom: 24px;
+  }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 4px rgba(25,211,207,0.2); animation: pulse 2.2s infinite; }
+  @keyframes pulse { 0%,100%{ box-shadow:0 0 0 4px rgba(25,211,207,0.2);} 50%{ box-shadow:0 0 0 9px rgba(25,211,207,0.04);} }
+  .hero h1 {
+    font-size: clamp(38px, 5.4vw, 66px); line-height: 1.08; font-weight: 900;
+    letter-spacing: -0.04em; margin-bottom: 22px;
+  }
+  .hero h1 .grad {
+    background: linear-gradient(108deg, var(--mint) 10%, var(--theme) 60%, var(--creative) 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p.lead { font-size: clamp(15px, 1.6vw, 18px); color: var(--ink-2); max-width: 520px; margin-bottom: 34px; line-height: 1.65; font-weight: 400; }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn-primary {
+    font-size: 15px; font-weight: 800; color: #04121A;
+    background: linear-gradient(135deg, var(--mint), #4FE6C4);
+    padding: 15px 26px; border-radius: 13px;
+    display: inline-flex; align-items: center; gap: 9px;
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 12px 30px rgba(25,211,207,0.32);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(25,211,207,0.46); }
+  .btn-ghost {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+    padding: 15px 24px; border-radius: 13px;
+    border: 1px solid var(--line); background: var(--panel);
+    display: inline-flex; align-items: center; gap: 9px; transition: all .15s;
+  }
+  .btn-ghost:hover { background: var(--panel-2); border-color: rgba(255,255,255,0.22); }
+  .hero-trust { margin-top: 30px; display: flex; align-items: center; gap: 18px; color: var(--ink-3); font-size: 12.5px; font-weight: 500; }
+  .hero-trust b { color: var(--ink); font-weight: 800; }
+  .hero-trust .sep { width: 1px; height: 14px; background: var(--line); }
+
+  /* hero stack of slide mockups */
+  .hero-visual { position: relative; height: 460px; }
+  .mock {
+    position: absolute; border-radius: 16px; overflow: hidden;
+    background: var(--bg-2); border: 1px solid var(--line);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+  }
+  .mock-head { height: 26px; display: flex; align-items: center; gap: 5px; padding: 0 11px; background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--line-2); }
+  .mock-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+  .mock-body { padding: 14px; }
+  .mock.m1 { width: 360px; top: 40px; left: 30px; z-index: 3; transform: rotate(-5deg); animation: bob 7s ease-in-out infinite; }
+  .mock.m2 { width: 300px; top: 0; right: 6px; z-index: 2; transform: rotate(6deg); animation: bob 8s ease-in-out infinite reverse; }
+  .mock.m3 { width: 280px; bottom: 6px; right: 40px; z-index: 4; transform: rotate(-2deg); animation: bob 6.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{ transform: translateY(0) rotate(var(--r,0)); } 50%{ transform: translateY(-14px) rotate(var(--r,0)); } }
+  .mock.m1 { --r: -5deg; } .mock.m2 { --r: 6deg; } .mock.m3 { --r: -2deg; }
+  .badge-float {
+    position: absolute; z-index: 6; padding: 9px 13px; border-radius: 12px;
+    background: rgba(12,16,25,0.85); border: 1px solid var(--line); backdrop-filter: blur(8px);
+    display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.4);
+  }
+  .badge-float .ic { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; }
+  .badge-float.f1 { top: 26px; right: -6px; animation: bob 5.5s ease-in-out infinite; }
+  .badge-float.f2 { bottom: 56px; left: -10px; animation: bob 6.8s ease-in-out infinite reverse; }
+  @media (max-width: 900px){
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-visual { height: 380px; margin-top: 10px; }
+  }
+
+  /* ===== marquee ===== */
+  .marquee-wrap { padding: 26px 0; border-top: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); overflow: hidden; position: relative; }
+  .marquee-wrap::before, .marquee-wrap::after { content:''; position:absolute; top:0; bottom:0; width:120px; z-index:2; }
+  .marquee-wrap::before { left:0; background: linear-gradient(90deg, var(--bg), transparent); }
+  .marquee-wrap::after { right:0; background: linear-gradient(270deg, var(--bg), transparent); }
+  .marquee { display: flex; gap: 14px; width: max-content; animation: scrollx 32s linear infinite; }
+  .marquee:hover { animation-play-state: paused; }
+  @keyframes scrollx { from { transform: translateX(0);} to { transform: translateX(-50%);} }
+  .chip {
+    flex-shrink: 0; padding: 10px 18px; border-radius: 100px;
+    border: 1px solid var(--line); background: var(--panel);
+    font-size: 13.5px; font-weight: 600; color: var(--ink-2);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .chip .em { color: var(--ink); }
+
+  /* ===== SECTION shell ===== */
+  section.block { padding: 100px 0; position: relative; }
+  .sec-head { max-width: 720px; margin: 0 auto 56px; text-align: center; }
+  .sec-tag { font-size: 13px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mint); margin-bottom: 14px; }
+  .sec-title { font-size: clamp(28px, 3.6vw, 44px); font-weight: 900; letter-spacing: -0.035em; line-height: 1.15; margin-bottom: 16px; }
+  .sec-sub { font-size: 16px; color: var(--ink-2); line-height: 1.65; }
+
+  /* ===== CATEGORY STAGE ===== */
+  .cat { position: relative; }
+  .cat-tabs { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+  .cat-tab {
+    display: flex; align-items: center; gap: 10px;
+    padding: 13px 20px; border-radius: 14px;
+    border: 1px solid var(--line); background: var(--panel);
+    font-size: 14.5px; font-weight: 700; color: var(--ink-2);
+    transition: all .2s;
+  }
+  .cat-tab .tic { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; transition: all .2s; }
+  .cat-tab:hover { color: var(--ink); border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+  .cat-tab.active { color: var(--ink); border-color: var(--c); background: var(--c-soft); box-shadow: 0 10px 30px var(--c-glow); }
+  .cat-tab .cnt { font-size: 11px; font-weight: 700; color: var(--ink-3); }
+  .cat-tab.active .cnt { color: var(--c); }
+
+  .stage {
+    border-radius: 28px; overflow: hidden; position: relative;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(120% 120% at 0% 0%, var(--c-soft) 0%, transparent 46%),
+      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    transition: background .4s;
+  }
+  .stage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: 460px; }
+  .stage-left { padding: 56px 52px; display: flex; flex-direction: column; justify-content: center; }
+  .stage-ey { display:inline-flex; align-items:center; gap:8px; font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); margin-bottom: 16px; }
+  .stage-ey .pill { width: 24px; height: 6px; border-radius: 4px; background: var(--c); }
+  .stage h3 { font-size: clamp(26px, 3vw, 38px); font-weight: 900; letter-spacing: -0.035em; line-height: 1.18; margin-bottom: 16px; }
+  .stage p { font-size: 15.5px; color: var(--ink-2); line-height: 1.7; margin-bottom: 26px; max-width: 440px; }
+  .stage-feats { display: flex; flex-direction: column; gap: 13px; margin-bottom: 30px; }
+  .feat { display: flex; gap: 12px; align-items: flex-start; font-size: 14.5px; color: var(--ink); font-weight: 500; }
+  .feat .ck { width: 22px; height: 22px; border-radius: 7px; background: var(--c-soft); color: var(--c); display: grid; place-items: center; flex-shrink: 0; margin-top: 1px; }
+  .stage-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+  .stage-tag { font-size: 12px; font-weight: 600; color: var(--ink-2); padding: 6px 12px; border-radius: 100px; border: 1px solid var(--line); background: rgba(255,255,255,0.03); }
+  .stage-cta { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; font-size: 14.5px; font-weight: 800; color: var(--c); padding: 13px 22px; border-radius: 12px; background: var(--c-soft); border: 1px solid var(--c-line); transition: all .15s; }
+  .stage-cta:hover { transform: translateX(4px); }
+
+  .stage-right { position: relative; overflow: hidden; display: grid; place-items: center; padding: 40px; border-left: 1px solid var(--line-2); }
+  .stage-right::before { content:''; position:absolute; inset:0; background: radial-gradient(80% 80% at 70% 30%, var(--c-glow) 0%, transparent 60%); }
+  .device {
+    position: relative; z-index: 1; width: 100%; max-width: 420px;
+    background: #0A0E17; border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.55);
+  }
+  .device-bar { height: 30px; display:flex; align-items:center; gap:6px; padding: 0 12px; background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--line-2); }
+  .device-bar .d { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.16); }
+  .device-bar .t { margin-left: auto; font-size: 10px; color: var(--ink-3); font-weight: 600; }
+  .device-screen { aspect-ratio: 16/10.5; background: #fff; position: relative; }
+
+  .stage-pane { display: none; }
+  .stage-pane.active { display: block; animation: fadeUp .5s cubic-bezier(.2,.7,.2,1); }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(14px);} to { opacity:1; transform:none; } }
+  @media (max-width: 900px){
+    .stage-grid { grid-template-columns: 1fr; }
+    .stage-left { padding: 40px 28px; }
+    .stage-right { border-left: none; border-top: 1px solid var(--line-2); }
+  }
+
+  /* ===== value cards ===== */
+  .vgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .vcard {
+    padding: 32px 28px; border-radius: 20px;
+    border: 1px solid var(--line); background: var(--panel);
+    transition: transform .25s, border-color .25s, background .25s;
+    position: relative; overflow: hidden;
+  }
+  .vcard::after { content:''; position:absolute; inset:0; opacity:0; transition:opacity .25s; background: radial-gradient(90% 70% at 50% 0%, rgba(25,211,207,0.12), transparent 60%); }
+  .vcard:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.2); background: var(--panel-2); }
+  .vcard:hover::after { opacity: 1; }
+  .vic { width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center; margin-bottom: 18px; background: linear-gradient(135deg, rgba(25,211,207,0.18), rgba(155,140,255,0.18)); color: var(--mint); }
+  .vcard h4 { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 9px; }
+  .vcard p { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+  @media (max-width: 820px){ .vgrid { grid-template-columns: 1fr; } }
+
+  /* ===== stats band ===== */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 44px; border-radius: 24px; border: 1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)); }
+  .stat { text-align: center; }
+  .stat .n { font-size: clamp(30px, 4vw, 46px); font-weight: 900; letter-spacing: -0.04em; background: linear-gradient(135deg, var(--mint), var(--theme)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat .l { font-size: 13.5px; color: var(--ink-2); font-weight: 600; margin-top: 6px; }
+  @media (max-width: 760px){ .stats { grid-template-columns: repeat(2, 1fr); gap: 28px 12px; } }
+
+  /* ===== showcase carousel ===== */
+  .show-rail { display: flex; gap: 20px; overflow-x: auto; padding: 10px 24px 30px; scroll-snap-type: x mandatory; }
+  .show-rail::-webkit-scrollbar { height: 8px; }
+  .scard {
+    flex: 0 0 320px; scroll-snap-align: center; border-radius: 20px; overflow: hidden;
+    border: 1px solid var(--line); background: var(--bg-2);
+    transition: transform .25s, box-shadow .25s; cursor: pointer;
+  }
+  .scard:hover { transform: translateY(-8px); box-shadow: 0 26px 60px rgba(0,0,0,0.5); }
+  .scard-vis { aspect-ratio: 16/10; position: relative; overflow: hidden; }
+  .scard-body { padding: 16px 18px 18px; }
+  .scard-cat { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+  .scard-title { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .scard-meta { font-size: 12.5px; color: var(--ink-3); font-weight: 500; }
+  .scard-play {
+    position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; transition: opacity .2s;
+    background: rgba(7,9,15,0.35);
+  }
+  .scard:hover .scard-play { opacity: 1; }
+  .scard-play .pbtn { width: 54px; height: 54px; border-radius: 50%; background: rgba(255,255,255,0.95); color: #07090F; display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+
+  /* ===== flow steps ===== */
+  .flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; counter-reset: step; }
+  .fstep { padding: 30px 26px; border-radius: 20px; border: 1px solid var(--line); background: var(--panel); position: relative; }
+  .fstep .num { font-size: 13px; font-weight: 900; color: var(--mint); letter-spacing: 0.1em; margin-bottom: 14px; }
+  .fstep h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
+  .fstep p { font-size: 13.5px; color: var(--ink-2); line-height: 1.6; }
+  .fstep .arrow { position: absolute; right: -16px; top: 50%; transform: translateY(-50%); color: var(--ink-3); z-index: 2; }
+  .fstep:last-child .arrow { display: none; }
+  @media (max-width: 820px){ .flow { grid-template-columns: 1fr; } .fstep .arrow { display:none; } }
+
+  /* ===== CTA ===== */
+  .cta-final { position: relative; border-radius: 32px; overflow: hidden; padding: 72px 40px; text-align: center; border: 1px solid var(--line); }
+  .cta-final::before { content:''; position:absolute; inset:0; background: radial-gradient(80% 130% at 50% 0%, rgba(25,211,207,0.22), transparent 55%), radial-gradient(70% 120% at 80% 100%, rgba(155,140,255,0.22), transparent 55%); }
+  .cta-final > * { position: relative; z-index: 1; }
+  .cta-final h2 { font-size: clamp(28px, 4vw, 46px); font-weight: 900; letter-spacing: -0.04em; line-height: 1.15; margin-bottom: 18px; }
+  .cta-final p { font-size: 16px; color: var(--ink-2); margin-bottom: 32px; }
+
+  /* ===== footer ===== */
+  footer { border-top: 1px solid var(--line-2); padding: 50px 0 60px; margin-top: 90px; }
+  .foot { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; flex-wrap: wrap; }
+  .foot-info { font-size: 12.5px; color: var(--ink-3); line-height: 1.8; max-width: 420px; }
+  .foot-links { display: flex; gap: 40px; }
+  .foot-col h5 { font-size: 12px; font-weight: 800; color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+  .foot-col a { display: block; font-size: 13.5px; color: var(--ink-3); padding: 4px 0; transition: color .15s; }
+  .foot-col a:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <div class="brand-logo">A</div>
+      <div class="brand-txt"><strong>AI저작툴</strong><span>POWERED BY 매쓰캔버스</span></div>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#catalog">콘텐츠</a>
+      <a class="nav-link" href="#value">왜 AI저작툴</a>
+      <a class="nav-link" href="#showcase">수업 사례</a>
+      <a class="nav-link" href="#flow">시작하기</a>
+      <a class="nav-cta" href="./index.html">수업 만들기 →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="aurora">
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+  </div>
+  <div class="grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow reveal"><span class="dot"></span> 출판사 · 학원 · 교사를 위한 수업 콘텐츠 플랫폼</span>
+        <h1 class="reveal d1">수업을 살아있게,<br><span class="grad">한 장</span>으로 시작하세요</h1>
+        <p class="lead reveal d2">조작형 콘텐츠부터 매쓰캔버스, 스마트 문제은행까지 —
+          흩어진 수업 자료를 한 곳에서 골라 담고, 클릭 한 번으로 나만의 인터랙티브 수업 슬라이드를 완성합니다.</p>
+        <div class="hero-ctas reveal d3">
+          <a class="btn-primary" href="./index.html">무료로 수업 만들기
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a class="btn-ghost" href="#catalog">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            콘텐츠 둘러보기
+          </a>
+        </div>
+        <div class="hero-trust reveal d4">
+          <span><b>4,000+</b> 조작형 콘텐츠</span><span class="sep"></span>
+          <span><b>538</b> 차시 수업자료</span><span class="sep"></span>
+          <span><b>비상교육</b> 문항 풀 연동</span>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal d2">
+        <!-- mock 1: 조작형 -->
+        <div class="mock m1">
+          <div class="mock-head"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span></div>
+          <div class="mock-body">
+            <svg viewBox="0 0 320 170" width="100%">
+              <rect x="0" y="0" width="320" height="170" rx="8" fill="#0E1424"/>
+              <text x="20" y="34" font-family="Pretendard" font-size="14" font-weight="800" fill="#19D3CF">분수 모형 활동</text>
+              <g transform="translate(20 52)">
+                <rect x="0" y="0" width="42" height="42" rx="6" fill="#19D3CF" opacity="0.9"/>
+                <rect x="50" y="0" width="42" height="42" rx="6" fill="#19D3CF" opacity="0.55"/>
+                <rect x="100" y="0" width="42" height="42" rx="6" fill="#19D3CF" opacity="0.25"/>
+                <rect x="150" y="0" width="42" height="42" rx="6" fill="#ffffff" opacity="0.08"/>
+              </g>
+              <rect x="20" y="112" width="220" height="9" rx="4" fill="#ffffff" opacity="0.12"/>
+              <rect x="20" y="130" width="160" height="9" rx="4" fill="#ffffff" opacity="0.08"/>
+            </svg>
+          </div>
+        </div>
+        <!-- mock 2: 좌표 -->
+        <div class="mock m2">
+          <div class="mock-head"><span class="mock-dot"></span><span class="mock-dot"></span></div>
+          <div class="mock-body">
+            <svg viewBox="0 0 260 150" width="100%">
+              <rect x="0" y="0" width="260" height="150" rx="8" fill="#0E1424"/>
+              <line x1="20" y1="80" x2="240" y2="80" stroke="#ffffff" stroke-opacity="0.18"/>
+              <line x1="130" y1="20" x2="130" y2="135" stroke="#ffffff" stroke-opacity="0.18"/>
+              <polyline points="40,120 80,90 120,100 160,55 210,40" fill="none" stroke="#9B8CFF" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="160" cy="55" r="5" fill="#9B8CFF"/>
+              <circle cx="210" cy="40" r="5" fill="#FF7A52"/>
+            </svg>
+          </div>
+        </div>
+        <!-- mock 3: 문제 -->
+        <div class="mock m3">
+          <div class="mock-head"><span class="mock-dot"></span><span class="mock-dot"></span></div>
+          <div class="mock-body">
+            <svg viewBox="0 0 250 130" width="100%">
+              <rect x="0" y="0" width="250" height="130" rx="8" fill="#0E1424"/>
+              <circle cx="28" cy="28" r="9" fill="none" stroke="#36D399" stroke-width="2.5"/>
+              <rect x="46" y="22" width="170" height="10" rx="5" fill="#ffffff" opacity="0.14"/>
+              <circle cx="28" cy="58" r="9" fill="#36D399"/>
+              <rect x="46" y="52" width="140" height="10" rx="5" fill="#ffffff" opacity="0.1"/>
+              <circle cx="28" cy="88" r="9" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="2.5"/>
+              <rect x="46" y="82" width="155" height="10" rx="5" fill="#ffffff" opacity="0.1"/>
+            </svg>
+          </div>
+        </div>
+        <div class="badge-float f1"><span class="ic" style="background:rgba(25,211,207,0.2);color:#19D3CF">✦</span> 자동 채점</div>
+        <div class="badge-float f2"><span class="ic" style="background:rgba(155,140,255,0.2);color:#9B8CFF">◎</span> 실시간 협업</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee" id="marquee"></div>
+</div>
+
+<!-- CATEGORY STAGE -->
+<section class="block" id="catalog">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">CONTENT LIBRARY</div>
+      <h2 class="sec-title">네 가지 콘텐츠, 하나의 수업 흐름</h2>
+      <p class="sec-sub">목적에 맞는 콘텐츠를 골라 슬라이드에 담으세요. 도입·전개·정리·평가까지 한 번에 이어집니다.</p>
+    </div>
+
+    <div class="cat reveal d1">
+      <div class="cat-tabs" id="cat-tabs"></div>
+      <div class="stage" id="stage"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE -->
+<section class="block" id="value" style="padding-top:20px;">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">WHY AI저작툴</div>
+      <h2 class="sec-title">준비는 짧게, 수업은 깊게</h2>
+      <p class="sec-sub">콘텐츠 제작에 쓰던 시간을 학생에게 돌려드립니다.</p>
+    </div>
+    <div class="vgrid">
+      <div class="vcard reveal">
+        <div class="vic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h4>5분이면 완성</h4>
+        <p>검증된 콘텐츠를 골라 담기만 하면 끝. 빈 슬라이드 앞에서 고민하는 시간이 사라집니다.</p>
+      </div>
+      <div class="vcard reveal d1">
+        <div class="vic" style="background:linear-gradient(135deg,rgba(54,211,153,0.18),rgba(25,211,207,0.18));color:#36D399"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <h4>교육과정 정렬</h4>
+        <p>교과서 단원·차시 흐름에 맞춰 정리된 자료로, 진도와 평가를 매끄럽게 연결합니다.</p>
+      </div>
+      <div class="vcard reveal d2">
+        <div class="vic" style="background:linear-gradient(135deg,rgba(155,140,255,0.18),rgba(255,122,82,0.18));color:#9B8CFF"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h4>참여를 끌어내는 인터랙션</h4>
+        <p>조작·퀴즈·협업 캔버스로 학생이 직접 움직이는 수업. 집중도와 이해도가 함께 올라갑니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="block" style="padding-top:0;">
+  <div class="wrap">
+    <div class="stats reveal" id="stats">
+      <div class="stat"><div class="n" data-to="4000" data-suffix="+">0</div><div class="l">조작형 콘텐츠</div></div>
+      <div class="stat"><div class="n" data-to="538" data-suffix="">0</div><div class="l">차시 수업자료</div></div>
+      <div class="stat"><div class="n" data-to="35448" data-suffix="" data-comma="1">0</div><div class="l">스마트 문항</div></div>
+      <div class="stat"><div class="n" data-to="98" data-suffix="%">0</div><div class="l">교사 재사용률</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section class="block" id="showcase" style="padding-top:30px;">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">IN THE CLASSROOM</div>
+      <h2 class="sec-title">바로 가져가 쓰는 수업 슬라이드</h2>
+      <p class="sec-sub">선생님들이 가장 많이 담아간 콘텐츠를 만나보세요.</p>
+    </div>
+  </div>
+  <div class="show-rail reveal d1" id="show-rail"></div>
+</section>
+
+<!-- FLOW -->
+<section class="block" id="flow" style="padding-top:30px;">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-tag">HOW IT WORKS</div>
+      <h2 class="sec-title">세 단계면 충분합니다</h2>
+    </div>
+    <div class="flow">
+      <div class="fstep reveal">
+        <div class="num">STEP 01</div>
+        <h4>학습 설정</h4>
+        <p>학교급·학년·교과목·단원을 선택해 우리 반에 맞는 콘텐츠를 추립니다.</p>
+        <div class="arrow"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="fstep reveal d1">
+        <div class="num">STEP 02</div>
+        <h4>콘텐츠 담기</h4>
+        <p>조작형·수업자료·매쓰캔버스·문제은행에서 원하는 슬라이드를 골라 담습니다.</p>
+        <div class="arrow"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="fstep reveal d2">
+        <div class="num">STEP 03</div>
+        <h4>수업 실행</h4>
+        <p>완성된 슬라이드로 바로 수업을 시작하고, 학생 반응을 실시간으로 확인합니다.</p>
+        <div class="arrow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="block" style="padding-top:10px;">
+  <div class="wrap">
+    <div class="cta-final reveal">
+      <h2>오늘 수업, 지금 만들어 볼까요?</h2>
+      <p>가입 없이 바로 체험할 수 있습니다.</p>
+      <a class="btn-primary" href="./index.html" style="font-size:16px;padding:17px 32px;">수업 만들기 시작
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a class="brand" href="#top" style="margin-bottom:16px;">
+        <div class="brand-logo">A</div>
+        <div class="brand-txt"><strong>AI저작툴</strong><span>POWERED BY 매쓰캔버스</span></div>
+      </a>
+      <p class="foot-info">교사가 만드는 살아있는 수업. 흩어진 콘텐츠를 한 곳에 모아 누구나 쉽게 인터랙티브 수업을 제작하는 플랫폼입니다.</p>
+    </div>
+    <div class="foot-links">
+      <div class="foot-col">
+        <h5>콘텐츠</h5>
+        <a href="#catalog">조작형 콘텐츠</a>
+        <a href="#catalog">수업자료 콘텐츠</a>
+        <a href="#catalog">매쓰캔버스</a>
+        <a href="#catalog">스마트 문제은행</a>
+      </div>
+      <div class="foot-col">
+        <h5>바로가기</h5>
+        <a href="./index.html">수업 만들기</a>
+        <a href="#value">왜 AI저작툴</a>
+        <a href="#flow">시작하기</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ===== Category data =====
+  const CATS = [
+    {
+      id: 'tool', name: '조작형 콘텐츠', count: '4,000+', icon: 'tool',
+      c: '#1AD1C6', soft: 'rgba(26,209,198,0.10)', glow: 'rgba(26,209,198,0.16)', line: 'rgba(26,209,198,0.35)',
+      eyebrow: 'INTERACTIVE', screenTag: '조작형 활동',
+      title: '만지고 움직이며 배우는<br>인터랙티브 활동',
+      desc: '4,000여 종의 디지털 교구로 추상적인 개념을 손끝에서 경험하게 합니다. 학생이 직접 조작하는 순간 이해가 시작됩니다.',
+      feats: ['드래그·회전·색칠 등 직접 조작', '개념별 즉시 피드백', '학생 화면에서 동시 활동'],
+      tags: ['분수 모형', '수직선', '확률 돌림판', '함수 그래프', '도형 분할'],
+    },
+    {
+      id: 'curriculum', name: '수업자료 콘텐츠', count: '538', icon: 'book',
+      c: '#36D399', soft: 'rgba(54,211,153,0.10)', glow: 'rgba(54,211,153,0.16)', line: 'rgba(54,211,153,0.35)',
+      eyebrow: 'CURRICULUM', screenTag: '단원 · 차시',
+      title: '교과서 흐름 그대로,<br>바로 쓰는 완성 수업',
+      desc: '단원·차시 흐름에 맞춰 설계된 완성형 수업자료. 도입부터 정리까지 검증된 구성으로 진도 부담을 덜어드립니다.',
+      feats: ['교과서 단원·차시 정렬', '도입–전개–정리 완결 구성', '형성평가까지 한 흐름'],
+      tags: ['분수의 덧셈', '약분과 통분', '다각형 넓이', '비례식', '띠그래프'],
+    },
+    {
+      id: 'theme', name: '매쓰캔버스', count: '협업', icon: 'canvas',
+      c: '#9B8CFF', soft: 'rgba(155,140,255,0.10)', glow: 'rgba(155,140,255,0.16)', line: 'rgba(155,140,255,0.35)',
+      eyebrow: 'COLLABORATION', screenTag: '공유 캔버스',
+      title: '함께 그리고 탐구하는<br>무한 협업 캔버스',
+      desc: '47종 디지털 교구를 올려놓고 학생들과 한 화면에서 탐구하세요. 생각의 과정이 그대로 캔버스에 남습니다.',
+      feats: ['실시간 공동 편집', '47종 수학 교구 내장', '모둠별 탐구 결과 공유'],
+      tags: ['공간좌표(3D)', '꺾은선그래프', '다면체', '대수 블록', '도형 변환'],
+    },
+    {
+      id: 'creative', name: '스마트 문제은행', count: '35,448', icon: 'bank',
+      c: '#FF7A52', soft: 'rgba(255,122,82,0.10)', glow: 'rgba(255,122,82,0.16)', line: 'rgba(255,122,82,0.35)',
+      eyebrow: 'ASSESSMENT', screenTag: '문항 풀',
+      title: '비상교육 문항 풀에서<br>골라 담는 스마트 평가',
+      desc: '35,448개 검증 문항을 학교급·단원·난이도로 필터링해 슬라이드에 담고, 응답은 자동으로 채점됩니다.',
+      feats: ['객관식·주관식 혼합 출제', '단원·난이도별 정밀 필터', '응답 자동 채점·분석'],
+      tags: ['선택형', '단답형', 'OX형', '연쇄형', '서술형'],
+    },
+  ];
+
+  function catIcon(kind, color) {
+    const m = {
+      tool: `<rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/><rect x="3" y="14" width="7" height="7" rx="1.4"/><rect x="14" y="14" width="7" height="7" rx="1.4"/>`,
+      book: `<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>`,
+      canvas: `<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>`,
+      bank: `<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>`,
+    };
+    return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${m[kind]}</svg>`;
+  }
+
+  // device screen mockup per category
+  function deviceScreen(cat) {
+    if (cat.id === 'tool') return `
+      <svg viewBox="0 0 400 262" width="100%">
+        <rect width="400" height="262" fill="#fff"/>
+        <text x="28" y="46" font-family="Pretendard" font-size="18" font-weight="800" fill="#0E1424">분수 모형으로 비교하기</text>
+        <g transform="translate(28 70)">
+          <rect x="0" y="0" width="160" height="60" rx="8" fill="#1AD1C6"/>
+          <rect x="0" y="0" width="107" height="60" rx="8" fill="#0E8C86"/>
+          <text x="54" y="38" font-size="20" font-weight="800" fill="#fff">2/3</text>
+        </g>
+        <g transform="translate(28 150)">
+          <rect x="0" y="0" width="160" height="60" rx="8" fill="#CFEFEC"/>
+          <rect x="0" y="0" width="60" height="60" rx="8" fill="#1AD1C6"/>
+          <text x="180" y="38" font-size="20" font-weight="800" fill="#0E1424" transform="translate(-180 0)">3/8</text>
+        </g>
+        <g transform="translate(228 80)">
+          <circle cx="70" cy="70" r="62" fill="#F1FBFA" stroke="#1AD1C6" stroke-width="2"/>
+          <path d="M70 70 L70 8 A62 62 0 0 1 124 100 Z" fill="#1AD1C6" opacity="0.8"/>
+          <circle cx="70" cy="70" r="8" fill="#0E8C86"/>
+        </g>
+      </svg>`;
+    if (cat.id === 'curriculum') return `
+      <svg viewBox="0 0 400 262" width="100%">
+        <rect width="400" height="262" fill="#fff"/>
+        <rect x="0" y="0" width="400" height="52" fill="#36D399"/>
+        <text x="24" y="33" font-family="Pretendard" font-size="16" font-weight="800" fill="#06281C">5단원 · 분수의 덧셈 — 1차시</text>
+        <text x="28" y="92" font-family="Pretendard" font-size="14" font-weight="700" fill="#0E1424">학습 목표</text>
+        <rect x="28" y="104" width="320" height="9" rx="4" fill="#E3EAE7"/>
+        <rect x="28" y="122" width="250" height="9" rx="4" fill="#E3EAE7"/>
+        <g transform="translate(28 152)">
+          <rect x="0" y="0" width="150" height="80" rx="10" fill="#EAF7F1" stroke="#36D399" stroke-width="1.5"/>
+          <text x="16" y="30" font-size="12" font-weight="700" fill="#1C8C63">도입 활동</text>
+          <rect x="16" y="44" width="110" height="7" rx="3" fill="#CDEBDD"/>
+          <rect x="16" y="58" width="80" height="7" rx="3" fill="#CDEBDD"/>
+          <rect x="170" y="0" width="150" height="80" rx="10" fill="#F4F6F5" stroke="#E3EAE7" stroke-width="1.5"/>
+          <text x="186" y="30" font-size="12" font-weight="700" fill="#6B7488">전개 활동</text>
+          <rect x="186" y="44" width="110" height="7" rx="3" fill="#E3EAE7"/>
+          <rect x="186" y="58" width="90" height="7" rx="3" fill="#E3EAE7"/>
+        </g>
+      </svg>`;
+    if (cat.id === 'theme') return `
+      <svg viewBox="0 0 400 262" width="100%">
+        <rect width="400" height="262" fill="#fff"/>
+        <defs><pattern id="gp" width="26" height="26" patternUnits="userSpaceOnUse"><path d="M26 0H0V26" fill="none" stroke="#EEF0FB" stroke-width="1"/></pattern></defs>
+        <rect width="400" height="262" fill="url(#gp)"/>
+        <polygon points="80,70 130,70 105,30" fill="#9B8CFF" opacity="0.85"/>
+        <rect x="150" y="40" width="58" height="58" rx="6" fill="#FF7A52" opacity="0.8" transform="rotate(8 179 69)"/>
+        <circle cx="270" cy="80" r="32" fill="none" stroke="#36D399" stroke-width="4"/>
+        <path d="M60 180 Q140 120 220 180 T380 170" fill="none" stroke="#9B8CFF" stroke-width="3"/>
+        <g><circle cx="120" cy="210" r="10" fill="#9B8CFF"/><circle cx="120" cy="210" r="16" fill="none" stroke="#9B8CFF" stroke-opacity="0.4" stroke-width="2"/></g>
+        <g><circle cx="300" cy="200" r="10" fill="#FF7A52"/></g>
+        <rect x="250" y="120" width="120" height="14" rx="7" fill="#EEF0FB"/>
+      </svg>`;
+    return `
+      <svg viewBox="0 0 400 262" width="100%">
+        <rect width="400" height="262" fill="#fff"/>
+        <rect x="24" y="22" width="120" height="22" rx="11" fill="#FFE9E1"/>
+        <text x="40" y="38" font-family="Pretendard" font-size="12" font-weight="800" fill="#C24B2A">객관식 · 자동채점</text>
+        <text x="24" y="74" font-family="Pretendard" font-size="16" font-weight="800" fill="#0E1424">다음 중 옳은 것은?</text>
+        <g transform="translate(24 92)" font-family="Pretendard" font-size="13" fill="#0E1424">
+          <circle cx="12" cy="14" r="9" fill="none" stroke="#D9DEE6" stroke-width="2"/><text x="32" y="19">① 2/3 + 1/6 = 5/6</text>
+          <g transform="translate(0 36)"><circle cx="12" cy="14" r="9" fill="#FF7A52"/><path d="M7 14l3.5 3.5L18 10" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="32" y="19" font-weight="700">② 분모를 통분한다</text></g>
+          <g transform="translate(0 72)"><circle cx="12" cy="14" r="9" fill="none" stroke="#D9DEE6" stroke-width="2"/><text x="32" y="19">③ 분자끼리 곱한다</text></g>
+          <g transform="translate(0 108)"><circle cx="12" cy="14" r="9" fill="none" stroke="#D9DEE6" stroke-width="2"/><text x="32" y="19">④ 약분이 불가능하다</text></g>
+        </g>
+        <rect x="24" y="232" width="352" height="8" rx="4" fill="#F1F3F6"/>
+        <rect x="24" y="232" width="120" height="8" rx="4" fill="#FF7A52"/>
+      </svg>`;
+  }
+
+  // showcase cards visuals
+  function showVis(id) {
+    const map = {
+      tool: '#1AD1C6', curriculum:'#36D399', theme:'#9B8CFF', creative:'#FF7A52'
+    };
+    return map[id];
+  }
+  const SHOWCASE = [
+    { id:'tool', cat:'조작형 콘텐츠', title:'분수 모형으로 크기 비교', meta:'초5 · 수와 연산 · 1,240회 사용' },
+    { id:'curriculum', cat:'수업자료 콘텐츠', title:'다각형의 넓이 공식 만들기', meta:'초5 · 도형과 측정 · 도입~정리' },
+    { id:'theme', cat:'매쓰캔버스', title:'좌표평면에서 함께 그리기', meta:'중1 · 협업 캔버스' },
+    { id:'creative', cat:'스마트 문제은행', title:'분수의 덧셈 형성평가 10문항', meta:'객관식·주관식 · 자동채점' },
+    { id:'tool', cat:'조작형 콘텐츠', title:'확률 돌림판 실험', meta:'초6 · 자료와 가능성 · 612회 사용' },
+    { id:'curriculum', cat:'수업자료 콘텐츠', title:'비례식과 비례배분', meta:'초6 · 변화와 관계' },
+    { id:'theme', cat:'매쓰캔버스', title:'입체도형 전개도 탐구', meta:'중1 · 3D 교구' },
+  ];
+
+  // ===== render category tabs + stage =====
+  let activeCat = 0;
+  function renderTabs() {
+    document.getElementById('cat-tabs').innerHTML = CATS.map((c,i)=>`
+      <button class="cat-tab ${i===0?'active':''}" data-i="${i}"
+        style="--c:${c.c};--c-soft:${c.soft};--c-glow:${c.glow};--c-line:${c.line}">
+        <span class="tic" style="background:${c.soft}">${catIcon(c.icon, c.c)}</span>
+        ${c.name} <span class="cnt">${c.count}</span>
+      </button>`).join('');
+    document.querySelectorAll('.cat-tab').forEach(b=>{
+      b.addEventListener('click', ()=>{ activeCat = +b.dataset.i; renderTabs(); renderStage(); });
+    });
+  }
+  function renderStage() {
+    const c = CATS[activeCat];
+    const stage = document.getElementById('stage');
+    stage.style.setProperty('--c', c.c);
+    stage.style.setProperty('--c-soft', c.soft);
+    stage.style.setProperty('--c-glow', c.glow);
+    stage.style.setProperty('--c-line', c.line);
+    stage.innerHTML = `
+      <div class="stage-grid">
+        <div class="stage-left stage-pane active">
+          <span class="stage-ey"><span class="pill"></span>${c.eyebrow}</span>
+          <h3>${c.title}</h3>
+          <p>${c.desc}</p>
+          <div class="stage-feats">
+            ${c.feats.map(f=>`<div class="feat"><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>${f}</div>`).join('')}
+          </div>
+          <div class="stage-tags">${c.tags.map(t=>`<span class="stage-tag">${t}</span>`).join('')}</div>
+          <a class="stage-cta" href="./index.html">${c.name} 담기
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
+        <div class="stage-right">
+          <div class="device stage-pane active">
+            <div class="device-bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="t">${c.screenTag}</span></div>
+            <div class="device-screen">${deviceScreen(c)}</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ===== marquee =====
+  function renderMarquee() {
+    const items = ['분수의 덧셈','확률 돌림판','좌표평면 탐구','다각형의 넓이','수직선 위 정수','비례식','형성평가 10문항','함수 그래프','띠그래프','약분과 통분','입체도형 전개도','O/X 퀴즈','대수 블록','평균과 가능성'];
+    const dot = ['#1AD1C6','#36D399','#9B8CFF','#FF7A52'];
+    const make = items.map((t,i)=>`<span class="chip"><span style="width:7px;height:7px;border-radius:50%;background:${dot[i%4]}"></span><span class="em">${t}</span></span>`).join('');
+    document.getElementById('marquee').innerHTML = make + make;
+  }
+
+  // ===== showcase =====
+  function renderShowcase() {
+    document.getElementById('show-rail').innerHTML = SHOWCASE.map(s=>{
+      const col = showVis(s.id);
+      return `
+      <article class="scard">
+        <div class="scard-vis" style="background:linear-gradient(135deg, ${col}22, #0C1019);">
+          <svg viewBox="0 0 320 200" width="100%" height="100%" style="position:absolute;inset:0">
+            <circle cx="60" cy="50" r="70" fill="${col}" opacity="0.14"/>
+            <rect x="180" y="110" width="120" height="120" rx="20" fill="${col}" opacity="0.12"/>
+            <rect x="28" y="130" width="150" height="11" rx="5" fill="#ffffff" opacity="0.16"/>
+            <rect x="28" y="150" width="100" height="11" rx="5" fill="#ffffff" opacity="0.10"/>
+          </svg>
+          <div class="scard-play"><span class="pbtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span></div>
+        </div>
+        <div class="scard-body">
+          <div class="scard-cat" style="color:${col}">${s.cat}</div>
+          <div class="scard-title">${s.title}</div>
+          <div class="scard-meta">${s.meta}</div>
+        </div>
+      </article>`;
+    }).join('');
+    document.querySelectorAll('.scard').forEach(c=> c.addEventListener('click', ()=> location.href='./index.html'));
+  }
+
+  // ===== nav scroll state =====
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', ()=> nav.classList.toggle('scrolled', scrollY > 24), { passive:true });
+
+  // ===== reveal observer =====
+  const io = new IntersectionObserver((es)=>{
+    es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.14 });
+  function observeReveals(){ document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el)); }
+
+  // ===== count up =====
+  let statsDone = false;
+  function runCount() {
+    if (statsDone) return; statsDone = true;
+    document.querySelectorAll('#stats .n').forEach(el=>{
+      const to = +el.dataset.to, suf = el.dataset.suffix||'', comma = el.dataset.comma;
+      const dur = 1400, t0 = performance.now();
+      function tick(now){
+        const p = Math.min(1, (now-t0)/dur);
+        const e = 1 - Math.pow(1-p, 3);
+        let v = Math.round(to*e);
+        el.textContent = (comma ? v.toLocaleString() : v) + suf;
+        if (p<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+  const statIo = new IntersectionObserver((es)=>{ es.forEach(e=>{ if(e.isIntersecting) runCount(); }); }, { threshold: 0.4 });
+
+  // ===== init =====
+  renderTabs(); renderStage(); renderMarquee(); renderShowcase();
+  observeReveals();
+  statIo.observe(document.getElementById('stats'));
+</script>
+</body>
+</html>
