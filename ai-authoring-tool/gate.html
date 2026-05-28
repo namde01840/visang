@@ -329,6 +329,46 @@
   .cta-final h2 { font-size: clamp(28px, 4vw, 46px); font-weight: 900; letter-spacing: -0.04em; line-height: 1.15; margin-bottom: 18px; }
   .cta-final p { font-size: 16px; color: var(--ink-2); margin-bottom: 32px; }
 
+  /* ===== 슬라이드 만들기 모달 (게이트에서 직접 노출) ===== */
+  .gmodal-backdrop {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(4,6,11,0.66); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center; padding: 24px;
+    animation: gmFade .2s ease;
+  }
+  .gmodal-backdrop.open { display: flex; }
+  @keyframes gmFade { from { opacity: 0; } to { opacity: 1; } }
+  .gmodal {
+    background: #FFFFFF; color: #111827; border-radius: 18px;
+    width: 100%; max-width: 540px; position: relative; overflow: hidden;
+    box-shadow: 0 36px 90px rgba(0,0,0,0.55);
+    animation: gmPop .22s cubic-bezier(.2,.7,.2,1);
+  }
+  @keyframes gmPop { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+  .gmodal-head { padding: 26px 28px 0; display: flex; align-items: flex-start; justify-content: space-between; }
+  .gmodal-head h3 { font-size: 22px; font-weight: 900; letter-spacing: -0.03em; color: #0E1424; }
+  .gmodal-close { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #E5E7EB; background: #fff; color: #6B7280; display: grid; place-items: center; font-size: 18px; }
+  .gmodal-close:hover { background: #F4F5F7; color: #111827; }
+  .gmodal-body { padding: 24px 28px 26px; }
+  .gform { display: grid; grid-template-columns: 88px 1fr; gap: 16px 18px; align-items: center; }
+  .gform .lb { font-size: 14px; font-weight: 700; color: #374151; }
+  .gform .in, .gform select {
+    width: 100%; padding: 12px 14px; border: 1px solid #E5E7EB; border-radius: 10px;
+    font-family: inherit; font-size: 14px; color: #111827; background: #fff; font-weight: 600;
+  }
+  .gform .in[readonly] { background: #F4F5F7; color: #6B7280; }
+  .gform .in:focus, .gform select:focus { outline: 2px solid #CCEFEF; border-color: #19D3CF; }
+  .gform select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  .gmodal-foot { margin-top: 26px; padding-top: 20px; border-top: 1px solid #F3F4F6; display: flex; justify-content: space-between; align-items: center; }
+  .gbtn-sec { padding: 12px 20px; border: 1px solid #E5E7EB; border-radius: 11px; background: #fff; color: #374151; font-weight: 700; font-size: 14px; }
+  .gbtn-sec:hover { border-color: #9CA3AF; }
+  .gbtn-pri { padding: 12px 22px; border-radius: 11px; background: linear-gradient(135deg, #19D3CF, #4FE6C4); color: #04121A; font-weight: 800; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+  .gbtn-pri:hover { filter: brightness(1.05); }
+
   /* ===== footer ===== */
   footer { border-top: 1px solid var(--line-2); padding: 50px 0 60px; margin-top: 90px; }
   .foot { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; flex-wrap: wrap; }
@@ -353,7 +393,7 @@
       <a class="nav-link" href="#value">왜 AI저작툴</a>
       <a class="nav-link" href="#showcase">수업 사례</a>
       <a class="nav-link" href="#flow">시작하기</a>
-      <a class="nav-cta" href="./index.html?create=1">수업 만들기 →</a>
+      <a class="nav-cta js-create" href="#">수업 만들기 →</a>
     </div>
   </div>
 </nav>
@@ -372,7 +412,7 @@
         <p class="lead reveal d2">활동형 콘텐츠부터 매쓰캔버스, 스마트 문제은행까지 —
           흩어진 수업 자료를 한 곳에서 골라 담고, 클릭 한 번으로 나만의 인터랙티브 수업 슬라이드를 완성합니다.</p>
         <div class="hero-ctas reveal d3">
-          <a class="btn-primary" href="./index.html?create=1">무료로 수업 만들기
+          <a class="btn-primary js-create" href="#">무료로 수업 만들기
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
           <a class="btn-ghost" href="#catalog">
@@ -547,7 +587,7 @@
     <div class="cta-final reveal">
       <h2>오늘 수업, 지금 만들어 볼까요?</h2>
       <p>가입 없이 바로 체험할 수 있습니다.</p>
-      <a class="btn-primary" href="./index.html?create=1" style="font-size:16px;padding:17px 32px;">수업 만들기 시작
+      <a class="btn-primary js-create" href="#" style="font-size:16px;padding:17px 32px;">수업 만들기 시작
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
     </div>
@@ -574,13 +614,42 @@
       </div>
       <div class="foot-col">
         <h5>바로가기</h5>
-        <a href="./index.html?create=1">수업 만들기</a>
+        <a class="js-create" href="#">수업 만들기</a>
         <a href="#value">왜 AI저작툴</a>
         <a href="#flow">시작하기</a>
       </div>
     </div>
   </div>
 </footer>
+
+<!-- 슬라이드 만들기 모달 (게이트에서 직접) -->
+<div class="gmodal-backdrop" id="gm-create" onclick="if(event.target===this) closeGM()">
+  <div class="gmodal">
+    <div class="gmodal-head">
+      <h3>슬라이드 만들기</h3>
+      <button class="gmodal-close" onclick="closeGM()">×</button>
+    </div>
+    <div class="gmodal-body">
+      <div class="gform">
+        <span class="lb">슬라이드 이름</span><input class="in" id="gm-name">
+        <span class="lb">학교급</span>
+        <select id="gm-school"><option>초등</option><option>중등</option><option>고등</option></select>
+        <span class="lb">학년</span>
+        <select id="gm-grade"><option>1학년</option><option>2학년</option><option>3학년</option><option>4학년</option><option selected>5학년</option><option>6학년</option></select>
+        <span class="lb">교과목</span>
+        <select id="gm-subject"><option>수학</option><option>영어</option><option>국어</option><option>과학</option><option>사회</option></select>
+        <span class="lb">차시(단원)</span>
+        <select id="gm-unit"></select>
+      </div>
+      <div class="gmodal-foot">
+        <button class="gbtn-sec" onclick="closeGM()">취소</button>
+        <button class="gbtn-pri" id="gm-go">슬라이드 만들기
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
   // ===== Category data =====
@@ -721,6 +790,9 @@
     { id:'theme', cat:'매쓰캔버스', title:'입체도형 전개도 탐구', meta:'중1 · 3D 교구' },
   ];
 
+  // 게이트 카테고리 → 툴 카탈로그 섹션 매핑
+  const SECTION_FOR = { tool: 'manipulative', curriculum: 'lesson', theme: 'canvas', creative: 'qbank' };
+
   // ===== render category tabs + stage =====
   let activeCat = 0;
   function renderTabs() {
@@ -751,7 +823,7 @@
             ${c.feats.map(f=>`<div class="feat"><span class="ck"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>${f}</div>`).join('')}
           </div>
           <div class="stage-tags">${c.tags.map(t=>`<span class="stage-tag">${t}</span>`).join('')}</div>
-          <a class="stage-cta" href="./index.html?create=1">${c.name} 담기
+          <a class="stage-cta" href="./index.html?cat=${SECTION_FOR[c.id]}">${c.name} 담기
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
         </div>
@@ -817,6 +889,57 @@
     });
   }
   const statIo = new IntersectionObserver((es)=>{ es.forEach(e=>{ if(e.isIntersecting) runCount(); }); }, { threshold: 0.4 });
+
+  // ===== 슬라이드 만들기 모달 =====
+  const UNIT_OPTIONS = {
+    '영어': ['Lesson 1. Nice to Meet You','Lesson 2. My School Life','Lesson 3. Around the Town','Lesson 4. Healthy Habits','Lesson 5. Special Days','Lesson 6. Around the World','Lesson 7. Stories to Share','Lesson 8. Save Our Planet'],
+    '수학': ['1단원 · 분수의 덧셈과 뺄셈','2단원 · 약수와 배수','3단원 · 다각형의 넓이','4단원 · 평균과 가능성','5단원 · 직육면체의 부피','6단원 · 비와 비율'],
+    '국어': ['1단원 · 이야기를 간추려요','2단원 · 의견을 조정하며 토의해요','3단원 · 글의 짜임','4단원 · 글쓴이의 주장','5단원 · 매체로 의사소통해요'],
+    '과학': ['1단원 · 온도와 열','2단원 · 태양계와 별','3단원 · 용해와 용액','4단원 · 다양한 생물과 우리 생활','5단원 · 산과 염기'],
+    '사회': ['1단원 · 국토와 우리 생활','2단원 · 인권 존중과 정의로운 사회','3단원 · 옛사람들의 삶과 문화','4단원 · 사회의 새로운 변화와 오늘날의 우리'],
+  };
+  function fillGMUnit(subject) {
+    const sel = document.getElementById('gm-unit');
+    const opts = UNIT_OPTIONS[subject] || UNIT_OPTIONS['수학'];
+    sel.innerHTML = opts.map(o=>`<option>${o}</option>`).join('');
+  }
+  function todayName() {
+    const d = new Date();
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${d.getFullYear()}-${mm}-${dd} 제작`;
+  }
+  function openGM() {
+    document.getElementById('gm-name').value = todayName();
+    fillGMUnit(document.getElementById('gm-subject').value);
+    document.getElementById('gm-create').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeGM() {
+    document.getElementById('gm-create').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  window.closeGM = closeGM;
+  document.getElementById('gm-subject').addEventListener('change', e=> fillGMUnit(e.target.value));
+  addEventListener('keydown', e=>{ if(e.key==='Escape') closeGM(); });
+
+  // 수업 만들기 버튼 → 게이트에서 바로 모달
+  document.querySelectorAll('.js-create').forEach(el=>{
+    el.addEventListener('click', e=>{ e.preventDefault(); openGM(); });
+  });
+
+  // 슬라이드 만들기 → : 학습 정보 담아 콘텐츠 선택 단계로 이동
+  document.getElementById('gm-go').addEventListener('click', ()=>{
+    const q = new URLSearchParams({
+      step: 'content',
+      name: document.getElementById('gm-name').value,
+      school: document.getElementById('gm-school').value,
+      grade: document.getElementById('gm-grade').value,
+      subject: document.getElementById('gm-subject').value,
+      unit: document.getElementById('gm-unit').value,
+    });
+    location.href = './index.html?' + q.toString();
+  });
 
   // ===== init =====
   renderTabs(); renderStage(); renderShowcase();

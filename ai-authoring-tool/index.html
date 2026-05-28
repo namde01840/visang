@@ -4035,9 +4035,37 @@
   renderTemplateTree();
   applySubjectVisibility(currentSubject());
 
-  // 게이트(?create=1 / #create)에서 진입 시 슬라이드 만들기 팝업 자동 오픈
-  (function handleCreateDeepLink(){
+  // 게이트에서 진입 시 딥링크 처리
+  (function handleDeepLink(){
     const params = new URLSearchParams(location.search);
+    const step = params.get('step');
+    const cat  = params.get('cat');
+
+    if (step === 'content') {
+      // 게이트의 슬라이드 만들기 팝업에서 넘어옴 → 바로 콘텐츠 선택하기 단계
+      if (params.get('school'))  LEARN.school  = params.get('school');
+      if (params.get('grade'))   LEARN.grade   = params.get('grade');
+      if (params.get('subject')) LEARN.subject = params.get('subject');
+      if (params.get('unit'))    LEARN.unit    = params.get('unit');
+      setSelectValue(document.getElementById('ctx-school'),  LEARN.school);
+      setSelectValue(document.getElementById('ctx-grade'),   LEARN.grade);
+      setSelectValue(document.getElementById('ctx-subject'), LEARN.subject);
+      fillUnitSelect(LEARN.subject);
+      applySubjectVisibility(LEARN.subject);
+      editorSlides = []; activeSlideIdx = 0; editorReplaceTargetIdx = null; addInsertIdx = null;
+      applyLearnToCreateModal();
+      const nm = params.get('name'); if (nm) document.getElementById('f-name').value = nm;
+      setSelectedTemplate('없음');
+      selectedTemplateData = null;
+      const firstTab = document.querySelector('#tpl-toptabs .tpl-modal-tab');
+      if (firstTab) firstTab.click();
+      openModal('modal-template');
+      return;
+    }
+    if (cat && ['manipulative','lesson','canvas','qbank'].includes(cat)) {
+      activateTab(cat);
+      return;
+    }
     if (params.get('create') === '1' || location.hash === '#create') {
       document.getElementById('open-create-modal').click();
     }
