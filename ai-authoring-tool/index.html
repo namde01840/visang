@@ -141,6 +141,16 @@
   }
   .top-btn.primary { background: var(--mint); color: #FFFFFF; border-color: var(--mint); }
   .top-btn.primary:hover { background: var(--mint-dark); border-color: var(--mint-dark); }
+  .top-gear {
+    width: 38px; height: 38px;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink-2);
+    display: grid; place-items: center;
+    transition: all 0.15s;
+  }
+  .top-gear:hover { background: var(--bg-2); color: var(--ink); border-color: var(--ink-3); }
 
   /* ========== CONTEXT BAR: grade/subject selectors ========== */
   .context-wrap {
@@ -1438,7 +1448,7 @@
     margin-top: 8px;
   }
 
-  /* ====== Article 카드(qbank) 전용 모드 — 문제은행/조작형/수업자료 ====== */
+  /* ====== Article 카드(qbank) 전용 모드 — 문제은행/활동형/수업자료 ====== */
   .picker-modal[data-mode="qbank"] .picker-subtabs { display: none; }
   .picker-modal[data-mode="qbank"] .picker-filter {
     padding: 18px 20px 20px;
@@ -1932,7 +1942,7 @@
   }
   .ed-preview-frame.canvas svg,
   .ed-preview-frame.template svg { width: 100%; height: 100%; }
-  /* 문제/조작형/수업자료: picker 카드 썸네일과 동일 비율로 렌더 */
+  /* 문제/활동형/수업자료: picker 카드 썸네일과 동일 비율로 렌더 */
   .ed-preview-frame.qbank,
   .ed-preview-frame.lesson,
   .ed-preview-frame.manipulative {
@@ -2119,6 +2129,9 @@
 
     <div class="topbar-actions">
       <input type="text" class="top-search" placeholder="수업, 단원, 도구 검색…" />
+      <button class="top-gear" id="open-settings" title="학습 설정">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
       <button class="top-btn primary" id="open-create-modal">+ 수업 만들기</button>
     </div>
   </header>
@@ -2128,10 +2141,10 @@
 <div class="gnb-wrap">
   <nav class="tabbar" id="tabbar">
     <button class="tab active" data-section="home">홈</button>
-    <button class="tab" data-section="manipulative">조작형 콘텐츠 <span class="count">128</span></button>
-    <button class="tab" data-section="lesson">수업자료 콘텐츠 <span class="count">324</span></button>
-    <button class="tab math-only" data-section="canvas">매쓰캔버스 <span class="count">86</span></button>
-    <button class="tab" data-section="qbank">문제은행 <span class="count">1,204</span></button>
+    <button class="tab" data-section="manipulative">활동형 콘텐츠 <span class="count">96,589</span></button>
+    <button class="tab" data-section="lesson">수업자료 콘텐츠 <span class="count">9,672</span></button>
+    <button class="tab math-only" data-section="canvas">매쓰캔버스 <span class="count">428</span></button>
+    <button class="tab" data-section="qbank">문제은행 <span class="count">171,668</span></button>
   </nav>
 </div>
 
@@ -2178,7 +2191,7 @@
         </div>
         <div class="stats-legend">
           <div class="legend-item"><span class="legend-dot" style="background:var(--curriculum)"></span>수업자료 콘텐츠<span class="num">221</span></div>
-          <div class="legend-item"><span class="legend-dot" style="background:var(--tool)"></span>조작형<span class="num">128</span></div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--tool)"></span>활동형<span class="num">128</span></div>
           <div class="legend-item math-only"><span class="legend-dot" style="background:var(--theme)"></span>매쓰캔버스<span class="num">105</span></div>
           <div class="legend-item"><span class="legend-dot" style="background:var(--creative)"></span>문제은행<span class="num">74</span></div>
         </div>
@@ -2198,12 +2211,12 @@
       <div class="row-grid" id="row-today"></div>
     </section>
 
-    <!-- Row 2: 조작형 콘텐츠 (도구별) -->
+    <!-- Row 2: 활동형 콘텐츠 (도구별) -->
     <section class="row-section">
       <div class="row-header">
         <div class="row-header-left">
           <span class="row-eyebrow" style="--row-accent: var(--tool)">TOOLS · 47종</span>
-          <h2 class="row-title">조작형 콘텐츠</h2>
+          <h2 class="row-title">활동형 콘텐츠</h2>
           <span class="row-desc">손쉽게 가져다 쓰는 디지털 교구 수업</span>
         </div>
         <button class="row-link" data-go="manipulative">더보기 →</button>
@@ -2301,7 +2314,7 @@
   <main class="content">
     <div class="content-header">
       <div>
-        <div class="content-title" id="catalog-title">조작형 콘텐츠</div>
+        <div class="content-title" id="catalog-title">활동형 콘텐츠</div>
       </div>
       <div class="content-sort">
         <span class="content-count">총 <strong id="catalog-count">128</strong>건</span>
@@ -2357,6 +2370,44 @@
   </div>
 </div>
 
+<!-- ========== MODAL: 학습 설정 ========== -->
+<div class="modal-backdrop" id="modal-settings" onclick="if(event.target===this) closeModal('modal-settings')">
+  <div class="modal sm">
+    <button class="modal-close" onclick="closeModal('modal-settings')">×</button>
+    <div class="modal-header">
+      <h3 class="modal-title">학습 설정</h3>
+      <p style="font-size:12.5px;color:var(--ink-3);margin-top:6px;">기본 학습 환경을 설정하면 슬라이드 제작·콘텐츠 불러오기 시 자동으로 적용됩니다.</p>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <span class="form-label">학교급</span>
+        <select class="ctx-select" id="set-school">
+          <option>초등</option><option>중등</option><option>고등</option>
+        </select>
+
+        <span class="form-label">학년</span>
+        <select class="ctx-select" id="set-grade">
+          <option>1학년</option><option>2학년</option><option>3학년</option>
+          <option>4학년</option><option>5학년</option><option>6학년</option>
+        </select>
+
+        <span class="form-label">교과목</span>
+        <select class="ctx-select" id="set-subject">
+          <option>수학</option><option>영어</option><option>국어</option>
+          <option>과학</option><option>사회</option>
+        </select>
+
+        <span class="form-label">차시(단원)</span>
+        <select class="ctx-select" id="set-unit"></select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('modal-settings')">취소</button>
+        <button class="btn-primary" id="save-settings">설정 저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ========== MODAL 2: 콘텐츠 선택하기 ========== -->
 <div class="modal-backdrop" id="modal-template" onclick="if(event.target===this) closeModal('modal-template')">
   <div class="modal lg tpl-modal">
@@ -2385,8 +2436,8 @@
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg>
             </div>
             <div class="bb-text">
-              <strong>조작형 콘텐츠</strong>
-              <span>4,000여 종의 학생 조작형 콘텐츠</span>
+              <strong>활동형 콘텐츠</strong>
+              <span>4,000여 종의 학생 활동형 콘텐츠</span>
             </div>
             <span class="bb-arrow">→</span>
           </button>
@@ -2516,7 +2567,7 @@
     <span class="ed-divider"></span>
     <button class="ed-icon-btn" title="저장됨"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><polyline points="9 13 11 15 15 11"/></svg></button>
     <div class="ed-top-right">
-      <button class="ed-icon-btn" title="설정"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <button class="ed-icon-btn" id="ed-settings" title="학습 설정"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
       <button class="ed-ghost-btn">활동 만들기</button>
       <button class="ed-play-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg> 수업하기</button>
       <button class="ed-play-split"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
@@ -2616,10 +2667,10 @@
   ];
 
   const CATALOG_DATA = {
-    manipulative: { title: '조작형 콘텐츠', count: 128, items: TOOLS },
-    lesson:       { title: '차시 콘텐츠',   count: 324, items: LESSON_SLIDES },
-    canvas:       { title: '매쓰캔버스',    count:  86, items: CANVAS_SLIDES },
-    qbank:        { title: '문제은행',      count:1204, items: QBANK_SLIDES },
+    manipulative: { title: '활동형 콘텐츠',   count: 96589,  items: TOOLS },
+    lesson:       { title: '수업자료 콘텐츠', count: 9672,   items: LESSON_SLIDES },
+    canvas:       { title: '매쓰캔버스',      count: 428,    items: CANVAS_SLIDES },
+    qbank:        { title: '문제은행',        count: 171668, items: QBANK_SLIDES },
   };
 
   function iconSvg(kind) {
@@ -2734,7 +2785,7 @@
         { name: '사다리',   meta: '경로 분기 · 게임형',    thumb: 'ladder' },
       ]
     },
-    { id: 'manip', name: '조작형 템플릿',   sub: '학생 참여형 인터렉티브 활동을 제작해 보세요.',      accent: 'manip', icon: 'tool',
+    { id: 'manip', name: '활동형 템플릿',   sub: '학생 참여형 인터렉티브 활동을 제작해 보세요.',      accent: 'manip', icon: 'tool',
       leaves: [
         { name: '영단어 퀴즈',       meta: '단어 의미 매칭',       thumb: 'word' },
         { name: '발음 연습',         meta: '듣고 따라하기',         thumb: 'mic' },
@@ -2908,7 +2959,7 @@
 
   // ===== 완성형 콘텐츠 큰 버튼 → Article Picker 팝업으로 이동 =====
   const IMPORT_LABEL = {
-    manipulative: '조작형 콘텐츠 불러오기',
+    manipulative: '활동형 콘텐츠 불러오기',
     lesson:       '차시 콘텐츠 불러오기',
     canvas:       '매쓰캔버스 불러오기',
     qbank:        '스마트 문제은행 불러오기',
@@ -2921,18 +2972,18 @@
   };
   const PICKER_DATA = {
     manipulative: [
-      { type: '조작형', title: '분수 모형 활용 카드',     source: '디지털 교구', tags: ['분수', '모형'],         preview: 'icon',    snippet: 'box' },
-      { type: '조작형', title: '수직선 위 정수 비교',     source: '디지털 교구', tags: ['수직선', '정수'],       preview: 'lines',   snippet: '수직선에서 정수의 위치를 비교해 보세요' },
-      { type: '조작형', title: '컴퍼스로 정삼각형',       source: '디지털 교구', tags: ['컴퍼스', '도형'],       preview: 'geom',    snippet: 'triangle' },
-      { type: '조작형', title: '확률 돌림판 실험',        source: '디지털 교구', tags: ['확률', '돌림판'],       preview: 'chart',   snippet: 'bar' },
-      { type: '조작형', title: '함수 그래프 슬라이더',    source: '디지털 교구', tags: ['함수', '그래프'],       preview: 'chart',   snippet: 'bar' },
-      { type: '조작형', title: '각도기 활용 카드',        source: '디지털 교구', tags: ['각도', '도형'],         preview: 'geom',    snippet: 'triangle' },
-      { type: '조작형', title: '대수 블록 식 만들기',     source: '디지털 교구', tags: ['대수', '블록'],         preview: 'icon',    snippet: 'box' },
-      { type: '조작형', title: '도미노 곱셈 카드',        source: '디지털 교구', tags: ['곱셈', '도미노'],       preview: 'grid',    snippet: '곱셈표' },
-      { type: '조작형', title: '도형 만들기 칠교판',      source: '디지털 교구', tags: ['칠교', '도형'],         preview: 'geom',    snippet: 'symmetric' },
-      { type: '조작형', title: '확률 동전 던지기',        source: '디지털 교구', tags: ['확률', '동전'],         preview: 'icon',    snippet: 'bag' },
-      { type: '조작형', title: '시계 만들기',             source: '디지털 교구', tags: ['시간', '시계'],         preview: 'geom',    snippet: 'cube' },
-      { type: '조작형', title: '도형 분할 퍼즐',          source: '디지털 교구', tags: ['도형', '분할'],         preview: 'lines',   snippet: '도형을 분할해 보세요' },
+      { type: '활동형', title: '분수 모형 활용 카드',     source: '디지털 교구', tags: ['분수', '모형'],         preview: 'icon',    snippet: 'box' },
+      { type: '활동형', title: '수직선 위 정수 비교',     source: '디지털 교구', tags: ['수직선', '정수'],       preview: 'lines',   snippet: '수직선에서 정수의 위치를 비교해 보세요' },
+      { type: '활동형', title: '컴퍼스로 정삼각형',       source: '디지털 교구', tags: ['컴퍼스', '도형'],       preview: 'geom',    snippet: 'triangle' },
+      { type: '활동형', title: '확률 돌림판 실험',        source: '디지털 교구', tags: ['확률', '돌림판'],       preview: 'chart',   snippet: 'bar' },
+      { type: '활동형', title: '함수 그래프 슬라이더',    source: '디지털 교구', tags: ['함수', '그래프'],       preview: 'chart',   snippet: 'bar' },
+      { type: '활동형', title: '각도기 활용 카드',        source: '디지털 교구', tags: ['각도', '도형'],         preview: 'geom',    snippet: 'triangle' },
+      { type: '활동형', title: '대수 블록 식 만들기',     source: '디지털 교구', tags: ['대수', '블록'],         preview: 'icon',    snippet: 'box' },
+      { type: '활동형', title: '도미노 곱셈 카드',        source: '디지털 교구', tags: ['곱셈', '도미노'],       preview: 'grid',    snippet: '곱셈표' },
+      { type: '활동형', title: '도형 만들기 칠교판',      source: '디지털 교구', tags: ['칠교', '도형'],         preview: 'geom',    snippet: 'symmetric' },
+      { type: '활동형', title: '확률 동전 던지기',        source: '디지털 교구', tags: ['확률', '동전'],         preview: 'icon',    snippet: 'bag' },
+      { type: '활동형', title: '시계 만들기',             source: '디지털 교구', tags: ['시간', '시계'],         preview: 'geom',    snippet: 'cube' },
+      { type: '활동형', title: '도형 분할 퍼즐',          source: '디지털 교구', tags: ['도형', '분할'],         preview: 'lines',   snippet: '도형을 분할해 보세요' },
     ],
     lesson: [
       { type: '수업자료', title: '분수의 덧셈 · 1차시 도입',   source: '교사용 지도서', tags: ['분수', '도입'],         preview: 'lines',   snippet: '오늘 수업의 학습 목표를 알아봅시다' },
@@ -3194,11 +3245,11 @@
 
   let pickerCurrent = null;
   let pickerSelectedIdx = null;        // 단일 선택 (canvas 모드)
-  let pickerSelectedIdxs = new Set();  // 복수 선택 (qbank 모드 — 문제은행/조작형/수업자료)
+  let pickerSelectedIdxs = new Set();  // 복수 선택 (qbank 모드 — 문제은행/활동형/수업자료)
   const QBANK_MODES = new Set(['qbank', 'manipulative', 'lesson']);
-  const QBANK_LABELS = { qbank: '스마트 문제은행', manipulative: '조작형 콘텐츠', lesson: '수업자료 콘텐츠' };
+  const QBANK_LABELS = { qbank: '스마트 문제은행', manipulative: '활동형 콘텐츠', lesson: '수업자료 콘텐츠' };
   const QBANK_UNITS  = { qbank: '문항',          manipulative: '콘텐츠',     lesson: '콘텐츠' };
-  const QBANK_TOTALS = { qbank: '35,448',        manipulative: '4,124',      lesson: '2,318' };
+  const QBANK_TOTALS = { qbank: '171,668',       manipulative: '96,589',     lesson: '9,672' };
 
   function buildQbankFilterRow() {
     return `
@@ -3300,7 +3351,7 @@
     // 타이틀
     const titleMap = {
       qbank:        '스마트 문제은행 불러오기',
-      manipulative: '조작형 콘텐츠 불러오기',
+      manipulative: '활동형 콘텐츠 불러오기',
       lesson:       '수업자료 콘텐츠 불러오기',
       canvas:       '매쓰캔버스 불러오기',
     };
@@ -3320,6 +3371,7 @@
     // filter row
     const filterEl = document.querySelector('#modal-picker .picker-filter');
     filterEl.innerHTML = isQbank ? buildQbankFilterRow() : buildDefaultFilterRow();
+    if (isQbank) applyLearnToPickerFilter(filterEl);  // 학습 설정 디폴트 반영
 
     // wire reset
     filterEl.querySelector('.picker-reset').addEventListener('click', () => {
@@ -3341,14 +3393,14 @@
 
     // count text + suffix
     const items = PICKER_DATA[kind] || [];
-    const totalText = isQbank ? QBANK_TOTALS[kind] : (kind === 'canvas' ? '304' : items.length.toLocaleString());
+    const totalText = isQbank ? QBANK_TOTALS[kind] : (kind === 'canvas' ? '428' : items.length.toLocaleString());
     const unit = isQbank ? QBANK_UNITS[kind] : (kind === 'canvas' ? '캔버스' : '콘텐츠');
     document.querySelector('.picker-count').innerHTML = `총 <strong>${totalText}</strong>개의 ${unit}가 검색되었습니다.`;
 
     // grid
     const grid = document.getElementById('picker-grid');
     if (isQbank) {
-      const typeAccent = { 객관식: '', 주관식: 'subjective', 조작형: 'manip', 수업자료: 'curriculum' };
+      const typeAccent = { 객관식: '', 주관식: 'subjective', 활동형: 'manip', 수업자료: 'curriculum' };
       grid.innerHTML = items.map((it, i) => `
         <article class="picker-card" data-idx="${i}">
           <span class="check"></span>
@@ -3426,7 +3478,7 @@
     if (!item) return;
     previewContextIdx = idx;
 
-    const typeAccent = { 객관식: '', 주관식: 'subjective', 조작형: 'manip', 수업자료: 'curriculum' };
+    const typeAccent = { 객관식: '', 주관식: 'subjective', 활동형: 'manip', 수업자료: 'curriculum' };
     const typeEl = document.getElementById('prev-type');
     typeEl.textContent = item.type;
     typeEl.className = 'preview-type ' + (typeAccent[item.type] || '');
@@ -3569,7 +3621,7 @@
     activeSlideIdx = 0;
     editorReplaceTargetIdx = null;
     addInsertIdx = null;
-    fillUnitSelect(document.getElementById('f-subject').value);
+    applyLearnToCreateModal();
     openModal('modal-create');
   });
   document.getElementById('go-template').addEventListener('click', () => {
@@ -3590,9 +3642,74 @@
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
-      ['modal-create','modal-template','modal-picker','modal-preview'].forEach(id => closeModal(id));
+      ['modal-create','modal-template','modal-picker','modal-preview','modal-settings'].forEach(id => closeModal(id));
       closeAddPanel();
     }
+  });
+
+  // ============================================================
+  // ===== 학습 설정 (LEARN) — 톱니바퀴 설정 → 슬라이드 제작 디폴트 =====
+  // ============================================================
+  const LEARN = { school: '초등', grade: '5학년', subject: '수학', unit: '' };
+
+  function setSelectValue(sel, val) {
+    if (!sel || val == null) return;
+    const opt = [...sel.options].find(o => o.value === val || o.textContent === val);
+    if (opt) sel.value = opt.value;
+  }
+
+  // 모달 1(슬라이드 만들기)에 LEARN 디폴트 반영
+  function applyLearnToCreateModal() {
+    setSelectValue(document.getElementById('f-school'),  LEARN.school);
+    setSelectValue(document.getElementById('f-grade'),   LEARN.grade);
+    setSelectValue(document.getElementById('f-subject'), LEARN.subject);
+    fillUnitSelect(LEARN.subject);
+    if (LEARN.unit) setSelectValue(document.getElementById('f-unit'), LEARN.unit);
+  }
+
+  // qbank/콘텐츠 불러오기 필터에 LEARN 디폴트 반영
+  const SCHOOL_TO_QB = { '초등': '초등학교', '중등': '중학교', '고등': '고등학교' };
+  function applyLearnToPickerFilter(filterEl) {
+    if (!filterEl) return;
+    const selects = filterEl.querySelectorAll('.qb-field .ctx-select');
+    // 순서: 학교급 / 학년 / 교과목 / 교과과정(단원명)
+    if (selects[0]) setSelectValue(selects[0], SCHOOL_TO_QB[LEARN.school] || LEARN.school);
+    if (selects[1]) setSelectValue(selects[1], LEARN.grade);
+    if (selects[2]) setSelectValue(selects[2], LEARN.subject);
+    if (selects[3] && LEARN.unit) setSelectValue(selects[3], LEARN.unit);
+  }
+
+  // 설정 모달 열기 (홈 톱니 + 에디터 톱니 공용)
+  function openSettings() {
+    setSelectValue(document.getElementById('set-school'),  LEARN.school);
+    setSelectValue(document.getElementById('set-grade'),   LEARN.grade);
+    setSelectValue(document.getElementById('set-subject'), LEARN.subject);
+    fillSettingsUnit(LEARN.subject);
+    if (LEARN.unit) setSelectValue(document.getElementById('set-unit'), LEARN.unit);
+    openModal('modal-settings');
+  }
+  function fillSettingsUnit(subject) {
+    const sel = document.getElementById('set-unit');
+    const opts = UNIT_OPTIONS[subject] || UNIT_OPTIONS['수학'];
+    sel.innerHTML = opts.map(o => `<option>${o}</option>`).join('');
+  }
+  document.getElementById('set-subject').addEventListener('change', e => fillSettingsUnit(e.target.value));
+
+  document.getElementById('open-settings').addEventListener('click', openSettings);
+
+  document.getElementById('save-settings').addEventListener('click', () => {
+    LEARN.school  = document.getElementById('set-school').value;
+    LEARN.grade   = document.getElementById('set-grade').value;
+    LEARN.subject = document.getElementById('set-subject').value;
+    LEARN.unit    = document.getElementById('set-unit').value;
+    // 상단 학습설정 바 동기화 + 매쓰캔버스 노출/단원 옵션 갱신
+    setSelectValue(document.getElementById('ctx-school'),  LEARN.school);
+    setSelectValue(document.getElementById('ctx-grade'),   LEARN.grade);
+    setSelectValue(document.getElementById('ctx-subject'), LEARN.subject);
+    fillUnitSelect(LEARN.subject);
+    applySubjectVisibility(LEARN.subject);
+    closeModal('modal-settings');
+    showToast('학습 설정이 저장되었습니다.');
   });
 
   // ============================================================
@@ -3602,7 +3719,7 @@
     canvas:       { label: '매쓰캔버스',     loadLabel: '매쓰캔버스 불러오기',     emptyMsg: '캔버스를 선택해 주세요.', pickerKind: 'canvas' },
     qbank:        { label: '문제은행',       loadLabel: '스마트 문제은행 불러오기', emptyMsg: '문제를 선택해 주세요.',   pickerKind: 'qbank' },
     lesson:       { label: '수업자료',       loadLabel: '수업자료 콘텐츠 불러오기', emptyMsg: '수업자료를 선택해 주세요.', pickerKind: 'lesson' },
-    manipulative: { label: '조작형 콘텐츠',   loadLabel: '조작형 콘텐츠 불러오기',   emptyMsg: '콘텐츠를 선택해 주세요.', pickerKind: 'manipulative' },
+    manipulative: { label: '활동형 콘텐츠',   loadLabel: '활동형 콘텐츠 불러오기',   emptyMsg: '콘텐츠를 선택해 주세요.', pickerKind: 'manipulative' },
     template:     { label: '템플릿',         loadLabel: '템플릿 선택',             emptyMsg: '템플릿을 편집해 보세요.', pickerKind: null },
   };
 
@@ -3883,7 +4000,12 @@
       const targetId = { 'ctx-school':'f-school','ctx-grade':'f-grade','ctx-subject':'f-subject' }[id];
       const target = document.getElementById(targetId);
       if (target) target.value = e.target.value;
+      // LEARN 동기화
+      if (id === 'ctx-school')  LEARN.school = e.target.value;
+      if (id === 'ctx-grade')   LEARN.grade = e.target.value;
       if (id === 'ctx-subject') {
+        LEARN.subject = e.target.value;
+        LEARN.unit = '';
         fillUnitSelect(e.target.value);
         applySubjectVisibility(e.target.value);
       }
@@ -3905,10 +4027,21 @@
     });
   });
 
+  // 에디터 톱니 → 학습 설정
+  document.getElementById('ed-settings').addEventListener('click', openSettings);
+
   // ===== Init =====
   renderHome();
   renderTemplateTree();
   applySubjectVisibility(currentSubject());
+
+  // 게이트(?create=1 / #create)에서 진입 시 슬라이드 만들기 팝업 자동 오픈
+  (function handleCreateDeepLink(){
+    const params = new URLSearchParams(location.search);
+    if (params.get('create') === '1' || location.hash === '#create') {
+      document.getElementById('open-create-modal').click();
+    }
+  })();
 </script>
 </body>
 </html>
