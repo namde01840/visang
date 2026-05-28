@@ -3911,8 +3911,8 @@
   let editorReplaceTargetIdx = null;
 
   document.getElementById('ed-back').addEventListener('click', () => {
-    closeEditor();
-    activateTab('home');
+    // 새 게이트 홈으로 복귀
+    location.href = 'gate.html';
   });
   document.getElementById('ed-zoom-range').addEventListener('input', e => {
     document.getElementById('ed-zoom-val').textContent = e.target.value + '%';

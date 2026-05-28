@@ -32,7 +32,7 @@
     --crea-2: #C24B2A;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 88px; }
   body {
     font-family: 'Pretendard', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg);
@@ -942,7 +942,7 @@
       title: '비상교육 문항 풀에서<br>골라 담는 스마트 평가',
       desc: '171,668개 검증 문항을 학교급·단원·난이도로 필터링해 슬라이드에 담고, 응답은 자동으로 채점됩니다.',
       feats: ['객관식·주관식 혼합 출제', '단원·난이도별 정밀 필터', '응답 자동 채점·분석'],
-      tags: ['선택형', '단답형', 'OX형', '연쇄형', '서술형'],
+      tags: ['선택형', '단답형', 'OX형', '연쇄형'],
     },
   ];
 
@@ -1548,7 +1548,7 @@
       { key:'tool', label:'교구 유형', opts:['전체','2D','3D','그래프','도형'] },
       { key:'collab', label:'학습 형태', opts:['전체','개인','모둠'] } ];
     return [ COMMON_GRADE, areaFilter(),
-      { key:'qtype', label:'문항 유형', opts: en ? ['전체','객관식','주관식','듣기형','서술형'] : ['전체','객관식','주관식','서술형'] },
+      { key:'qtype', label:'문항 유형', opts: en ? ['전체','객관식','주관식','듣기형'] : ['전체','객관식','주관식'] },
       { key:'diff', label:'난이도', opts:['전체','하','중','상'] } ];
   }
   function catKinds(){ return ['manipulative','lesson','canvas','qbank'].filter(k => k!=='canvas' || isCanvasVisible()); }
