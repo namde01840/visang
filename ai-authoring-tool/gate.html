@@ -444,7 +444,12 @@
   .cv-title { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
   .cv-title .cnt { font-size: 13px; color: var(--ink-3); font-weight: 600; }
   .cv-top-actions { margin-left: auto; display: flex; gap: 8px; }
-  .cv-body { max-width: 1200px; margin: 0 auto; width: 100%; padding: 30px 24px 90px; display: grid; grid-template-columns: 220px 1fr; gap: 30px; }
+  .cv-switch { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 24px 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .cv-sw { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 11px; border: 1px solid var(--line); background: var(--panel); color: var(--ink-2); font-size: 13.5px; font-weight: 700; cursor: pointer; transition: all .15s; }
+  .cv-sw:hover { color: var(--ink); border-color: rgba(255,255,255,0.22); }
+  .cv-sw.on { color: #04121A; background: var(--sw-c, var(--mint)); border-color: var(--sw-c, var(--mint)); }
+  .cv-sw .swc { font-size: 11px; font-weight: 700; opacity: .7; }
+  .cv-body { max-width: 1200px; margin: 0 auto; width: 100%; padding: 24px 24px 90px; display: grid; grid-template-columns: 220px 1fr; gap: 30px; }
   .cv-filter .fg { margin-bottom: 24px; }
   .cv-filter .fg h5 { font-size: 12px; font-weight: 800; color: var(--ink-2); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 11px; }
   .chip-row { display: flex; flex-wrap: wrap; gap: 7px; }
@@ -839,12 +844,10 @@
         <button class="nav-cta js-create" style="border:none;">+ 수업 만들기</button>
       </div>
     </div>
+    <div class="cv-switch" id="cv-switch"></div>
   </div>
   <div class="cv-body">
-    <aside class="cv-filter">
-      <div class="fg"><h5>학년</h5><div class="chip-row" id="cvf-grade"></div></div>
-      <div class="fg"><h5>영역</h5><div class="chip-row" id="cvf-area"></div></div>
-    </aside>
+    <aside class="cv-filter" id="cv-filter"></aside>
     <main>
       <div class="cv-grid" id="cv-grid"></div>
     </main>
@@ -995,20 +998,24 @@
   const SECTION_FOR = { tool: 'manipulative', curriculum: 'lesson', theme: 'canvas', creative: 'qbank' };
 
   // ===== render category tabs + stage =====
-  let activeCat = 0;
+  let activeCatId = 'tool';
+  // 매쓰캔버스(theme)는 수학 전용 → 비수학 교과목에서는 비노출
+  function isCanvasVisible(){ return gateSubject === '수학'; }
+  function visibleCats(){ return CATS.filter(c => c.id !== 'theme' || isCanvasVisible()); }
   function renderTabs() {
-    document.getElementById('cat-tabs').innerHTML = CATS.map((c,i)=>`
-      <button class="cat-tab ${i===activeCat?'active':''}" data-i="${i}"
+    if (activeCatId === 'theme' && !isCanvasVisible()) activeCatId = 'tool';
+    document.getElementById('cat-tabs').innerHTML = visibleCats().map(c=>`
+      <button class="cat-tab ${c.id===activeCatId?'active':''}" data-id="${c.id}"
         style="--c:${c.c};--c-soft:${c.soft};--c-glow:${c.glow};--c-line:${c.line}">
         <span class="tic" style="background:${c.soft}">${catIcon(c.icon, c.c)}</span>
         ${c.name} <span class="cnt">${c.count}</span>
       </button>`).join('');
     document.querySelectorAll('.cat-tab').forEach(b=>{
-      b.addEventListener('click', ()=>{ activeCat = +b.dataset.i; renderTabs(); renderStage(); });
+      b.addEventListener('click', ()=>{ activeCatId = b.dataset.id; renderTabs(); renderStage(); });
     });
   }
   function renderStage() {
-    const c = CATS[activeCat];
+    const c = CATS.find(x=>x.id===activeCatId) || CATS[0];
     const cd = catData(c);
     const stage = document.getElementById('stage');
     stage.style.setProperty('--c', c.c);
@@ -1166,7 +1173,8 @@
     DECK.subject=document.getElementById('gs-subject').value;
     DECK.unit=document.getElementById('gs-unit').value;
     gateSubject = DECK.subject;          // 메인 콘텐츠를 교과목에 맞춰 갱신
-    renderStage(); renderShowcase();
+    if (activeCatId === 'theme' && !isCanvasVisible()) activeCatId = 'tool';
+    renderTabs(); renderStage(); renderShowcase();
     closeGS();
   });
   document.getElementById('open-gset').addEventListener('click', openGS);
@@ -1376,7 +1384,7 @@
       {kind:'lesson', d:'교과서 단원, 차시 흐름에 맞춰 제작된 콘텐츠'},
       {kind:'canvas', d:'47종의 디지털 교구를 활용한 공유 캔버스'},
       {kind:'qbank', d:'비상교육 스마트 문제은행 연동'},
-    ];
+    ].filter(it => it.kind !== 'canvas' || isCanvasVisible());
     document.getElementById('gsel-big').innerHTML = items.map(it=>{
       const m=IMPORT_META[it.kind];
       return `<button class="gbig" data-kind="${it.kind}">
@@ -1472,27 +1480,62 @@
 
   // ===== 카테고리 상세(다크) =====
   let catKind='manipulative';
+  // 카테고리별 좌측 검색 옵션(영역은 교과목 인지)
+  const COMMON_GRADE = { key:'grade', label:'학년', opts:['전체','1학년','2학년','3학년','4학년','5학년','6학년'] };
+  function areaFilter(){ return { key:'area', label:'영역', opts:['전체', ...areaList()] }; }
+  function catFilters(kind){
+    if (kind==='manipulative') return [ COMMON_GRADE, areaFilter(),
+      { key:'act', label:'활동 유형', opts:['전체','드래그형','퀴즈형','게임형','그리기형'] },
+      { key:'level', label:'난이도', opts:['전체','기초','보통','심화'] } ];
+    if (kind==='lesson') return [ COMMON_GRADE, areaFilter(),
+      { key:'stage', label:'수업 단계', opts:['전체','도입','전개','정리','형성평가'] },
+      { key:'time', label:'차시', opts:['전체','1차시','2차시','3차시 이상'] } ];
+    if (kind==='canvas') return [ COMMON_GRADE, areaFilter(),
+      { key:'tool', label:'교구 유형', opts:['전체','2D','3D','그래프','도형'] },
+      { key:'collab', label:'학습 형태', opts:['전체','개인','모둠'] } ];
+    return [ COMMON_GRADE, areaFilter(),
+      { key:'qtype', label:'문항 유형', opts:['전체','객관식','주관식','서술형'] },
+      { key:'diff', label:'난이도', opts:['전체','하','중','상'] } ];
+  }
+  function catKinds(){ return ['manipulative','lesson','canvas','qbank'].filter(k => k!=='canvas' || isCanvasVisible()); }
+
+  function renderCatSwitch(){
+    document.getElementById('cv-switch').innerHTML = catKinds().map(k=>{
+      const m=IMPORT_META[k];
+      return `<button class="cv-sw ${k===catKind?'on':''}" data-k="${k}" style="--sw-c:${m.accent}">${m.label}<span class="swc">${TOTALS[k]}</span></button>`;
+    }).join('');
+    document.querySelectorAll('#cv-switch .cv-sw').forEach(b=> b.addEventListener('click', ()=> openCat(b.dataset.k)));
+  }
+  function renderCatFilters(){
+    document.getElementById('cv-filter').innerHTML = catFilters(catKind).map(g=>`
+      <div class="fg"><h5>${g.label}</h5><div class="chip-row" data-key="${g.key}">${g.opts.map((o,i)=>`<button class="fchip ${i===0?'on':''}">${o}</button>`).join('')}</div></div>`).join('');
+    document.querySelectorAll('#cv-filter .chip-row').forEach(row=>{
+      row.querySelectorAll('.fchip').forEach(ch=> ch.addEventListener('click', ()=>{
+        row.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on')); ch.classList.add('on');
+        if (row.dataset.key === 'area') renderCatGrid(row.querySelector('.fchip.on').textContent);
+      }));
+    });
+  }
   function openCat(kind){
     catKind=kind; const m=IMPORT_META[kind];
     document.getElementById('cv-title').firstChild.textContent = m.label + ' ';
     document.getElementById('cv-count').textContent = '총 '+TOTALS[kind]+'개';
     document.documentElement.style.setProperty('--cv-c', m.accent);
     document.documentElement.style.setProperty('--cv-soft', m.accent+'22');
-    // 필터 칩
-    document.getElementById('cvf-grade').innerHTML = ['전체','1학년','2학년','3학년','4학년','5학년','6학년'].map((g,i)=>`<button class="fchip ${i===0?'on':''}">${g}</button>`).join('');
-    document.getElementById('cvf-area').innerHTML = ['전체', ...areaList()].map((a,i)=>`<button class="fchip ${i===0?'on':''}">${a}</button>`).join('');
-    document.querySelectorAll('#cat-view .chip-row').forEach(row=>{
-      row.querySelectorAll('.fchip').forEach(ch=> ch.addEventListener('click', ()=>{ row.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on')); ch.classList.add('on'); }));
-    });
+    renderCatSwitch();
+    renderCatFilters();
     renderCatGrid();
     document.getElementById('cat-view').classList.add('open');
     document.body.style.overflow='hidden';
     window.scrollTo(0,0);
   }
   function closeCat(){ document.getElementById('cat-view').classList.remove('open'); document.body.style.overflow=''; }
-  function renderCatGrid(){
+  function renderCatGrid(areaSel){
     const m=IMPORT_META[catKind]; const col=m.accent;
-    document.getElementById('cv-grid').innerHTML = (pickerData(catKind)||[]).map((it,i)=>`
+    const all = pickerData(catKind)||[];
+    const rows = all.map((it,i)=>({it,i})).filter(({it})=> !areaSel || areaSel==='전체' || it.area===areaSel);
+    const grid = document.getElementById('cv-grid');
+    grid.innerHTML = rows.map(({it,i})=>`
       <article class="cv-card" data-i="${i}">
         <div class="cvis" style="background:linear-gradient(135deg, ${col}26, #0C1019)">
           <svg viewBox="0 0 320 200" width="100%" height="100%" style="position:absolute;inset:0">
@@ -1508,8 +1551,8 @@
           <div class="cmt">${it.source||m.label}${it.area?' · '+it.area:''}</div>
           <div class="ctags">${(it.tags||[]).map(t=>`<span class="ctag"># ${t}</span>`).join('')}</div>
         </div>
-      </article>`).join('');
-    document.querySelectorAll('#cv-grid .cv-card').forEach(el=>{
+      </article>`).join('') || `<div style="grid-column:1/-1;color:var(--ink-3);padding:50px;text-align:center;">조건에 맞는 콘텐츠가 없습니다.</div>`;
+    grid.querySelectorAll('.cv-card').forEach(el=>{
       el.addEventListener('click', ()=>{
         const it=pickerData(catKind)[+el.dataset.i];
         gotoEditor([ slideFromContent(catKind, it) ]);
@@ -1522,7 +1565,7 @@
   document.getElementById('stage').addEventListener('click', e=>{
     const a=e.target.closest('.stage-cta'); if(!a) return;
     e.preventDefault();
-    openCat(SECTION_FOR[CATS[activeCat].id]);
+    openCat(SECTION_FOR[activeCatId]);
   });
 
   // ===== init =====
