@@ -369,6 +369,100 @@
   .gbtn-pri { padding: 12px 22px; border-radius: 11px; background: linear-gradient(135deg, #19D3CF, #4FE6C4); color: #04121A; font-weight: 800; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
   .gbtn-pri:hover { filter: brightness(1.05); }
 
+  .nav-gear {
+    width: 40px; height: 40px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--panel);
+    color: var(--ink-2); display: grid; place-items: center; transition: all .15s;
+  }
+  .nav-gear:hover { color: var(--ink); border-color: rgba(255,255,255,0.25); }
+
+  /* ===== 콘텐츠 선택하기 / 불러오기 (라이트 모달) ===== */
+  .gsel { max-width: 940px; }
+  .gsel-tabs { display: flex; gap: 6px; padding: 16px 28px 0; border-bottom: 1px solid #EEF0F3; margin-top: 12px; }
+  .gsel-tab { padding: 11px 16px 13px; font-size: 13.5px; font-weight: 800; color: #9CA3AF; position: relative; display: inline-flex; align-items: center; gap: 8px; letter-spacing: -0.015em; background: none; }
+  .gsel-tab .ti { width: 18px; height: 18px; border-radius: 5px; background: #EEF0F3; display: grid; place-items: center; font-size: 10px; color: #9CA3AF; font-weight: 800; }
+  .gsel-tab.active { color: #0E9A95; }
+  .gsel-tab.active .ti { background: #CCEFEF; color: #0E9A95; }
+  .gsel-tab.active::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: #19D3CF; border-radius: 2px; }
+  .gsel-pane { display: none; }
+  .gsel-pane.active { display: block; }
+
+  .gbig-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .gbig { display: flex; align-items: center; gap: 16px; padding: 20px 22px; border: 1px solid #E5E7EB; border-radius: 14px; background: #fff; cursor: pointer; transition: all .15s; text-align: left; }
+  .gbig:hover { border-color: #19D3CF; transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,184,182,0.10); }
+  .gbig .ic { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; }
+  .gbig .tx strong { display: block; font-size: 15px; font-weight: 800; color: #0E1424; }
+  .gbig .tx span { font-size: 11.5px; color: #6B7280; margin-top: 3px; display: block; }
+  .gbig .ar { margin-left: auto; width: 26px; height: 26px; border-radius: 50%; background: #F4F5F7; color: #9CA3AF; display: grid; place-items: center; flex-shrink: 0; }
+  .gbig:hover .ar { background: #19D3CF; color: #fff; }
+
+  .ggal { display: grid; grid-template-columns: 200px 1fr; border: 1px solid #E5E7EB; border-radius: 14px; overflow: hidden; min-height: 360px; }
+  .ggal-side { background: #F7F8FA; border-right: 1px solid #E5E7EB; padding: 14px 10px; display: flex; flex-direction: column; gap: 4px; }
+  .gcat { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 9px; cursor: pointer; font-size: 13px; font-weight: 700; color: #374151; border: 1px solid transparent; background: none; text-align: left; }
+  .gcat:hover { background: #EEF0F3; }
+  .gcat.active { background: #fff; border-color: #19D3CF; color: #0E9A95; box-shadow: 0 2px 6px rgba(0,184,182,0.1); }
+  .gcat .ci { width: 26px; height: 26px; border-radius: 8px; background: #EEF0F3; display: grid; place-items: center; color: #6B7280; flex-shrink: 0; }
+  .gcat.active .ci { background: #CCEFEF; color: #0E9A95; }
+  .ggal-main { padding: 18px 20px; }
+  .ggal-h { font-size: 16px; font-weight: 800; color: #0E1424; }
+  .ggal-sub { font-size: 12px; color: #6B7280; margin: 4px 0 14px; }
+  .gleaf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .gleaf { border: 1px solid #E5E7EB; border-radius: 10px; padding: 11px; cursor: pointer; transition: all .14s; background: #fff; position: relative; }
+  .gleaf:hover { border-color: #19D3CF; transform: translateY(-2px); }
+  .gleaf.sel { border-color: #19D3CF; box-shadow: 0 0 0 2px #CCEFEF; }
+  .gleaf.sel::after { content:'✓'; position:absolute; top:8px; right:8px; width:18px;height:18px;border-radius:50%;background:#19D3CF;color:#fff;display:grid;place-items:center;font-size:10px;font-weight:800; }
+  .gleaf .pv { aspect-ratio: 16/10; border-radius: 8px; display: grid; place-items: center; margin-bottom: 9px; color: #fff; font-weight: 800; font-size: 18px; }
+  .gleaf .nm { font-size: 12.5px; font-weight: 700; color: #0E1424; }
+  .gleaf .mt { font-size: 10.5px; color: #9CA3AF; margin-top: 2px; }
+  .gleaf .tip { display:none; position:absolute; left:8px; right:8px; bottom:8px; background:rgba(17,24,39,0.92); color:#fff; font-size:10px; line-height:1.4; padding:7px 9px; border-radius:7px; }
+  .gleaf.noscore:hover .tip { display:block; }
+
+  .gload { max-width: 1000px; }
+  .gload-filter { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .gload-filter select, .gload-filter input { padding: 9px 12px; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit; font-size: 13px; color: #111827; background: #fff; font-weight: 600; }
+  .gload-filter input { flex: 1; min-width: 180px; font-weight: 400; }
+  .gload-count { font-size: 13px; color: #374151; font-weight: 600; margin-bottom: 12px; }
+  .gload-count strong { color: #0E1424; font-weight: 800; }
+  .gload-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-height: 50vh; overflow: auto; padding: 2px; }
+  .gload-card { border: 1px solid #E5E7EB; border-radius: 10px; padding: 14px; cursor: pointer; position: relative; transition: all .14s; background: #fff; }
+  .gload-card:hover { border-color: #19D3CF; }
+  .gload-card.sel { border-color: #19D3CF; box-shadow: 0 0 0 2px #CCEFEF; }
+  .gload-card .bdg { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; background: #EEF0F3; color: #6B7280; }
+  .gload-card h5 { font-size: 13px; font-weight: 700; color: #0E1424; margin: 9px 0 5px; letter-spacing: -0.015em; }
+  .gload-card .src { font-size: 11px; color: #6B7280; }
+  .gload-card .tgs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .gload-card .tg { font-size: 10px; color: #6B7280; background: #F4F5F7; border: 1px solid #E5E7EB; padding: 2px 7px; border-radius: 8px; }
+  .gload-card.sel::after { content: '✓'; position: absolute; top: 10px; right: 10px; width: 20px; height: 20px; border-radius: 50%; background: #19D3CF; color: #fff; display: grid; place-items: center; font-size: 11px; font-weight: 800; }
+
+  /* ===== 카테고리 상세(다크 클린) ===== */
+  .cat-view { position: fixed; inset: 0; z-index: 250; background: var(--bg); display: none; flex-direction: column; overflow-y: auto; }
+  .cat-view.open { display: flex; }
+  .cv-top { position: sticky; top: 0; z-index: 3; background: rgba(7,9,15,0.82); backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+  .cv-top-in { max-width: 1200px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; gap: 14px; }
+  .cv-back { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); display: grid; place-items: center; }
+  .cv-back:hover { background: var(--panel-2); }
+  .cv-title { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+  .cv-title .cnt { font-size: 13px; color: var(--ink-3); font-weight: 600; }
+  .cv-top-actions { margin-left: auto; display: flex; gap: 8px; }
+  .cv-body { max-width: 1200px; margin: 0 auto; width: 100%; padding: 30px 24px 90px; display: grid; grid-template-columns: 220px 1fr; gap: 30px; }
+  .cv-filter .fg { margin-bottom: 24px; }
+  .cv-filter .fg h5 { font-size: 12px; font-weight: 800; color: var(--ink-2); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 11px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 7px; }
+  .fchip { padding: 7px 13px; border-radius: 100px; border: 1px solid var(--line); background: var(--panel); color: var(--ink-2); font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all .12s; }
+  .fchip:hover { border-color: rgba(255,255,255,0.22); color: var(--ink); }
+  .fchip.on { background: var(--cv-soft, rgba(25,211,207,0.14)); border-color: var(--cv-c, var(--mint)); color: var(--cv-c, var(--mint)); }
+  .cv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-content: start; }
+  .cv-card { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--bg-2); cursor: pointer; transition: all .2s; }
+  .cv-card:hover { transform: translateY(-5px); box-shadow: 0 22px 50px rgba(0,0,0,0.45); border-color: rgba(255,255,255,0.18); }
+  .cv-card .cvis { aspect-ratio: 16/10; position: relative; overflow: hidden; }
+  .cv-card .cbd { padding: 15px 16px 16px; }
+  .cv-card .car { font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 7px; }
+  .cv-card .cti { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 7px; color: var(--ink); }
+  .cv-card .cmt { font-size: 12px; color: var(--ink-3); }
+  .cv-card .ctags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+  .cv-card .ctag { font-size: 10.5px; color: var(--ink-2); background: var(--panel); border: 1px solid var(--line); padding: 3px 9px; border-radius: 100px; }
+  @media (max-width: 860px){ .cv-body { grid-template-columns: 1fr; } .cv-grid { grid-template-columns: repeat(2,1fr); } }
+
   /* ===== footer ===== */
   footer { border-top: 1px solid var(--line-2); padding: 50px 0 60px; margin-top: 90px; }
   .foot { display: flex; justify-content: space-between; align-items: flex-start; gap: 30px; flex-wrap: wrap; }
@@ -393,6 +487,9 @@
       <a class="nav-link" href="#value">왜 AI저작툴</a>
       <a class="nav-link" href="#showcase">수업 사례</a>
       <a class="nav-link" href="#flow">시작하기</a>
+      <button class="nav-gear" id="open-gset" title="학습 설정">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
       <a class="nav-cta js-create" href="#">수업 만들기 →</a>
     </div>
   </div>
@@ -651,6 +748,109 @@
   </div>
 </div>
 
+<!-- 학습 설정 모달 -->
+<div class="gmodal-backdrop" id="gm-settings" onclick="if(event.target===this) closeGS()">
+  <div class="gmodal">
+    <div class="gmodal-head"><h3>학습 설정</h3><button class="gmodal-close" onclick="closeGS()">×</button></div>
+    <div class="gmodal-body">
+      <p style="font-size:13px;color:#6B7280;margin:-4px 0 18px;">기본 학습 환경을 설정하면 수업 만들기·콘텐츠 선택 시 자동으로 적용됩니다.</p>
+      <div class="gform">
+        <span class="lb">학교급</span>
+        <select id="gs-school"><option>초등</option><option>중등</option><option>고등</option></select>
+        <span class="lb">학년</span>
+        <select id="gs-grade"><option>1학년</option><option>2학년</option><option>3학년</option><option>4학년</option><option selected>5학년</option><option>6학년</option></select>
+        <span class="lb">교과목</span>
+        <select id="gs-subject"><option>수학</option><option>영어</option><option>국어</option><option>과학</option><option>사회</option></select>
+        <span class="lb">차시(단원)</span>
+        <select id="gs-unit"></select>
+      </div>
+      <div class="gmodal-foot">
+        <button class="gbtn-sec" onclick="closeGS()">취소</button>
+        <button class="gbtn-pri" id="gs-save">설정 저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 콘텐츠 선택하기 모달 -->
+<div class="gmodal-backdrop" id="gm-select" onclick="if(event.target===this) closeSEL()">
+  <div class="gmodal gsel">
+    <div class="gmodal-head">
+      <div><h3>콘텐츠 선택하기</h3><p style="font-size:12.5px;color:#6B7280;margin-top:6px;">슬라이드에 담을 콘텐츠나 템플릿을 선택해 주세요.</p></div>
+      <button class="gmodal-close" onclick="closeSEL()">×</button>
+    </div>
+    <div class="gsel-tabs" id="gsel-tabs">
+      <button class="gsel-tab active" data-pane="content"><span class="ti">✓</span>완성형 콘텐츠 불러오기</button>
+      <button class="gsel-tab" data-pane="template"><span class="ti">＋</span>템플릿 불러오기</button>
+    </div>
+    <div class="gmodal-body">
+      <div class="gsel-pane active" id="gsel-content">
+        <div class="gbig-grid" id="gsel-big"></div>
+      </div>
+      <div class="gsel-pane" id="gsel-template">
+        <div class="ggal">
+          <aside class="ggal-side" id="ggal-cats"></aside>
+          <main class="ggal-main">
+            <div class="ggal-h" id="ggal-h">1분 퀴즈 만들기</div>
+            <div class="ggal-sub" id="ggal-sub"></div>
+            <div class="gleaf-grid" id="ggal-leaves"></div>
+          </main>
+        </div>
+      </div>
+      <div class="gmodal-foot">
+        <span style="font-size:12px;color:#6B7280;">선택한 항목: <strong id="gsel-name" style="color:#0E1424;">없음</strong></span>
+        <div style="display:flex;gap:8px;">
+          <button class="gbtn-sec" onclick="closeSEL()">취소</button>
+          <button class="gbtn-pri" id="gsel-done">선택 완료</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 콘텐츠 불러오기(로더) 모달 -->
+<div class="gmodal-backdrop" id="gm-loader" onclick="if(event.target===this) closeLOAD()">
+  <div class="gmodal gload">
+    <div class="gmodal-head"><h3 id="gload-title">콘텐츠 불러오기</h3><button class="gmodal-close" onclick="closeLOAD()">×</button></div>
+    <div class="gmodal-body">
+      <div class="gload-filter">
+        <select id="glf-school"><option>전체</option><option>초등</option><option>중등</option><option>고등</option></select>
+        <select id="glf-area"><option>전체 영역</option><option>수와 연산</option><option>도형과 측정</option><option>변화와 관계</option><option>자료와 가능성</option></select>
+        <input type="text" id="glf-q" placeholder="제목·키워드로 검색">
+      </div>
+      <div class="gload-count">총 <strong id="gload-count">0</strong>개 · <span id="gload-sel">0</span>개 선택됨</div>
+      <div class="gload-grid" id="gload-grid"></div>
+      <div class="gmodal-foot">
+        <button class="gbtn-sec" onclick="closeLOAD()">뒤로</button>
+        <button class="gbtn-pri" id="gload-apply">슬라이드에 적용하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 카테고리 상세(다크) -->
+<div class="cat-view" id="cat-view">
+  <div class="cv-top">
+    <div class="cv-top-in">
+      <button class="cv-back" id="cv-back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="cv-title" id="cv-title">활동형 콘텐츠 <span class="cnt" id="cv-count"></span></div>
+      <div class="cv-top-actions">
+        <button class="nav-gear" id="cv-gear" title="학습 설정"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        <button class="nav-cta js-create" style="border:none;">+ 수업 만들기</button>
+      </div>
+    </div>
+  </div>
+  <div class="cv-body">
+    <aside class="cv-filter">
+      <div class="fg"><h5>학년</h5><div class="chip-row" id="cvf-grade"></div></div>
+      <div class="fg"><h5>영역</h5><div class="chip-row" id="cvf-area"></div></div>
+    </aside>
+    <main>
+      <div class="cv-grid" id="cv-grid"></div>
+    </main>
+  </div>
+</div>
+
 <script>
   // ===== Category data =====
   const CATS = [
@@ -797,7 +997,7 @@
   let activeCat = 0;
   function renderTabs() {
     document.getElementById('cat-tabs').innerHTML = CATS.map((c,i)=>`
-      <button class="cat-tab ${i===0?'active':''}" data-i="${i}"
+      <button class="cat-tab ${i===activeCat?'active':''}" data-i="${i}"
         style="--c:${c.c};--c-soft:${c.soft};--c-glow:${c.glow};--c-line:${c.line}">
         <span class="tic" style="background:${c.soft}">${catIcon(c.icon, c.c)}</span>
         ${c.name} <span class="cnt">${c.count}</span>
@@ -921,24 +1121,292 @@
   }
   window.closeGM = closeGM;
   document.getElementById('gm-subject').addEventListener('change', e=> fillGMUnit(e.target.value));
-  addEventListener('keydown', e=>{ if(e.key==='Escape') closeGM(); });
+  addEventListener('keydown', e=>{
+    if(e.key!=='Escape') return;
+    ['gm-create','gm-settings','gm-select','gm-loader'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.remove('open'); });
+    const cv=document.getElementById('cat-view'); if(cv) cv.classList.remove('open');
+    document.body.style.overflow='';
+  });
 
   // 수업 만들기 버튼 → 게이트에서 바로 모달
   document.querySelectorAll('.js-create').forEach(el=>{
     el.addEventListener('click', e=>{ e.preventDefault(); openGM(); });
   });
 
-  // 슬라이드 만들기 → : 학습 정보 담아 콘텐츠 선택 단계로 이동
+  // 슬라이드 만들기 → : 게이트 위에서 콘텐츠 선택하기 모달로 진행
   document.getElementById('gm-go').addEventListener('click', ()=>{
-    const q = new URLSearchParams({
-      step: 'content',
-      name: document.getElementById('gm-name').value,
-      school: document.getElementById('gm-school').value,
-      grade: document.getElementById('gm-grade').value,
-      subject: document.getElementById('gm-subject').value,
-      unit: document.getElementById('gm-unit').value,
-    });
+    DECK.name    = document.getElementById('gm-name').value;
+    DECK.school  = document.getElementById('gm-school').value;
+    DECK.grade   = document.getElementById('gm-grade').value;
+    DECK.subject = document.getElementById('gm-subject').value;
+    DECK.unit    = document.getElementById('gm-unit').value;
+    closeGM();
+    openSEL();
+  });
+
+  // ============================================================
+  // ===== 학습 설정 / 콘텐츠 선택 / 카테고리 상세 / 에디터 핸드오프 =====
+  // ============================================================
+  const DECK = { name:'', school:'초등', grade:'5학년', subject:'수학', unit:'' };
+
+  function setSel(id, val){ const s=document.getElementById(id); if(!s||val==null) return; const o=[...s.options].find(x=>x.value===val||x.textContent===val); if(o) s.value=o.value; }
+
+  // 학습 설정 모달
+  function fillGSUnit(subject){ document.getElementById('gs-unit').innerHTML=(UNIT_OPTIONS[subject]||UNIT_OPTIONS['수학']).map(o=>`<option>${o}</option>`).join(''); }
+  function openGS(){ setSel('gs-school',DECK.school); setSel('gs-grade',DECK.grade); setSel('gs-subject',DECK.subject); fillGSUnit(DECK.subject); if(DECK.unit) setSel('gs-unit',DECK.unit); document.getElementById('gm-settings').classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeGS(){ document.getElementById('gm-settings').classList.remove('open'); document.body.style.overflow=''; }
+  window.closeGS = closeGS;
+  document.getElementById('gs-subject').addEventListener('change', e=>fillGSUnit(e.target.value));
+  document.getElementById('gs-save').addEventListener('click', ()=>{
+    DECK.school=document.getElementById('gs-school').value;
+    DECK.grade=document.getElementById('gs-grade').value;
+    DECK.subject=document.getElementById('gs-subject').value;
+    DECK.unit=document.getElementById('gs-unit').value;
+    closeGS();
+  });
+  document.getElementById('open-gset').addEventListener('click', openGS);
+  document.getElementById('cv-gear').addEventListener('click', openGS);
+
+  // ===== 데이터 (index와 동형) =====
+  const TPL_CATS = [
+    { id:'blank', name:'일반 페이지', sub:'기본 템플릿으로 자유롭게 시작해 보세요.', accent:'blank', icon:'🗒', leaves:[{name:'일반 페이지',meta:'백지 16:9',thumb:'blank'}] },
+    { id:'quiz', name:'1분 퀴즈 만들기', sub:'간단한 활동들을 손쉽게 만들어 보세요.', accent:'quiz', icon:'❓', leaves:[{name:'선지형',meta:'4지선다·자동 채점',thumb:'choice',tag:'NEW'},{name:'O/X 퀴즈',meta:'단일 OX',thumb:'ox'},{name:'돌림판',meta:'랜덤 추첨',thumb:'spin',tag:'HOT'},{name:'사다리',meta:'경로 분기',thumb:'ladder'}] },
+    { id:'manip', name:'활동형 템플릿', sub:'학생 참여형 인터렉티브 활동을 제작해 보세요.', accent:'manip', icon:'🧩', leaves:[{name:'영단어 퀴즈',meta:'단어 의미 매칭',thumb:'word'},{name:'발음 연습',meta:'듣고 따라하기',thumb:'mic'},{name:'빈칸 맞추기',meta:'클로즈 테스트',thumb:'blank2'},{name:'롤플레잉',meta:'역할극 대화',thumb:'roleplay'},{name:'플래시카드',meta:'카드 학습',thumb:'flash',tag:'NEW'},{name:'카드 뒤집기',meta:'메모리 게임',thumb:'flip'},{name:'AI와 대화하기',meta:'AI 챗봇',thumb:'chat',tag:'HOT'}] },
+    { id:'item', name:'문항 템플릿', sub:'수업, 평가, 과제용 문항을 직접 제작해 보세요.', accent:'item', icon:'📄', leaves:[{name:'선택형',meta:'여러 보기 중 선택',thumb:'choice'},{name:'단답형',meta:'짧은 답 입력',thumb:'short'},{name:'연쇄형',meta:'단계별 풀이',thumb:'chain'},{name:'OX형',meta:'참/거짓',thumb:'ox'},{name:'TF형',meta:'True/False',thumb:'tf'},{name:'순서입력형',meta:'순서 입력',thumb:'order'},{name:'순서조합형',meta:'재배치',thumb:'reorder'},{name:'연결형',meta:'선 연결',thumb:'connect'}] },
+    { id:'activity', name:'활동 템플릿', sub:'학생 참여를 이끄는 활동형 콘텐츠를 만들어 보세요.', accent:'item', icon:'📝', noScore:true, leaves:[{name:'선택형 활동',meta:'활동지·보기 선택',thumb:'choice'},{name:'단답형 활동',meta:'활동지·짧은 답',thumb:'short'},{name:'서술형 활동',meta:'활동지·자유 서술',thumb:'longwrite'},{name:'연쇄형 활동',meta:'활동지·단계별',thumb:'chain'}] },
+  ];
+  const ACCENT_HEX = { blank:'#94A3B8', quiz:'#9B8CFF', manip:'#1AD1C6', item:'#FF7A52' };
+
+  const PICKER_DATA = {
+    manipulative: [
+      { type:'활동형', title:'분수 모형 활용 카드', source:'디지털 교구', area:'수와 연산', tags:['분수','모형'], preview:'icon', snippet:'box' },
+      { type:'활동형', title:'수직선 위 정수 비교', source:'디지털 교구', area:'수와 연산', tags:['수직선','정수'], preview:'lines', snippet:'수직선에서 정수의 위치를 비교해 보세요' },
+      { type:'활동형', title:'컴퍼스로 정삼각형', source:'디지털 교구', area:'도형과 측정', tags:['컴퍼스','도형'], preview:'geom', snippet:'triangle' },
+      { type:'활동형', title:'확률 돌림판 실험', source:'디지털 교구', area:'자료와 가능성', tags:['확률','돌림판'], preview:'chart', snippet:'bar' },
+      { type:'활동형', title:'함수 그래프 슬라이더', source:'디지털 교구', area:'변화와 관계', tags:['함수','그래프'], preview:'chart', snippet:'bar' },
+      { type:'활동형', title:'각도기 활용 카드', source:'디지털 교구', area:'도형과 측정', tags:['각도','도형'], preview:'geom', snippet:'triangle' },
+      { type:'활동형', title:'대수 블록 식 만들기', source:'디지털 교구', area:'변화와 관계', tags:['대수','블록'], preview:'icon', snippet:'box' },
+      { type:'활동형', title:'도미노 곱셈 카드', source:'디지털 교구', area:'수와 연산', tags:['곱셈','도미노'], preview:'grid', snippet:'곱셈표' },
+      { type:'활동형', title:'도형 만들기 칠교판', source:'디지털 교구', area:'도형과 측정', tags:['칠교','도형'], preview:'geom', snippet:'symmetric' },
+    ],
+    lesson: [
+      { type:'수업자료', title:'분수의 덧셈 · 1차시 도입', source:'교사용 지도서', area:'수와 연산', tags:['분수','도입'], preview:'lines', snippet:'오늘 수업의 학습 목표를 알아봅시다' },
+      { type:'수업자료', title:'약분과 통분 · 2차시 전개', source:'교사용 지도서', area:'수와 연산', tags:['약분','통분'], preview:'grid', snippet:'약분 통분 표' },
+      { type:'수업자료', title:'다각형 넓이 · 3차시 탐구', source:'교사용 지도서', area:'도형과 측정', tags:['다각형','넓이'], preview:'geom', snippet:'triangle' },
+      { type:'수업자료', title:'비례식 · 4차시 정리', source:'교사용 지도서', area:'변화와 관계', tags:['비례식'], preview:'chain', snippet:'비례 풀이' },
+      { type:'수업자료', title:'띠그래프 · 5차시 형성평가', source:'교사용 지도서', area:'자료와 가능성', tags:['띠그래프','평가'], preview:'chart', snippet:'bar' },
+      { type:'수업자료', title:'소수의 곱셈 · 2차시 전개', source:'교사용 지도서', area:'수와 연산', tags:['소수','곱셈'], preview:'chain', snippet:'소수 곱셈' },
+    ],
+    canvas: [
+      { title:'분수 모형 함께 색칠', area:'수와 연산', cv:'blocks', tags:['분수','협업'] },
+      { title:'수직선 위 정수 비교', area:'수와 연산', cv:'beads', tags:['수직선'] },
+      { title:'세 수의 덧셈 캔버스', area:'수와 연산', cv:'inputrow', tags:['덧셈'] },
+      { title:'순서쌍과 좌표 탐구', area:'변화와 관계', cv:'coord', tags:['좌표'] },
+      { title:'(몇십몇)×(몇) 모델', area:'수와 연산', cv:'multgrid', tags:['곱셈'] },
+      { title:'피타고라스 직각삼각형', area:'도형과 측정', cv:'sticky', tags:['도형'] },
+    ],
+    qbank: [
+      { type:'객관식', title:'올림을 알아보아요', source:'교과서 QR 문항', area:'수와 연산', tags:['올림'], preview:'lines', snippet:'다음 중 올림하여 나타낸 수는?' },
+      { type:'객관식', title:'반올림을 알아보아요', source:'교과서 QR 문항', area:'수와 연산', tags:['반올림'], preview:'lines', snippet:'반올림하여 십의 자리까지 나타내세요' },
+      { type:'객관식', title:'분수의 곱셈', source:'교과서 QR 문항', area:'수와 연산', tags:['분수의 곱셈'], preview:'lines', snippet:'㉠ 안에 들어갈 수 있는 수는?' },
+      { type:'객관식', title:'약분과 통분', source:'교과서 QR 문항', area:'수와 연산', tags:['약분과 통분'], preview:'grid', snippet:'약분과 통분 표' },
+      { type:'주관식', title:'소수 한 자리 수의 곱셈', source:'교과서 QR 문항', area:'수와 연산', tags:['소수'], preview:'chain', snippet:'소수 곱셈 연쇄' },
+      { type:'객관식', title:'평균을 알아볼까요', source:'교과서 QR 문항', area:'자료와 가능성', tags:['평균'], preview:'longtext', snippet:'평균을 구하는 문제' },
+    ],
+  };
+  const IMPORT_META = {
+    manipulative:{ label:'활동형 콘텐츠', accent:'#1AD1C6', unit:'콘텐츠' },
+    lesson:{ label:'수업자료 콘텐츠', accent:'#36D399', unit:'콘텐츠' },
+    canvas:{ label:'매쓰캔버스', accent:'#9B8CFF', unit:'캔버스' },
+    qbank:{ label:'스마트 문제은행', accent:'#FF7A52', unit:'문항' },
+  };
+  const TOTALS = { manipulative:'96,589', lesson:'9,672', canvas:'428', qbank:'171,668' };
+
+  // ===== 슬라이드 빌더 (index 에디터와 동형) =====
+  function slideFromContent(kind, item){
+    return { kind, item, idx:0, cv:item.cv, title:item.title, type:item.type, source:item.source, tags:item.tags||[], filled:true };
+  }
+  function slideFromTemplate(catName, accent, leaf){
+    return { kind:'template', accent, thumb:leaf.thumb, title:leaf.name, source:catName, meta:leaf.meta, tags:[], filled: leaf.thumb!=='blank', catName };
+  }
+  function gotoEditor(slides){
+    const q = new URLSearchParams({ step:'editor', name: DECK.name || (new Date().toISOString().slice(0,10)+' 제작'), slides: JSON.stringify(slides) });
     location.href = './index.html?' + q.toString();
+  }
+
+  // ===== 콘텐츠 선택하기 모달 =====
+  let selTemplate = null; // {catName,accent,leaf}
+  function openSEL(){
+    selTemplate = null;
+    document.getElementById('gsel-name').textContent = '없음';
+    document.querySelectorAll('#gsel-tabs .gsel-tab').forEach((t,i)=>t.classList.toggle('active', i===0));
+    document.getElementById('gsel-content').classList.add('active');
+    document.getElementById('gsel-template').classList.remove('active');
+    renderBig(); renderGalCats(); renderGalLeaves();
+    document.getElementById('gm-select').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeSEL(){ document.getElementById('gm-select').classList.remove('open'); document.body.style.overflow=''; }
+  window.closeSEL = closeSEL;
+  document.querySelectorAll('#gsel-tabs .gsel-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const p=btn.dataset.pane;
+      document.querySelectorAll('#gsel-tabs .gsel-tab').forEach(b=>b.classList.toggle('active', b===btn));
+      document.getElementById('gsel-content').classList.toggle('active', p==='content');
+      document.getElementById('gsel-template').classList.toggle('active', p==='template');
+    });
+  });
+  function renderBig(){
+    const items=[
+      {kind:'manipulative', d:'4,000여 종의 학생 활동형 콘텐츠'},
+      {kind:'lesson', d:'교과서 단원, 차시 흐름에 맞춰 제작된 콘텐츠'},
+      {kind:'canvas', d:'47종의 디지털 교구를 활용한 공유 캔버스'},
+      {kind:'qbank', d:'비상교육 스마트 문제은행 연동'},
+    ];
+    document.getElementById('gsel-big').innerHTML = items.map(it=>{
+      const m=IMPORT_META[it.kind];
+      return `<button class="gbig" data-kind="${it.kind}">
+        <span class="ic" style="background:${m.accent}22;color:${m.accent}">${catGlyph(it.kind)}</span>
+        <span class="tx"><strong>${m.label}</strong><span>${it.d}</span></span>
+        <span class="ar">→</span></button>`;
+    }).join('');
+    document.querySelectorAll('#gsel-big .gbig').forEach(b=> b.addEventListener('click', ()=> openLOAD(b.dataset.kind)));
+  }
+  function catGlyph(kind){
+    return { manipulative:'🧩', lesson:'📚', canvas:'✦', qbank:'💰' }[kind] || '◻';
+  }
+  let galCat = 1;
+  function renderGalCats(){
+    document.getElementById('ggal-cats').innerHTML = TPL_CATS.map((c,i)=>`
+      <button class="gcat ${i===galCat?'active':''}" data-i="${i}"><span class="ci">${c.icon}</span>${c.name}</button>`).join('');
+    document.querySelectorAll('#ggal-cats .gcat').forEach(b=> b.addEventListener('click', ()=>{ galCat=+b.dataset.i; renderGalCats(); renderGalLeaves(); }));
+  }
+  function renderGalLeaves(){
+    const c=TPL_CATS[galCat];
+    document.getElementById('ggal-h').textContent=c.name;
+    document.getElementById('ggal-sub').textContent=c.sub;
+    const col = ACCENT_HEX[c.accent]||'#19D3CF';
+    document.getElementById('ggal-leaves').innerHTML = c.leaves.map(l=>`
+      <div class="gleaf ${c.noScore?'noscore':''}" data-name="${l.name}">
+        <div class="pv" style="background:linear-gradient(150deg, ${col}, ${col}99)">${l.name.slice(0,1)}</div>
+        <div class="nm">${l.name}</div><div class="mt">${l.meta||''}</div>
+        ${c.noScore?`<span class="tip">문항 템플릿과는 달리 결과 채점이 되지 않습니다.</span>`:''}
+      </div>`).join('');
+    document.querySelectorAll('#ggal-leaves .gleaf').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        document.querySelectorAll('#ggal-leaves .gleaf').forEach(x=>x.classList.remove('sel'));
+        el.classList.add('sel');
+        const leaf=c.leaves.find(l=>l.name===el.dataset.name);
+        selTemplate={catName:c.name, accent:c.accent, leaf};
+        document.getElementById('gsel-name').textContent = c.name===leaf.name?leaf.name:`${c.name} · ${leaf.name}`;
+      });
+    });
+  }
+  document.getElementById('gsel-done').addEventListener('click', ()=>{
+    if(!selTemplate){ alert('템플릿을 선택해 주세요.'); return; }
+    gotoEditor([ slideFromTemplate(selTemplate.catName, selTemplate.accent, selTemplate.leaf) ]);
+  });
+
+  // ===== 불러오기(로더) 모달 — 복수 선택 =====
+  let loadKind=null, loadSel=new Set();
+  function openLOAD(kind){
+    loadKind=kind; loadSel=new Set();
+    document.getElementById('gload-title').textContent = IMPORT_META[kind].label + ' 불러오기';
+    renderLoad();
+    document.getElementById('gm-loader').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeLOAD(){ document.getElementById('gm-loader').classList.remove('open'); document.body.style.overflow=''; }
+  window.closeLOAD = closeLOAD;
+  function loadItems(){
+    const area=document.getElementById('glf-area').value;
+    const q=(document.getElementById('glf-q').value||'').trim();
+    return (PICKER_DATA[loadKind]||[]).map((it,i)=>({it,i}))
+      .filter(({it})=> (area==='전체 영역'||!area||it.area===area) && (!q||it.title.includes(q)));
+  }
+  function renderLoad(){
+    const list=loadItems(); const m=IMPORT_META[loadKind];
+    document.getElementById('gload-count').textContent = TOTALS[loadKind];
+    document.getElementById('gload-sel').textContent = loadSel.size;
+    const grid=document.getElementById('gload-grid');
+    grid.innerHTML = list.map(({it,i})=>`
+      <div class="gload-card ${loadSel.has(i)?'sel':''}" data-i="${i}">
+        <span class="bdg">${it.type||m.label}</span>
+        <h5>${it.title}</h5>
+        <div class="src">${it.source||m.label}${it.area?' · '+it.area:''}</div>
+        <div class="tgs">${(it.tags||[]).map(t=>`<span class="tg"># ${t}</span>`).join('')}</div>
+      </div>`).join('') || `<div style="grid-column:1/-1;text-align:center;color:#9CA3AF;padding:40px;">조건에 맞는 콘텐츠가 없습니다.</div>`;
+    grid.querySelectorAll('.gload-card').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const i=+el.dataset.i;
+        if(loadSel.has(i)) loadSel.delete(i); else loadSel.add(i);
+        el.classList.toggle('sel'); document.getElementById('gload-sel').textContent=loadSel.size;
+        document.getElementById('gload-apply').textContent = loadSel.size? `슬라이드에 적용하기 (${loadSel.size})`:'슬라이드에 적용하기';
+      });
+    });
+    document.getElementById('gload-apply').textContent='슬라이드에 적용하기';
+  }
+  document.getElementById('glf-area').addEventListener('change', renderLoad);
+  document.getElementById('glf-q').addEventListener('input', renderLoad);
+  document.getElementById('gload-apply').addEventListener('click', ()=>{
+    if(!loadSel.size){ alert('콘텐츠를 선택해 주세요.'); return; }
+    const slides=[...loadSel].sort((a,b)=>a-b).map(i=> slideFromContent(loadKind, PICKER_DATA[loadKind][i]));
+    gotoEditor(slides);
+  });
+
+  // ===== 카테고리 상세(다크) =====
+  let catKind='manipulative';
+  function openCat(kind){
+    catKind=kind; const m=IMPORT_META[kind];
+    document.getElementById('cv-title').firstChild.textContent = m.label + ' ';
+    document.getElementById('cv-count').textContent = '총 '+TOTALS[kind]+'개';
+    document.documentElement.style.setProperty('--cv-c', m.accent);
+    document.documentElement.style.setProperty('--cv-soft', m.accent+'22');
+    // 필터 칩
+    document.getElementById('cvf-grade').innerHTML = ['전체','1학년','2학년','3학년','4학년','5학년','6학년'].map((g,i)=>`<button class="fchip ${i===0?'on':''}">${g}</button>`).join('');
+    document.getElementById('cvf-area').innerHTML = ['전체','수와 연산','도형과 측정','변화와 관계','자료와 가능성'].map((a,i)=>`<button class="fchip ${i===0?'on':''}">${a}</button>`).join('');
+    document.querySelectorAll('#cat-view .chip-row').forEach(row=>{
+      row.querySelectorAll('.fchip').forEach(ch=> ch.addEventListener('click', ()=>{ row.querySelectorAll('.fchip').forEach(x=>x.classList.remove('on')); ch.classList.add('on'); }));
+    });
+    renderCatGrid();
+    document.getElementById('cat-view').classList.add('open');
+    document.body.style.overflow='hidden';
+    window.scrollTo(0,0);
+  }
+  function closeCat(){ document.getElementById('cat-view').classList.remove('open'); document.body.style.overflow=''; }
+  function renderCatGrid(){
+    const m=IMPORT_META[catKind]; const col=m.accent;
+    document.getElementById('cv-grid').innerHTML = (PICKER_DATA[catKind]||[]).map((it,i)=>`
+      <article class="cv-card" data-i="${i}">
+        <div class="cvis" style="background:linear-gradient(135deg, ${col}26, #0C1019)">
+          <svg viewBox="0 0 320 200" width="100%" height="100%" style="position:absolute;inset:0">
+            <circle cx="58" cy="48" r="66" fill="${col}" opacity="0.16"/>
+            <rect x="180" y="110" width="120" height="120" rx="20" fill="${col}" opacity="0.12"/>
+            <rect x="26" y="130" width="150" height="11" rx="5" fill="#ffffff" opacity="0.16"/>
+            <rect x="26" y="150" width="96" height="11" rx="5" fill="#ffffff" opacity="0.10"/>
+          </svg>
+        </div>
+        <div class="cbd">
+          <div class="car" style="color:${col}">${it.type||m.label}</div>
+          <div class="cti">${it.title}</div>
+          <div class="cmt">${it.source||m.label}${it.area?' · '+it.area:''}</div>
+          <div class="ctags">${(it.tags||[]).map(t=>`<span class="ctag"># ${t}</span>`).join('')}</div>
+        </div>
+      </article>`).join('');
+    document.querySelectorAll('#cv-grid .cv-card').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const it=PICKER_DATA[catKind][+el.dataset.i];
+        gotoEditor([ slideFromContent(catKind, it) ]);
+      });
+    });
+  }
+  document.getElementById('cv-back').addEventListener('click', closeCat);
+
+  // 스테이지 "OOO형 콘텐츠 담기" → 카테고리 상세
+  document.getElementById('stage').addEventListener('click', e=>{
+    const a=e.target.closest('.stage-cta'); if(!a) return;
+    e.preventDefault();
+    openCat(SECTION_FOR[CATS[activeCat].id]);
   });
 
   // ===== init =====

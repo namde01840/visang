@@ -4041,6 +4041,22 @@
     const step = params.get('step');
     const cat  = params.get('cat');
 
+    // 게이트에서 선택 완료 → 슬라이드(에디터)로 직행
+    if (step === 'editor') {
+      try {
+        const slides = JSON.parse(params.get('slides') || '[]');
+        if (Array.isArray(slides) && slides.length) {
+          editorSlides = slides;
+          activeSlideIdx = 0;
+          editorReplaceTargetIdx = null; addInsertIdx = null;
+          const nm = params.get('name'); if (nm) document.getElementById('ed-name').textContent = nm;
+          openEditor();
+          renderEditor();
+          return;
+        }
+      } catch (err) { /* fallthrough */ }
+    }
+
     if (step === 'content') {
       // 게이트의 슬라이드 만들기 팝업에서 넘어옴 → 바로 콘텐츠 선택하기 단계
       if (params.get('school'))  LEARN.school  = params.get('school');
