@@ -944,6 +944,15 @@
       feats: ['객관식·주관식 혼합 출제', '단원·난이도별 정밀 필터', '응답 자동 채점·분석'],
       tags: ['선택형', '단답형', 'OX형', '연쇄형'],
     },
+    {
+      id: 'textbook', name: '스마트 교과서', count: '142', icon: 'book2',
+      c: '#5B8DEF', soft: 'rgba(91,141,239,0.10)', glow: 'rgba(91,141,239,0.16)', line: 'rgba(91,141,239,0.35)',
+      eyebrow: 'DIGITAL TEXTBOOK', screenTag: '스마트 교과서',
+      title: '서책 그대로,<br>디지털로 살아나는 교과서',
+      desc: '22개정 교과서 142종을 지면 그대로 디지털화한 iBook. 필기·QR·동영상·본문 검색까지, 교과서 페이지를 그대로 수업에 띄웁니다.',
+      feats: ['서책 지면 그대로 디지털 뷰어', 'QR·동영상·오디오 내장', '드래그 확대·필기·본문 검색'],
+      tags: ['iBook', '22개정 142종', '페이지 뷰어', 'QR 연동', '필기'],
+    },
   ];
 
   function catIcon(kind, color) {
@@ -952,6 +961,7 @@
       book: `<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>`,
       canvas: `<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>`,
       bank: `<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>`,
+      book2: `<path d="M2 4h7a3 3 0 0 1 3 3v13a2.5 2.5 0 0 0-2.5-2.5H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2.5 2.5 0 0 1 2.5-2.5H22z"/>`,
     };
     return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${m[kind]}</svg>`;
   }
@@ -1011,6 +1021,7 @@
         <g><circle cx="300" cy="200" r="10" fill="#FF7A52"/></g>
         <rect x="250" y="120" width="120" height="14" rx="7" fill="#EEF0FB"/>
       </svg>`;
+    if (cat.id === 'textbook') return textbookSpread();
     return `
       <svg viewBox="0 0 400 262" width="100%">
         <rect width="400" height="262" fill="#fff"/>
@@ -1028,10 +1039,37 @@
       </svg>`;
   }
 
+  // 스마트 교과서 — 양면 지면 목업 (교과목 공용)
+  function textbookSpread() {
+    return `
+      <svg viewBox="0 0 400 262" width="100%">
+        <rect width="400" height="262" fill="#EAF0FA"/>
+        <rect x="18" y="16" width="178" height="230" rx="5" fill="#fff" stroke="#D6E0F2"/>
+        <rect x="204" y="16" width="178" height="230" rx="5" fill="#fff" stroke="#D6E0F2"/>
+        <rect x="196" y="16" width="8" height="230" fill="#E3EAF6"/>
+        <path d="M34 28 h92 v20 l-9 8 h-83 z" fill="#5B8DEF"/>
+        <text x="42" y="43" font-family="Pretendard" font-size="11" font-weight="800" fill="#fff">Lesson 1</text>
+        <circle cx="46" cy="74" r="3" fill="none" stroke="#5B8DEF" stroke-width="1.5"/><rect x="40" y="68" width="12" height="12" rx="2" fill="none" stroke="#5B8DEF" stroke-width="1.2"/>
+        <rect x="60" y="64" width="118" height="46" rx="6" fill="#EAF1FC"/>
+        <circle cx="119" cy="87" r="11" fill="#fff"/><path d="M115 82l8 5-8 5z" fill="#5B8DEF"/>
+        <line x1="40" y1="128" x2="178" y2="128" stroke="#E5EAF2" stroke-width="6" stroke-linecap="round"/>
+        <line x1="40" y1="146" x2="158" y2="146" stroke="#EEF1F6" stroke-width="6" stroke-linecap="round"/>
+        <rect x="40" y="166" width="138" height="60" rx="6" fill="#F4F7FC" stroke="#E1E8F4"/>
+        <rect x="222" y="36" width="120" height="44" rx="6" fill="#EAF1FC"/>
+        <circle cx="282" cy="58" r="11" fill="#fff"/><path d="M278 53l8 5-8 5z" fill="#5B8DEF"/>
+        <rect x="222" y="98" width="60" height="30" rx="6" fill="#FFE9C9"/><text x="252" y="118" text-anchor="middle" font-size="10" font-weight="700" fill="#B7791F">Dylan</text>
+        <rect x="300" y="98" width="60" height="30" rx="6" fill="#D9F0E4"/><text x="330" y="118" text-anchor="middle" font-size="10" font-weight="700" fill="#1C8C63">Toby</text>
+        <line x1="222" y1="150" x2="360" y2="150" stroke="#E5EAF2" stroke-width="6" stroke-linecap="round"/>
+        <line x1="222" y1="168" x2="338" y2="168" stroke="#EEF1F6" stroke-width="6" stroke-linecap="round"/>
+        <text x="30" y="240" font-size="9" fill="#9CA3AF">12</text>
+        <text x="364" y="240" font-size="9" fill="#9CA3AF">13</text>
+      </svg>`;
+  }
+
   // showcase cards visuals
   function showVis(id) {
     const map = {
-      tool: '#1AD1C6', curriculum:'#36D399', theme:'#9B8CFF', creative:'#FF7A52'
+      tool: '#1AD1C6', curriculum:'#36D399', theme:'#9B8CFF', creative:'#FF7A52', textbook:'#5B8DEF'
     };
     return map[id];
   }
@@ -1046,7 +1084,7 @@
   ];
 
   // 게이트 카테고리 → 툴 카탈로그 섹션 매핑
-  const SECTION_FOR = { tool: 'manipulative', curriculum: 'lesson', theme: 'canvas', creative: 'qbank' };
+  const SECTION_FOR = { tool: 'manipulative', curriculum: 'lesson', theme: 'canvas', creative: 'qbank', textbook: 'textbook' };
 
   // ===== render category tabs + stage =====
   let activeCatId = 'tool';
@@ -1277,14 +1315,23 @@
       { type:'주관식', title:'소수 한 자리 수의 곱셈', source:'교과서 QR 문항', area:'수와 연산', tags:['소수'], preview:'chain', snippet:'소수 곱셈 연쇄' },
       { type:'객관식', title:'평균을 알아볼까요', source:'교과서 QR 문항', area:'자료와 가능성', tags:['평균'], preview:'longtext', snippet:'평균을 구하는 문제' },
     ],
+    textbook: [
+      { type:'스마트 교과서', title:'수학 5-1 · 1단원 자연수의 혼합 계산', source:'비상 교과서 iBook', area:'수와 연산', tags:['22개정','iBook'], preview:'lines', snippet:'서책 지면을 그대로 펼쳐 수업에 활용하세요' },
+      { type:'스마트 교과서', title:'수학 5-1 · 2단원 약수와 배수', source:'비상 교과서 iBook', area:'수와 연산', tags:['22개정','iBook'], preview:'lines', snippet:'QR·동영상이 내장된 디지털 교과서' },
+      { type:'스마트 교과서', title:'수학 5-1 · 3단원 규칙과 대응', source:'비상 교과서 iBook', area:'변화와 관계', tags:['22개정'], preview:'lines', snippet:'필기·본문 검색을 한 화면에서' },
+      { type:'스마트 교과서', title:'수학 5-2 · 3단원 합동과 대칭', source:'비상 교과서 iBook', area:'도형과 측정', tags:['22개정'], preview:'geom', snippet:'symmetric' },
+      { type:'스마트 교과서', title:'수학 5-2 · 6단원 평균과 가능성', source:'비상 교과서 iBook', area:'자료와 가능성', tags:['22개정'], preview:'chart', snippet:'bar' },
+      { type:'스마트 교과서', title:'수학 6-1 · 1단원 분수의 나눗셈', source:'비상 교과서 iBook', area:'수와 연산', tags:['22개정'], preview:'lines', snippet:'지면 그대로 디지털 뷰어' },
+    ],
   };
   const IMPORT_META = {
     manipulative:{ label:'활동형 콘텐츠', accent:'#1AD1C6', unit:'콘텐츠' },
     lesson:{ label:'수업자료 콘텐츠', accent:'#36D399', unit:'콘텐츠' },
     canvas:{ label:'매쓰캔버스', accent:'#9B8CFF', unit:'캔버스' },
     qbank:{ label:'스마트 문제은행', accent:'#FF7A52', unit:'문항' },
+    textbook:{ label:'스마트 교과서', accent:'#5B8DEF', unit:'종' },
   };
-  const TOTALS = { manipulative:'96,589', lesson:'9,672', canvas:'428', qbank:'171,668' };
+  const TOTALS = { manipulative:'96,589', lesson:'9,672', canvas:'428', qbank:'171,668', textbook:'142' };
 
   // ===== 교과목별 콘텐츠 팩 (수학 기본 + 영어) =====
   let gateSubject = '수학';
@@ -1299,6 +1346,7 @@
         curriculum: { title:'Lesson 흐름 그대로,<br>바로 쓰는 영어 수업', desc:'교과서 Lesson 단원에 맞춰 설계된 완성형 수업자료. 듣기·말하기·읽기·쓰기를 한 흐름으로 이어줍니다.', feats:['교과서 Lesson 단원 정렬','말하기–듣기 통합 구성','형성평가까지 한 흐름'], tags:['Greetings','School Life','Around Town','Healthy Habits'] },
         theme:      { title:'함께 쓰고 말하는<br>공유 캔버스', desc:'문장 카드와 그림을 올려놓고 학생들과 한 화면에서 영어로 표현하고 토의합니다.', feats:['실시간 공동 편집','문장 배열·그림 묘사','모둠별 발표 공유'], tags:['문장 배열','그림 묘사','마인드맵','역할극'] },
         creative:   { title:'비상교육 영어 문항으로<br>스마트 평가', desc:'듣기·어휘·문법 문항을 학교급·난이도로 골라 담고, 응답은 자동으로 채점됩니다.', feats:['듣기·어휘·문법 출제','난이도별 정밀 필터','응답 자동 채점·분석'], tags:['어휘','문법','듣기','독해','말하기'] },
+        textbook:   { title:'서책 그대로,<br>디지털로 살아나는 교과서', desc:'22개정 영어 교과서를 지면 그대로 디지털화한 iBook. 듣기 음원·동영상·QR이 페이지에 내장되어 바로 수업에 띄웁니다.', feats:['서책 지면 그대로 디지털 뷰어','듣기 음원·동영상·QR 내장','드래그 확대·필기·본문 검색'], tags:['iBook','22개정','듣기 음원','QR 연동','필기'] },
       },
       showcase: [
         { id:'tool', cat:'활동형 콘텐츠', title:'영단어 플래시카드 — Animals', meta:'초3 · 어휘 · 1,120회 사용' },
@@ -1338,6 +1386,12 @@
           { type:'주관식', title:'듣고 받아쓰기 — Numbers', source:'교과서 QR 문항', area:'듣기', tags:['듣기','받아쓰기'], preview:'longtext', snippet:'Listen and write what you hear.' },
           { type:'객관식', title:'독해 추론 — Short Story', source:'교과서 QR 문항', area:'읽기·쓰기', tags:['독해'], preview:'longtext', snippet:'Read and answer the question.' },
           { type:'객관식', title:'be동사 문법', source:'교과서 QR 문항', area:'문법', tags:['문법','be동사'], preview:'lines', snippet:'Choose the correct be verb.' },
+        ],
+        textbook: [
+          { type:'스마트 교과서', title:'Middle School English 1 · Lesson 1', source:'비상 교과서 iBook', area:'읽기·쓰기', tags:['22개정','iBook'], preview:'lines', snippet:'Everyday Communication — 지면 그대로' },
+          { type:'스마트 교과서', title:'Middle School English 1 · Lesson 2', source:'비상 교과서 iBook', area:'듣기', tags:['22개정','듣기 음원'], preview:'lines', snippet:'듣기 음원이 내장된 디지털 교과서' },
+          { type:'스마트 교과서', title:'Middle School English 1 · Lesson 3', source:'비상 교과서 iBook', area:'말하기', tags:['22개정'], preview:'lines', snippet:'QR로 동영상·대화 연습 연결' },
+          { type:'스마트 교과서', title:'High School English · Unit 1', source:'비상 교과서 iBook', area:'문법', tags:['22개정'], preview:'lines', snippet:'서책 지면 그대로 디지털 뷰어' },
         ],
       },
     },
@@ -1381,6 +1435,7 @@
         <text x="40" y="150" font-size="13" fill="#6B7280">문장을 순서대로 배열해 보세요</text>
         <circle cx="120" cy="200" r="10" fill="#9B8CFF"/><circle cx="300" cy="190" r="10" fill="#FF7A52"/>
       </svg>`;
+    if (cat.id === 'textbook') return textbookSpread();
     return `
       <svg viewBox="0 0 400 262" width="100%"><rect width="400" height="262" fill="#fff"/>
         <rect x="24" y="22" width="150" height="22" rx="11" fill="#FFE9E1"/><text x="40" y="38" font-family="Pretendard" font-size="12" font-weight="800" fill="#C24B2A">객관식 · 자동채점</text>
@@ -1435,6 +1490,7 @@
       {kind:'lesson', d:'교과서 단원, 차시 흐름에 맞춰 제작된 콘텐츠'},
       {kind:'canvas', d:'47종의 디지털 교구를 활용한 공유 캔버스'},
       {kind:'qbank', d:'비상교육 스마트 문제은행 연동'},
+      {kind:'textbook', d:'22개정 교과서 142종 iBook'},
     ].filter(it => it.kind !== 'canvas' || isCanvasVisible());
     document.getElementById('gsel-big').innerHTML = items.map(it=>{
       const m=IMPORT_META[it.kind];
@@ -1446,7 +1502,7 @@
     document.querySelectorAll('#gsel-big .gbig').forEach(b=> b.addEventListener('click', ()=> openLOAD(b.dataset.kind)));
   }
   function catGlyph(kind){
-    return { manipulative:'🧩', lesson:'📚', canvas:'✦', qbank:'💰' }[kind] || '◻';
+    return { manipulative:'🧩', lesson:'📚', canvas:'✦', qbank:'💰', textbook:'📖' }[kind] || '◻';
   }
   let galCat = 1;
   function renderGalCats(){
@@ -1547,11 +1603,14 @@
     if (kind==='canvas') return [ COMMON_GRADE, areaFilter(),
       { key:'tool', label:'교구 유형', opts:['전체','2D','3D','그래프','도형'] },
       { key:'collab', label:'학습 형태', opts:['전체','개인','모둠'] } ];
+    if (kind==='textbook') return [ COMMON_GRADE, areaFilter(),
+      { key:'term', label:'학기', opts:['전체','1학기','2학기'] },
+      { key:'view', label:'보기 형태', opts:['전체','양면 보기','한쪽 보기'] } ];
     return [ COMMON_GRADE, areaFilter(),
       { key:'qtype', label:'문항 유형', opts: en ? ['전체','객관식','주관식','듣기형'] : ['전체','객관식','주관식'] },
       { key:'diff', label:'난이도', opts:['전체','하','중','상'] } ];
   }
-  function catKinds(){ return ['manipulative','lesson','canvas','qbank'].filter(k => k!=='canvas' || isCanvasVisible()); }
+  function catKinds(){ return ['manipulative','lesson','canvas','qbank','textbook'].filter(k => k!=='canvas' || isCanvasVisible()); }
 
   function renderCatSwitch(){
     document.getElementById('cv-switch').innerHTML = catKinds().map(k=>{

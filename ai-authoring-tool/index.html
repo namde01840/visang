@@ -863,6 +863,7 @@
   .tpl-big-btn[data-accent="tool"]       { --bb-color: var(--tool);       --bb-soft: var(--tool-soft); }
   .tpl-big-btn[data-accent="theme"]      { --bb-color: var(--theme);      --bb-soft: var(--theme-soft); }
   .tpl-big-btn[data-accent="creative"]   { --bb-color: var(--creative);   --bb-soft: var(--creative-soft); }
+  .tpl-big-btn[data-accent="textbook"]   { --bb-color: #3B6FD4;           --bb-soft: #DCE7FB; }
   .tpl-big-btn .bb-icon {
     width: 48px; height: 48px;
     border-radius: 12px;
@@ -1458,6 +1459,7 @@
   .picker-modal[data-mode="qbank"] .picker-tags { display: none; }
   .qb-type-badge.manip      { background: var(--mint-soft); color: var(--mint-dark); }
   .qb-type-badge.curriculum { background: var(--curriculum-soft); color: var(--curriculum); }
+  .qb-type-badge.textbook   { background: #DCE7FB; color: #3B6FD4; }
 
   /* labels-on-top filter fields */
   .qb-filter {
@@ -2474,6 +2476,17 @@
             </div>
             <span class="bb-arrow">→</span>
           </button>
+
+          <button class="tpl-big-btn" data-accent="textbook" data-import="textbook">
+            <div class="bb-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h7a3 3 0 0 1 3 3v13a2.5 2.5 0 0 0-2.5-2.5H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2.5 2.5 0 0 1 2.5-2.5H22z"/></svg>
+            </div>
+            <div class="bb-text">
+              <strong>스마트 교과서</strong>
+              <span>22개정 교과서 142종 iBook</span>
+            </div>
+            <span class="bb-arrow">→</span>
+          </button>
         </div>
       </div>
 
@@ -2969,6 +2982,7 @@
     lesson:       ['도입','전개','정리','형성평가','심화','보충','단원도입','차시정리'],
     canvas:       ['공간좌표(3D)','그림그래프','꺾은선그래프','다각형','다면체(3D)','대수 막대','대수 블록','도미노','도수분포다각형','막대그래프','분수 막대','수직선'],
     qbank:        ['선택형','단답형','연쇄형','OX형','TF형','순서입력형','순서조합형','연결형','기본','심화'],
+    textbook:     ['22개정','iBook','페이지 뷰어','QR 연동','필기','동영상'],
   };
   const PICKER_DATA = {
     manipulative: [
@@ -3025,6 +3039,14 @@
       { type: '객관식', title: '띠그래프와 원그래프',         source: '교과서 QR 문항', tags: ['띠그래프'],            preview: 'chart',    snippet: 'bar' },
       { type: '객관식', title: '비와 비율',                  source: '교과서 QR 문항', tags: ['비율'],                preview: 'lines',    snippet: '비율 설명' },
       { type: '주관식', title: '비례식과 비례배분',           source: '교과서 QR 문항', tags: ['비례식'],              preview: 'chain',    snippet: '비례식 풀이' },
+    ],
+    textbook: [
+      { type: '스마트 교과서', title: '수학 5-1 · 1단원 자연수의 혼합 계산', source: '비상 교과서 iBook', tags: ['22개정','iBook'], preview: 'lines', snippet: '서책 지면을 그대로 펼쳐 수업에 활용하세요' },
+      { type: '스마트 교과서', title: '수학 5-1 · 2단원 약수와 배수',       source: '비상 교과서 iBook', tags: ['22개정','iBook'], preview: 'lines', snippet: 'QR·동영상이 내장된 디지털 교과서' },
+      { type: '스마트 교과서', title: '수학 5-2 · 3단원 합동과 대칭',       source: '비상 교과서 iBook', tags: ['22개정'],         preview: 'geom',  snippet: 'symmetric' },
+      { type: '스마트 교과서', title: '수학 5-2 · 6단원 평균과 가능성',     source: '비상 교과서 iBook', tags: ['22개정'],         preview: 'chart', snippet: 'bar' },
+      { type: '스마트 교과서', title: '수학 6-1 · 1단원 분수의 나눗셈',     source: '비상 교과서 iBook', tags: ['22개정'],         preview: 'lines', snippet: '지면 그대로 디지털 뷰어' },
+      { type: '스마트 교과서', title: '수학 6-1 · 3단원 소수의 나눗셈',     source: '비상 교과서 iBook', tags: ['22개정'],         preview: 'lines', snippet: '필기·본문 검색을 한 화면에서' },
     ],
   };
 
@@ -3246,10 +3268,10 @@
   let pickerCurrent = null;
   let pickerSelectedIdx = null;        // 단일 선택 (canvas 모드)
   let pickerSelectedIdxs = new Set();  // 복수 선택 (qbank 모드 — 문제은행/활동형/수업자료)
-  const QBANK_MODES = new Set(['qbank', 'manipulative', 'lesson']);
-  const QBANK_LABELS = { qbank: '스마트 문제은행', manipulative: '활동형 콘텐츠', lesson: '수업자료 콘텐츠' };
-  const QBANK_UNITS  = { qbank: '문항',          manipulative: '콘텐츠',     lesson: '콘텐츠' };
-  const QBANK_TOTALS = { qbank: '171,668',       manipulative: '96,589',     lesson: '9,672' };
+  const QBANK_MODES = new Set(['qbank', 'manipulative', 'lesson', 'textbook']);
+  const QBANK_LABELS = { qbank: '스마트 문제은행', manipulative: '활동형 콘텐츠', lesson: '수업자료 콘텐츠', textbook: '스마트 교과서' };
+  const QBANK_UNITS  = { qbank: '문항',          manipulative: '콘텐츠',     lesson: '콘텐츠',          textbook: '종' };
+  const QBANK_TOTALS = { qbank: '171,668',       manipulative: '96,589',     lesson: '9,672',           textbook: '142' };
 
   function buildQbankFilterRow() {
     return `
@@ -3354,6 +3376,7 @@
       manipulative: '활동형 콘텐츠 불러오기',
       lesson:       '수업자료 콘텐츠 불러오기',
       canvas:       '매쓰캔버스 불러오기',
+      textbook:     '스마트 교과서 불러오기',
     };
     document.getElementById('picker-title').textContent = titleMap[kind] || '콘텐츠 불러오기';
 
@@ -3400,7 +3423,7 @@
     // grid
     const grid = document.getElementById('picker-grid');
     if (isQbank) {
-      const typeAccent = { 객관식: '', 주관식: 'subjective', 활동형: 'manip', 수업자료: 'curriculum' };
+      const typeAccent = { 객관식: '', 주관식: 'subjective', 활동형: 'manip', 수업자료: 'curriculum', '스마트 교과서': 'textbook' };
       grid.innerHTML = items.map((it, i) => `
         <article class="picker-card" data-idx="${i}">
           <span class="check"></span>
@@ -3478,7 +3501,7 @@
     if (!item) return;
     previewContextIdx = idx;
 
-    const typeAccent = { 객관식: '', 주관식: 'subjective', 활동형: 'manip', 수업자료: 'curriculum' };
+    const typeAccent = { 객관식: '', 주관식: 'subjective', 활동형: 'manip', 수업자료: 'curriculum', '스마트 교과서': 'textbook' };
     const typeEl = document.getElementById('prev-type');
     typeEl.textContent = item.type;
     typeEl.className = 'preview-type ' + (typeAccent[item.type] || '');
@@ -3720,6 +3743,7 @@
     qbank:        { label: '문제은행',       loadLabel: '스마트 문제은행 불러오기', emptyMsg: '문제를 선택해 주세요.',   pickerKind: 'qbank' },
     lesson:       { label: '수업자료',       loadLabel: '수업자료 콘텐츠 불러오기', emptyMsg: '수업자료를 선택해 주세요.', pickerKind: 'lesson' },
     manipulative: { label: '활동형 콘텐츠',   loadLabel: '활동형 콘텐츠 불러오기',   emptyMsg: '콘텐츠를 선택해 주세요.', pickerKind: 'manipulative' },
+    textbook:     { label: '스마트 교과서',   loadLabel: '스마트 교과서 불러오기',   emptyMsg: '교과서 페이지를 선택해 주세요.', pickerKind: 'textbook' },
     template:     { label: '템플릿',         loadLabel: '템플릿 선택',             emptyMsg: '템플릿을 편집해 보세요.', pickerKind: null },
   };
 
@@ -3730,6 +3754,7 @@
       qbank:        { bg: '#FEF3C7', svg: `<svg width="68%" height="68%" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7c-1-1.5-3-2.5-6-2.5C8 4.5 4 7.5 4 11.5c0 2 1 3.8 2.6 5L6 19h2.5l.7-1.4c.9.3 1.8.4 2.8.4s1.9-.1 2.8-.4L15.5 19H18l-.6-2.5c1-.7 1.8-1.7 2.2-2.8H22v-4h-2C19.7 8.8 19.4 8 19 7z"/><circle cx="9" cy="10.5" r="1" fill="#D97706"/></svg>` },
       lesson:       { bg: '#D4EDE5', svg: `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#2E7D60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>` },
       manipulative: { bg: '#CCEFEF', svg: `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#009A98" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>` },
+      textbook:     { bg: '#DCE7FB', svg: `<svg width="62%" height="62%" viewBox="0 0 24 24" fill="none" stroke="#3B6FD4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h7a3 3 0 0 1 3 3v13a2.5 2.5 0 0 0-2.5-2.5H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2.5 2.5 0 0 1 2.5-2.5H22z"/></svg>` },
       template:     { bg: '#E4E1F8', svg: `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#6A5ACD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>` },
     };
     const m = map[kind];
