@@ -313,6 +313,25 @@
   }
   .scard:hover .scard-play { opacity: 1; }
   .scard-play .pbtn { width: 54px; height: 54px; border-radius: 50%; background: rgba(255,255,255,0.95); color: #07090F; display: grid; place-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+  /* 공유 슬라이드: 실사형 사진 썸네일 */
+  .scard.is-shared { border-color: rgba(251,191,36,0.45); }
+  .scard.is-shared:hover { border-color: rgba(251,191,36,0.75); }
+  .scard-vis.shared {
+    background-size: cover; background-position: center;
+    position: relative;
+  }
+  .shared-shade {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(7,9,15,0.05) 30%, rgba(7,9,15,0.55) 100%);
+    pointer-events: none;
+  }
+  .shared-badge {
+    position: absolute; top: 12px; left: 12px; z-index: 2;
+    padding: 5px 11px; border-radius: 100px;
+    background: #FBBF24; color: #07090F;
+    font-size: 11px; font-weight: 800; letter-spacing: -0.01em;
+    box-shadow: 0 6px 14px rgba(251,191,36,0.32);
+  }
 
   /* ===== flow steps ===== */
   .flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; counter-reset: step; }
@@ -377,22 +396,49 @@
     color: var(--ink-2); display: grid; place-items: center; transition: all .15s;
   }
   .nav-gear:hover { color: var(--ink); border-color: rgba(255,255,255,0.25); }
-  /* 학습 설정 칩 — 현재 설정값을 항상 노출 */
+  /* 학습 설정 — 톱니 버튼만 노출, 호버 시 말풍선으로 상세 표시 */
   .learn-chip {
-    display: inline-flex; align-items: center; gap: 8px;
-    height: 40px; padding: 0 14px;
+    position: relative;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
     border-radius: 10px;
     border: 1px solid var(--line); background: var(--panel);
-    color: var(--ink-2); font-size: 12.5px; font-weight: 700;
-    letter-spacing: -0.01em;
+    color: var(--ink-2);
     transition: all .15s;
-    max-width: 360px;
-    white-space: nowrap;
-    overflow: hidden; text-overflow: ellipsis;
   }
   .learn-chip:hover { color: var(--ink); border-color: rgba(255,255,255,0.25); background: var(--panel-2); }
-  .learn-chip svg { color: var(--mint); flex-shrink: 0; }
-  .learn-chip span { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .learn-chip svg { color: var(--mint); width: 18px; height: 18px; }
+  .learn-tip {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: rgba(12,16,25,0.96);
+    color: var(--ink);
+    font-size: 12.5px; font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    padding: 9px 14px;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.45);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity .15s, transform .15s;
+    z-index: 200;
+  }
+  .learn-tip::before {
+    content: '';
+    position: absolute;
+    top: -5px; right: 12px;
+    width: 10px; height: 10px;
+    background: rgba(12,16,25,0.96);
+    border-left: 1px solid var(--line);
+    border-top: 1px solid var(--line);
+    transform: rotate(45deg);
+  }
+  .learn-chip:hover .learn-tip,
+  .learn-chip:focus-visible .learn-tip { opacity: 1; transform: translateY(0); }
 
   /* ===== 콘텐츠 선택하기 / 불러오기 (라이트 모달) ===== */
   .gsel { max-width: 940px; }
@@ -535,9 +581,9 @@
       <a class="nav-link" href="#value">왜 AI 수업자료 서비스</a>
       <a class="nav-link" href="#showcase">수업 사례</a>
       <a class="nav-link" href="#flow">시작하기</a>
-      <button class="learn-chip" id="learn-chip" title="학습 설정 변경">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span id="learn-chip-txt">학습 설정</span>
+      <button class="learn-chip" id="learn-chip" title="학습 설정">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="learn-tip" id="learn-chip-txt">학습 설정</span>
       </button>
       <a class="nav-cta js-create" href="#">수업 만들기 →</a>
     </div>
@@ -565,13 +611,6 @@
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             콘텐츠 둘러보기
           </a>
-        </div>
-        <div class="hero-trust reveal d4">
-          <span><b>96,589</b> 활동형 콘텐츠</span><span class="sep"></span>
-          <span><b>9,672</b> 수업자료 콘텐츠</span><span class="sep"></span>
-          <span><b>428</b> 매쓰캔버스</span><span class="sep"></span>
-          <span><b>171,668</b> 스마트 문항</span><span class="sep"></span>
-          <span><b>22개정 142종</b> 스마트 교과서</span>
         </div>
       </div>
 
@@ -887,7 +926,7 @@
       <button class="cv-back" id="cv-back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
       <div class="cv-title" id="cv-title">활동형 콘텐츠 <span class="cnt" id="cv-count"></span></div>
       <div class="cv-top-actions">
-        <button class="learn-chip" id="cv-learn-chip" title="학습 설정 변경"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span id="cv-learn-chip-txt">학습 설정</span></button>
+        <button class="learn-chip" id="cv-learn-chip" title="학습 설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="learn-tip" id="cv-learn-chip-txt">학습 설정</span></button>
         <button class="nav-cta js-create" style="border:none;">+ 수업 만들기</button>
       </div>
     </div>
@@ -1091,7 +1130,7 @@
   // showcase cards visuals
   function showVis(id) {
     const map = {
-      tool: '#1AD1C6', curriculum:'#36D399', theme:'#9B8CFF', creative:'#FF7A52', textbook:'#5B8DEF'
+      tool: '#1AD1C6', curriculum:'#36D399', theme:'#9B8CFF', creative:'#FF7A52', textbook:'#5B8DEF', shared:'#FBBF24'
     };
     return map[id];
   }
@@ -1163,17 +1202,25 @@
     if (su) su.textContent = (DECK.unit || '선택한 단원');
     document.getElementById('show-rail').innerHTML = showcaseData().map(s=>{
       const col = showVis(s.id);
+      const isShared = s.id === 'shared';
+      const vis = isShared
+        ? `<div class="scard-vis shared" style="background-image:url('https://picsum.photos/seed/${encodeURIComponent(s.img + s.title)}/640/400');">
+             ${s.badge ? `<span class="shared-badge">${s.badge}</span>` : ''}
+             <div class="shared-shade"></div>
+             <div class="scard-play"><span class="pbtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span></div>
+           </div>`
+        : `<div class="scard-vis" style="background:linear-gradient(135deg, ${col}22, #0C1019);">
+             <svg viewBox="0 0 320 200" width="100%" height="100%" style="position:absolute;inset:0">
+               <circle cx="60" cy="50" r="70" fill="${col}" opacity="0.14"/>
+               <rect x="180" y="110" width="120" height="120" rx="20" fill="${col}" opacity="0.12"/>
+               <rect x="28" y="130" width="150" height="11" rx="5" fill="#ffffff" opacity="0.16"/>
+               <rect x="28" y="150" width="100" height="11" rx="5" fill="#ffffff" opacity="0.10"/>
+             </svg>
+             <div class="scard-play"><span class="pbtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span></div>
+           </div>`;
       return `
-      <article class="scard">
-        <div class="scard-vis" style="background:linear-gradient(135deg, ${col}22, #0C1019);">
-          <svg viewBox="0 0 320 200" width="100%" height="100%" style="position:absolute;inset:0">
-            <circle cx="60" cy="50" r="70" fill="${col}" opacity="0.14"/>
-            <rect x="180" y="110" width="120" height="120" rx="20" fill="${col}" opacity="0.12"/>
-            <rect x="28" y="130" width="150" height="11" rx="5" fill="#ffffff" opacity="0.16"/>
-            <rect x="28" y="150" width="100" height="11" rx="5" fill="#ffffff" opacity="0.10"/>
-          </svg>
-          <div class="scard-play"><span class="pbtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg></span></div>
-        </div>
+      <article class="scard ${isShared?'is-shared':''}">
+        ${vis}
         <div class="scard-body">
           <div class="scard-cat" style="color:${col}">${s.cat}</div>
           <div class="scard-title">${s.title}</div>
@@ -1439,11 +1486,16 @@
     const p = PACKS[gateSubject] && PACKS[gateSubject].cats[c.id];
     return p ? { title:p.title, desc:p.desc, feats:p.feats, tags:p.tags } : { title:c.title, desc:c.desc, feats:c.feats, tags:c.tags };
   }
-  // 쇼케이스: 학습 설정의 차시(단원) 기준으로 큐레이션
+  // 쇼케이스: 학습 설정의 차시(단원) 기준으로 큐레이션 + 공유 슬라이드(5종 통합)
   function showcaseData(){
     const u = (DECK.unit || '').trim() || (UNIT_OPTIONS[gateSubject] && UNIT_OPTIONS[gateSubject][0]) || '1단원';
     const ctx = `${DECK.school || ''} ${DECK.grade || ''}`.trim();
     const items = [
+      // 공유 슬라이드 — 여러 카테고리 콘텐츠가 한 슬라이드에 함께 담긴 형태 (실사형 썸네일)
+      { id:'shared',     cat:'공유 슬라이드',   title:`${u} — 단원 통합 한 장 수업`,  meta:`교과서 + 활동 + 평가 + 캔버스 + 문항`, badge:'5종 통합', img:'classroom1' },
+      { id:'shared',     cat:'공유 슬라이드',   title:`${u} — 협업 + 형성평가 결합`,  meta:`매쓰캔버스 + 스마트 문제은행`,          badge:'4종 통합', img:'collab1' },
+      { id:'shared',     cat:'공유 슬라이드',   title:`${u} — 학생 참여 종합 슬라이드`, meta:`교과서 페이지 + 활동형 + 1분 퀴즈`,    badge:'3종 통합', img:'study1' },
+      // 단일 카테고리 큐레이션
       { id:'curriculum', cat:'수업자료 콘텐츠', title:`${u} — 도입 슬라이드`,        meta:`${ctx} · 5분 영상 + 도입 활동` },
       { id:'tool',       cat:'활동형 콘텐츠',   title:`${u} — 학생 직접 활동`,        meta:`${ctx} · 인터랙티브 교구` },
       { id:'textbook',   cat:'스마트 교과서',   title:`${u} — 교과서 양면 페이지`,    meta:`비상 iBook · 22개정` },
