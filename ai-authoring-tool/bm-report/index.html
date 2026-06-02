@@ -97,44 +97,44 @@
   .pillar .ex{display:block; margin-top:14px; padding-top:12px; border-top:1px dashed var(--line);
     font-size:11.5px; color:var(--teal); font-weight:700; line-height:1.4;}
 
-  /* CTA 바로가기 버튼 */
-  .cta-row{display:flex; justify-content:center; margin-top:24px;}
-  .cta-btn{display:inline-flex; align-items:center; gap:10px; text-decoration:none;
+  /* CTA 바로가기 버튼 (우측 상단 고정) */
+  .cta-row{position:absolute; top:44px; right:54px; margin:0; z-index:5;}
+  .cta-btn{display:inline-flex; align-items:center; gap:7px; text-decoration:none;
     background:linear-gradient(90deg,var(--blue),var(--teal)); color:#fff;
-    font-size:16px; font-weight:800; padding:14px 32px; border-radius:30px;
-    box-shadow:0 6px 18px rgba(47,111,237,.32); transition:transform .15s ease, box-shadow .15s ease;}
-  .cta-btn:hover{transform:translateY(-2px); box-shadow:0 10px 26px rgba(47,111,237,.45);}
-  .cta-btn .ar{font-size:18px; line-height:1;}
+    font-size:13px; font-weight:800; padding:9px 18px; border-radius:24px;
+    box-shadow:0 4px 12px rgba(47,111,237,.3); transition:transform .15s ease, box-shadow .15s ease;}
+  .cta-btn:hover{transform:translateY(-2px); box-shadow:0 8px 18px rgba(47,111,237,.42);}
+  .cta-btn .ar{font-size:15px; line-height:1;}
 
   /* ---- image-based bodies ---- */
   /* ---- native market bars + opportunity box (slide 1) ---- */
-  .market{display:flex; gap:26px; align-items:center;}
-  .bars{flex:1; display:flex; flex-direction:column; gap:20px;}
-  .bar{display:flex; align-items:center; gap:16px;}
-  .bname{flex:0 0 96px; text-align:right; font-size:16px; font-weight:800; color:var(--navy); line-height:1.15;}
-  .bname small{display:block; font-size:11px; color:var(--muted); font-weight:600; margin-top:2px;}
+  .market{display:flex; gap:28px; align-items:stretch; margin-top:12px;}
+  .bars{flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:24px;}
+  .bar{display:flex; align-items:center; gap:18px;}
+  .bname{flex:0 0 104px; text-align:right; font-size:17px; font-weight:800; color:var(--navy); line-height:1.15;}
+  .bname small{display:block; font-size:12px; color:var(--muted); font-weight:600; margin-top:3px;}
   .btrack{flex:1;}
-  .bfill{border-radius:12px; padding:13px 20px; display:flex; align-items:baseline; gap:12px;
-    box-shadow:0 2px 8px rgba(27,42,74,.08);}
-  .bfill .ic{font-size:22px; line-height:1;}
-  .bfill .num{font-size:25px; font-weight:800; color:#1f3a2e;}
-  .bfill .num small{font-size:15px; font-weight:700;}
-  .bsub{font-size:12px; color:var(--muted); margin-top:6px; padding-left:4px;}
+  .bfill{border-radius:12px; padding:19px 26px; display:flex; align-items:baseline; gap:14px;
+    box-shadow:0 3px 10px rgba(27,42,74,.1);}
+  .bfill .ic{font-size:26px; line-height:1;}
+  .bfill .num{font-size:30px; font-weight:800; color:#1f3a2e;}
+  .bfill .num small{font-size:17px; font-weight:700;}
+  .bsub{font-size:13.5px; color:var(--muted); margin-top:9px; padding-left:4px;}
   .canva .bfill{background:linear-gradient(90deg,#7fceac,#bfe6d3); width:100%;}
   .figma .bfill{background:linear-gradient(90deg,#9a7fe0,#d2c4f3); width:74%;}
   .figma .bfill .num{color:#3c2b6b;}
   .miri  .bfill{background:linear-gradient(90deg,#86c879,#cbe7b4); width:86%;}
   .miri  .bfill .num{color:#274d22;}
 
-  .oppbox{flex:0 0 360px; border:1px solid var(--line); border-radius:14px;
-    padding:16px 16px 18px; background:#fbfcfe;}
-  .oppbox .obt{text-align:center; font-size:17px; font-weight:800; color:var(--navy); margin-bottom:13px;}
+  .oppbox{flex:0 0 380px; border:1px solid var(--line); border-radius:14px;
+    padding:18px 18px 20px; background:#fbfcfe; display:flex; flex-direction:column;}
+  .oppbox .obt{text-align:center; font-size:18px; font-weight:800; color:var(--navy); margin-bottom:15px;}
   .oppbox .obt b{color:var(--blue);}
-  .obcols{display:flex; gap:12px;}
-  .ob{flex:1; border-radius:10px; padding:14px 14px 16px;}
+  .obcols{display:flex; gap:12px; flex:1;}
+  .ob{flex:1; border-radius:10px; padding:16px 15px; display:flex; flex-direction:column; justify-content:center;}
   .ob .tt{font-size:13.5px; font-weight:800; margin-bottom:8px; text-align:center;}
-  .ob .hh{display:block; font-size:13px; font-weight:800; color:var(--navy); margin-bottom:6px; text-align:center;}
-  .ob p{font-size:11.5px; line-height:1.55; color:#52607a;}
+  .ob .hh{display:block; font-size:14px; font-weight:800; color:var(--navy); margin-bottom:8px; text-align:center;}
+  .ob p{font-size:12.5px; line-height:1.6; color:#52607a;}
   .ob.weak{background:#fbeeea; border:1px solid #f1d3c8;} .ob.weak .tt{color:var(--warn);}
   .ob.opp{background:#e7f4f1; border:1px solid #c3e2d8;} .ob.opp .tt{color:var(--teal);}
 
@@ -378,7 +378,7 @@
   // 슬라이드를 뷰포트에 꽉 차게(잘림 없이 최대 크기로) 확대
   function fitSlides(){
     var W = 1120, H = 630;
-    var s = Math.min(window.innerWidth / W, window.innerHeight / H) * 0.97;
+    var s = Math.min(window.innerWidth / W, window.innerHeight / H) * 0.86;
     document.querySelectorAll('.slide').forEach(function(el){
       el.style.transform = 'scale(' + s + ')';
     });
