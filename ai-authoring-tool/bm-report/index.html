@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 수업자료 서비스 신규 BM 제안</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --navy:#16264a; --blue:#2f6fed; --blue2:#5b8def; --teal:#10a596;
+    --ink:#222a38; --muted:#7a8597; --line:#e5eaf2; --bg:#0e1730;
+    --soft:#eef3fc; --warn:#e0653f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:"Pretendard","Pretendard Variable","Malgun Gothic","맑은 고딕",sans-serif;
+    background:var(--bg); color:var(--ink);
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  /* 스크롤 스냅: 한 번에 한 슬라이드만 화면에 꽉 차게 */
+  .deck{height:100vh; overflow-y:scroll; scroll-snap-type:y mandatory;}
+  .stage{
+    height:100vh; display:flex; align-items:center; justify-content:center;
+    scroll-snap-align:center; scroll-snap-stop:always;
+  }
+
+  .slide{
+    position:relative; width:1120px; height:630px; background:#fff; flex:0 0 auto;
+    border-radius:14px; box-shadow:0 18px 50px rgba(0,0,0,.4);
+    padding:50px 56px; overflow:hidden;
+    transform-origin:center center; /* 뷰포트에 맞춰 JS로 확대 */
+  }
+  /* indicator bar */
+  .slide::before{content:""; position:absolute; left:0; top:0; width:100%; height:6px;
+    background:linear-gradient(90deg,var(--blue),var(--teal));}
+
+  .kicker{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+  .step{background:var(--navy); color:#fff; font-size:13px; font-weight:800;
+    padding:4px 12px; border-radius:20px; letter-spacing:.5px;}
+  .kicker .of{font-size:12px; color:var(--muted); font-weight:700;}
+  h2.head{font-size:32px; color:var(--navy); font-weight:800; letter-spacing:-1px; line-height:1.2;}
+  h2.head .hl{color:var(--blue);}
+  .subhead{font-size:15px; color:var(--muted); font-weight:600; margin-top:8px;}
+  .rule{height:1px; background:var(--line); margin:22px 0 26px;}
+
+  /* ---- Slide 1 : market ---- */
+  .stats{display:flex; gap:16px; margin-bottom:26px;}
+  .scard{flex:1; background:var(--soft); border-radius:12px; padding:20px 22px;
+    border-left:5px solid var(--blue);}
+  .scard .v{font-size:34px; font-weight:800; color:var(--blue); line-height:1;}
+  .scard .u{font-size:14px; font-weight:700; color:var(--navy); margin:8px 0 2px;}
+  .scard .d{font-size:12px; color:var(--muted); line-height:1.4;}
+
+  .vsrow{display:flex; align-items:stretch; gap:18px;}
+  .vsbox{flex:1; border-radius:12px; padding:22px 24px;}
+  .vsbox .vt{font-size:16px; font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:8px;}
+  .vsbox p{font-size:14px; line-height:1.55; color:var(--ink);}
+  .vsbox p b{color:var(--navy);}
+  .weak{background:#fbeeea; border:1.5px solid #f1cdbf;}
+  .weak .vt{color:var(--warn);}
+  .opp{background:#e7f4f1; border:1.5px solid #bfe3da;}
+  .opp .vt{color:var(--teal);}
+  .vsmid{display:flex; align-items:center; font-size:26px; color:var(--muted); font-weight:800;}
+
+  /* ---- Slide 2 : teacher needs ---- */
+  .needs{display:flex; flex-direction:column; gap:16px;}
+  .need{display:flex; align-items:center; gap:20px;}
+  .quote{flex:0 0 470px; background:#f6f8fc; border:1px solid var(--line);
+    border-radius:12px; padding:16px 20px;}
+  .quote .who{font-size:12px; font-weight:800; color:var(--blue); margin-bottom:4px;}
+  .quote .q{font-size:15px; color:var(--ink); line-height:1.45;}
+  .quote .q .em{color:var(--warn); font-weight:800;}
+  .arrow{flex:0 0 auto; font-size:24px; color:var(--blue2); font-weight:800;}
+  .sol{flex:1; display:flex; align-items:center; gap:12px;}
+  .sol .ic{flex:0 0 40px; width:40px; height:40px; border-radius:10px; background:var(--blue);
+    color:#fff; display:flex; align-items:center; justify-content:center; font-size:20px;}
+  .sol .st{font-size:15px; font-weight:800; color:var(--navy); line-height:1.35;}
+  .sol .st span{color:var(--teal);}
+
+  /* ---- Slide 3 : strategy ---- */
+  .zero{display:flex; align-items:center; gap:14px; background:var(--navy); color:#fff;
+    border-radius:12px; padding:16px 24px; margin-bottom:24px;}
+  .zero .big{font-size:26px; font-weight:800;}
+  .zero .big s{color:#8fa3c8; text-decoration:none; opacity:.7;}
+  .zero .big b{color:#7fe3d4;}
+  .zero .lbl{font-size:14px; color:#c3d0e8; font-weight:600;}
+  .pillars{display:flex; gap:18px;}
+  .pillar{flex:1; border:1px solid var(--line); border-top:4px solid var(--blue);
+    border-radius:12px; padding:22px 22px 24px; background:#fff;}
+  .pillar .pn{font-size:12px; font-weight:800; color:var(--blue); letter-spacing:1px;}
+  .pillar .pic{font-size:28px; margin:10px 0 8px;}
+  .pillar h3{font-size:18px; color:var(--navy); font-weight:800; line-height:1.3; margin-bottom:10px;}
+  .pillar p{font-size:13px; color:#52607a; line-height:1.55;}
+  .pillar p b{color:var(--navy);}
+  .pillar .ex{display:block; margin-top:14px; padding-top:12px; border-top:1px dashed var(--line);
+    font-size:11.5px; color:var(--teal); font-weight:700; line-height:1.4;}
+
+  /* ---- image-based bodies ---- */
+  /* ---- native market bars + opportunity box (slide 1) ---- */
+  .market{display:flex; gap:26px; align-items:center;}
+  .bars{flex:1; display:flex; flex-direction:column; gap:20px;}
+  .bar{display:flex; align-items:center; gap:16px;}
+  .bname{flex:0 0 96px; text-align:right; font-size:16px; font-weight:800; color:var(--navy); line-height:1.15;}
+  .bname small{display:block; font-size:11px; color:var(--muted); font-weight:600; margin-top:2px;}
+  .btrack{flex:1;}
+  .bfill{border-radius:12px; padding:13px 20px; display:flex; align-items:baseline; gap:12px;
+    box-shadow:0 2px 8px rgba(27,42,74,.08);}
+  .bfill .ic{font-size:22px; line-height:1;}
+  .bfill .num{font-size:25px; font-weight:800; color:#1f3a2e;}
+  .bfill .num small{font-size:15px; font-weight:700;}
+  .bsub{font-size:12px; color:var(--muted); margin-top:6px; padding-left:4px;}
+  .canva .bfill{background:linear-gradient(90deg,#7fceac,#bfe6d3); width:100%;}
+  .figma .bfill{background:linear-gradient(90deg,#9a7fe0,#d2c4f3); width:74%;}
+  .figma .bfill .num{color:#3c2b6b;}
+  .miri  .bfill{background:linear-gradient(90deg,#86c879,#cbe7b4); width:86%;}
+  .miri  .bfill .num{color:#274d22;}
+
+  .oppbox{flex:0 0 360px; border:1px solid var(--line); border-radius:14px;
+    padding:16px 16px 18px; background:#fbfcfe;}
+  .oppbox .obt{text-align:center; font-size:17px; font-weight:800; color:var(--navy); margin-bottom:13px;}
+  .oppbox .obt b{color:var(--blue);}
+  .obcols{display:flex; gap:12px;}
+  .ob{flex:1; border-radius:10px; padding:14px 14px 16px;}
+  .ob .tt{font-size:13.5px; font-weight:800; margin-bottom:8px; text-align:center;}
+  .ob .hh{display:block; font-size:13px; font-weight:800; color:var(--navy); margin-bottom:6px; text-align:center;}
+  .ob p{font-size:11.5px; line-height:1.55; color:#52607a;}
+  .ob.weak{background:#fbeeea; border:1px solid #f1d3c8;} .ob.weak .tt{color:var(--warn);}
+  .ob.opp{background:#e7f4f1; border:1px solid #c3e2d8;} .ob.opp .tt{color:var(--teal);}
+
+  /* svg teacher avatars (slide 2) */
+  .ncard .avatar{background:transparent;}
+  .ncard .avatar svg{width:60px; height:60px; display:block;}
+
+  .row2{display:flex; gap:32px; align-items:center;}
+  .img-needs{flex:0 0 auto;}
+  .img-needs img{height:410px; width:auto; display:block;
+    border:1px solid var(--line); border-radius:12px;}
+  .sol-col{flex:1; display:flex; flex-direction:column; gap:16px;}
+  .sol-head{font-size:15px; font-weight:800; color:#fff; background:var(--blue);
+    display:inline-block; align-self:flex-start; padding:6px 16px; border-radius:20px;}
+  .sol-item{display:flex; gap:14px; align-items:flex-start;
+    background:var(--soft); border-radius:12px; padding:16px 18px;}
+  .sol-item .sn{flex:0 0 30px; width:30px; height:30px; border-radius:50%;
+    background:var(--navy); color:#fff; font-weight:800; font-size:15px;
+    display:flex; align-items:center; justify-content:center;}
+  .sol-item p{font-size:15px; line-height:1.5; color:var(--ink); padding-top:2px;}
+  .sol-item p b{color:var(--blue); font-weight:800;}
+
+  /* ---- native teacher pain → solution cards ---- */
+  .nlabels{display:flex; gap:18px; margin-bottom:10px; padding-left:82px;}
+  .nlabels .l1{flex:0 0 360px; font-size:13px; font-weight:800; color:var(--warn);}
+  .nlabels .l2{flex:1; font-size:13px; font-weight:800; color:var(--teal); padding-left:54px;}
+  .needcards{display:flex; flex-direction:column; gap:14px;}
+  .ncard{display:flex; align-items:center; gap:16px;
+    background:#f7f9fd; border:1px solid var(--line); border-radius:14px; padding:14px 18px;}
+  .ncard .avatar{flex:0 0 60px; width:60px; height:60px; border-radius:50%;
+    background:#e9eefc; display:flex; align-items:center; justify-content:center; font-size:32px;}
+  .ncard .pain{flex:0 0 360px;}
+  .ncard .pain .who{font-size:12px; font-weight:800; color:var(--muted); margin-bottom:2px;}
+  .ncard .pain .q{font-size:15px; color:var(--navy); font-weight:700; line-height:1.4;}
+  .ncard .pain .q .em{color:var(--warn); font-weight:800;}
+  .ncard .to{flex:0 0 auto; font-size:24px; color:var(--blue2); font-weight:800;}
+  .ncard .fix{flex:1; display:flex; gap:12px; align-items:center;
+    background:#fff; border:1px solid #d6e3fb; border-radius:10px; padding:12px 16px;}
+  .ncard .fix .fi{flex:0 0 38px; width:38px; height:38px; border-radius:10px;
+    background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:19px;}
+  .ncard .fix .ft{font-size:14.5px; font-weight:700; color:var(--ink); line-height:1.4;}
+  .ncard .fix .ft b{color:var(--blue); font-weight:800;}
+
+  .pagefoot{position:absolute; right:56px; bottom:26px; font-size:12px; color:var(--muted); font-weight:700;}
+  .titlemark{position:absolute; left:56px; bottom:26px; font-size:12px; color:var(--muted); font-weight:700;}
+
+  @media print{
+    @page{size:landscape; margin:0;}
+    body{background:#fff;}
+    .deck{height:auto; overflow:visible;}
+    .stage{height:auto; display:block; page-break-after:always;}
+    .slide{box-shadow:none; border-radius:0; transform:none !important; width:100%; height:100vh;}
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- ===== Slide 1 : WHY ===== -->
+  <div class="stage"><section class="slide">
+    <div class="kicker"><span class="step">01 WHY</span><span class="of">시장 진입의 당위성</span></div>
+    <h2 class="head">저작 플랫폼 시장은 폭발 중, <span class="hl">'교육 전문성'은 비어 있다</span></h2>
+    <div class="subhead">거대 생태계로 진화하는 글로벌 저작 플랫폼 — 비상이 진입할 빈틈이 명확하다</div>
+    <div class="rule"></div>
+
+    <div class="market">
+      <div class="bars">
+        <div class="bar canva">
+          <div class="bname">캔바<small>Canva</small></div>
+          <div class="btrack">
+            <div class="bfill"><span class="ic">🎨</span><span class="num">MAU <small>월</small> 1.8억 명</span></div>
+            <div class="bsub">기업가치 35조 원 · 글로벌 리더, 압도적 성장세</div>
+          </div>
+        </div>
+        <div class="bar figma">
+          <div class="bname">피그마<small>Figma</small></div>
+          <div class="btrack">
+            <div class="bfill"><span class="ic">✏️</span><span class="num">유료 유저 500만</span></div>
+            <div class="bsub">교육 현장으로 급속 침입</div>
+          </div>
+        </div>
+        <div class="bar miri">
+          <div class="bname">미리캔버스<small>MiriCanvas</small></div>
+          <div class="btrack">
+            <div class="bfill"><span class="ic">🖼️</span><span class="num">누적 1,000만 가입자</span></div>
+            <div class="bsub">국내 교사 70% 상용화 · 한국형 템플릿 점유율 1위</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="oppbox">
+        <div class="obt">맹점 <b>vs</b> 기회</div>
+        <div class="obcols">
+          <div class="ob weak">
+            <div class="tt">기존 플랫폼의 맹점</div>
+            <span class="hh">교육 전문성 부재</span>
+            <p>시각적 디자인 툴에 치중하여, 실제 교육과정 연계 및 인터랙티브 수업 설계에는 한계가 명확하다.</p>
+          </div>
+          <div class="ob opp">
+            <div class="tt">비상의 필승 전략</div>
+            <span class="hh">교육과정 기반 AI 저작</span>
+            <p>교육부 표준체계 기반 메타 태깅 + AI 엔진 결합으로 교사 수업 준비 시간 90% 단축 및 공교육 시장 선점.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section></div>
+
+  <!-- ===== Slide 2 : Teacher Needs ===== -->
+  <div class="stage"><section class="slide">
+    <div class="kicker"><span class="step">02 NEEDS</span><span class="of">교사가 원하는 플랫폼</span></div>
+    <h2 class="head">교사는 <span class="hl">'시간을 되찾아주는'</span> 수업 자료를 원한다</h2>
+    <div class="subhead">현장의 3대 고충에서 출발 — 화려한 디자인 툴이 아니라 '즉시·정렬·참여'</div>
+    <div class="rule"></div>
+
+    <div class="nlabels">
+      <div class="l1">교사의 수업 준비 고충</div>
+      <div class="l2">비상교육 AI 수업자료 서비스의 해답</div>
+    </div>
+    <div class="needcards">
+      <div class="ncard">
+        <div class="avatar">
+          <svg viewBox="0 0 64 64"><defs><clipPath id="av1"><circle cx="32" cy="32" r="32"/></clipPath></defs>
+            <g clip-path="url(#av1)">
+              <rect width="64" height="64" fill="#e9eefc"/>
+              <path d="M11 64 a21 21 0 0 1 42 0 z" fill="#e0654a"/>
+              <rect x="28.5" y="40" width="7" height="7" fill="#f3c39e"/>
+              <circle cx="32" cy="30" r="11.5" fill="#f6cda6"/>
+              <path d="M20.5 30 a11.5 11.5 0 0 1 23 0 q-11.5 -8 -23 0 z" fill="#6b4a36"/>
+              <circle cx="28" cy="30.5" r="1.3" fill="#4a3526"/><circle cx="36" cy="30.5" r="1.3" fill="#4a3526"/>
+            </g></svg>
+        </div>
+        <div class="pain">
+          <div class="who">선생님 A</div>
+          <div class="q">"자료 찾기가 수업 준비 시간의 <span class="em">70%</span>를 차지해요."</div>
+        </div>
+        <div class="to">→</div>
+        <div class="fix">
+          <div class="fi">⚡</div>
+          <div class="ft">검색과 동시에 바로 쓰는 <b>완성형 콘텐츠</b>로 수업 준비 <b>Zero-Time</b> 실현</div>
+        </div>
+      </div>
+
+      <div class="ncard">
+        <div class="avatar">
+          <svg viewBox="0 0 64 64"><defs><clipPath id="av2"><circle cx="32" cy="32" r="32"/></clipPath></defs>
+            <g clip-path="url(#av2)">
+              <rect width="64" height="64" fill="#e9f3ef"/>
+              <path d="M11 64 a21 21 0 0 1 42 0 z" fill="#e08a3c"/>
+              <rect x="28.5" y="40" width="7" height="7" fill="#f3c39e"/>
+              <circle cx="32" cy="30" r="11.5" fill="#f6cda6"/>
+              <path d="M19.5 31 a12.5 12 0 0 1 25 0 q-6 -11 -12.5 -11 q-6.5 0 -12.5 11 z" fill="#3f2f24"/>
+              <circle cx="28" cy="30.5" r="1.3" fill="#4a3526"/><circle cx="36" cy="30.5" r="1.3" fill="#4a3526"/>
+            </g></svg>
+        </div>
+        <div class="pain">
+          <div class="who">선생님 B</div>
+          <div class="q">"내 자료가 <span class="em">성취기준에 맞는지</span> 매번 불안해요."</div>
+        </div>
+        <div class="to">→</div>
+        <div class="fix">
+          <div class="fi">✓</div>
+          <div class="ft">교육부 교육과정 표준체계에 근거해 <b>메타 태깅된 비상교육 콘텐츠</b>를 제공하여 <b>교육과정 정합성 보장</b></div>
+        </div>
+      </div>
+
+      <div class="ncard">
+        <div class="avatar">
+          <svg viewBox="0 0 64 64"><defs><clipPath id="av3"><circle cx="32" cy="32" r="32"/></clipPath></defs>
+            <g clip-path="url(#av3)">
+              <rect width="64" height="64" fill="#eef0f5"/>
+              <path d="M11 64 a21 21 0 0 1 42 0 z" fill="#6b7689"/>
+              <rect x="28.5" y="40" width="7" height="7" fill="#eebb92"/>
+              <circle cx="32" cy="30" r="11.5" fill="#f2c79e"/>
+              <path d="M20.5 29 a11.5 11.5 0 0 1 23 0 q-11.5 -6 -23 0 z" fill="#2c2c30"/>
+              <circle cx="28" cy="30.5" r="1.3" fill="#3a2c20"/><circle cx="36" cy="30.5" r="1.3" fill="#3a2c20"/>
+            </g></svg>
+        </div>
+        <div class="pain">
+          <div class="who">선생님 C</div>
+          <div class="q">"수학 그래프·과학 시뮬레이션 같은 <span class="em">고퀄 자료</span>는 만들기 어려워요."</div>
+        </div>
+        <div class="to">→</div>
+        <div class="fix">
+          <div class="fi">◈</div>
+          <div class="ft">코딩 없이 클릭 몇 번으로 <b>인터랙티브 콘텐츠 완성</b></div>
+        </div>
+      </div>
+    </div>
+
+  </section></div>
+
+  <!-- ===== Slide 3 : New BM Strategy ===== -->
+  <div class="stage"><section class="slide">
+    <div class="kicker"><span class="step">03 STRATEGY</span><span class="of">신규 BM 3대 전략</span></div>
+    <h2 class="head">수업 정보 세팅만으로, <span class="hl">저작·수업·평가를 한 번에</span></h2>
+    <div class="subhead">시장 니즈를 반영한 신규 BM — 만들고 · 가르치고 · 평가하는 일원화 플랫폼</div>
+    <div class="rule"></div>
+
+    <div class="zero">
+      <div class="big">수업 자료 제작 <s>1시간</s> → <b>5분</b></div>
+      <div class="lbl">수업 준비 'Zero-Time' 프로세스 실현</div>
+    </div>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pn">STRATEGY 01</div>
+        <div class="pic">📑</div>
+        <h3>완성형 콘텐츠<br>즉시 제안</h3>
+        <p>수업 정보 세팅만으로 <b>저작권 걱정 없는 고품질 완성형 콘텐츠</b>를 AI가 즉시 추천.</p>
+        <span class="ex">예) AIDT · 스마트문제은행 · 매쓰캔버스 · 차시슬라이드</span>
+      </div>
+      <div class="pillar">
+        <div class="pn">STRATEGY 02</div>
+        <div class="pic">🧩</div>
+        <h3>교과 특화<br>조작형 템플릿</h3>
+        <p>클릭 몇 번으로 <b>학생 참여형 인터랙티브 콘텐츠</b>를 제작해 수업 몰입도 높임.</p>
+        <span class="ex">예) 동적 콘텐츠 저작툴 · 자연어 객체/트리거 생성</span>
+      </div>
+      <div class="pillar">
+        <div class="pn">STRATEGY 03</div>
+        <div class="pic">📊</div>
+        <h3>저작·수업·평가<br>일원화</h3>
+        <p>제작 콘텐츠를 <b>즉시 배포</b>하고 학습 결과를 <b>실시간 대시보드</b>로 취합해 차기 수업설계로 연결.</p>
+        <span class="ex">예) 실시간 배포 체계 · 진단/추천 엔진 연동</span>
+      </div>
+    </div>
+
+  </section></div>
+
+</div>
+
+<script>
+  // 슬라이드를 뷰포트에 꽉 차게(잘림 없이 최대 크기로) 확대
+  function fitSlides(){
+    var W = 1120, H = 630;
+    var s = Math.min(window.innerWidth / W, window.innerHeight / H) * 0.97;
+    document.querySelectorAll('.slide').forEach(function(el){
+      el.style.transform = 'scale(' + s + ')';
+    });
+  }
+  window.addEventListener('resize', fitSlides);
+  window.addEventListener('load', fitSlides);
+  fitSlides();
+</script>
+</body>
+</html>
