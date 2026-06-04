@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 수업자료 서비스 — 진행 현황 & 기대효과</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --navy:#16264a; --blue:#2f6fed; --blue2:#5b8def; --teal:#10a596;
+    --ink:#222a38; --muted:#7a8597; --line:#e5eaf2; --bg:#0e1730;
+    --soft:#eef3fc; --warn:#e0653f; --dyn:#7a5af0; --sta:#1b9e8f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{font-family:"Pretendard","Pretendard Variable","Malgun Gothic","맑은 고딕",sans-serif;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+  .deck{height:100vh; overflow-y:scroll; scroll-snap-type:y mandatory;}
+  .stage{height:100vh; display:flex; align-items:center; justify-content:center; scroll-snap-align:center;}
+  .slide{position:relative; width:1120px; height:672px; background:#fff; flex:0 0 auto;
+    border-radius:14px; box-shadow:0 18px 50px rgba(0,0,0,.4); padding:44px 50px;
+    overflow:hidden; transform-origin:center center;}
+  .slide::before{content:""; position:absolute; left:0; top:0; width:100%; height:6px;
+    background:linear-gradient(90deg,var(--blue),var(--teal));}
+
+  .kicker{display:flex; align-items:center; gap:10px; margin-bottom:7px;}
+  .step{background:var(--navy); color:#fff; font-size:13px; font-weight:800; padding:4px 12px; border-radius:20px; letter-spacing:.5px;}
+  .kicker .of{font-size:12px; color:var(--muted); font-weight:700;}
+  h2.head{font-size:29px; color:var(--navy); font-weight:800; letter-spacing:-1px; line-height:1.2;}
+  h2.head .hl{color:var(--blue);}
+  .subhead{font-size:14px; color:var(--muted); font-weight:600; margin-top:7px;}
+  .rule{height:1px; background:var(--line); margin:16px 0 18px;}
+
+  /* ===== Slide 1 : 진행 프로젝트 (가로형 도식) ===== */
+  .ptag{display:inline-block; font-size:12px; font-weight:800; letter-spacing:.5px; color:#fff;
+    background:var(--blue); padding:5px 14px; border-radius:20px; margin-bottom:16px;}
+  .flow-h{display:flex; align-items:stretch; gap:14px;}
+
+  /* base (START) */
+  .base{flex:0 0 286px; position:relative; border:2px solid var(--blue); border-radius:16px;
+    padding:22px 18px; background:linear-gradient(135deg,#eaf1ff,#f5f9ff); text-align:center;
+    display:flex; flex-direction:column; justify-content:center; box-shadow:0 5px 16px rgba(47,111,237,.16);}
+  .base .startbadge{position:absolute; top:-11px; left:50%; transform:translateX(-50%);
+    background:var(--blue); color:#fff; font-size:11px; font-weight:800; letter-spacing:1px; padding:3px 14px; border-radius:20px;}
+  .base .bi{width:58px; height:58px; margin:0 auto 13px; border-radius:15px; background:var(--blue); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:29px;}
+  .base .bt{font-size:21px; font-weight:800; color:var(--navy); line-height:1.3;}
+  .base .bt span{color:var(--blue);}
+  .base .bc{font-size:13px; color:#52607a; font-weight:600; margin-top:9px; line-height:1.45;}
+
+  .conn{flex:0 0 64px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;}
+  .conn .cplus{font-size:24px; font-weight:800; color:var(--blue);}
+  .conn .ctxt{font-size:11.5px; font-weight:800; color:var(--blue); text-align:center; line-height:1.3;}
+  .conn .carrow{font-size:26px; font-weight:800; color:var(--blue2); margin-top:2px;}
+
+  .mods{flex:1; display:flex; gap:16px;}
+  .mod{flex:1; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#fff;
+    box-shadow:0 3px 12px rgba(27,42,74,.08); display:flex; flex-direction:column;}
+  .carousel{position:relative; width:100%; height:212px; background:#eef3fb; border-bottom:1px solid var(--line);}
+  .carousel .cs{position:absolute; inset:0; width:100%; height:100%; object-fit:contain; padding:9px; opacity:0; transition:opacity .7s ease;}
+  .carousel .cs.active{opacity:1;}
+  .carousel .dots{position:absolute; bottom:8px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:2;}
+  .carousel .dots i{width:6px; height:6px; border-radius:50%; background:rgba(22,38,74,.22);}
+  .carousel .dots i.on{background:var(--blue);}
+  .minfo{padding:13px 16px 15px;}
+  .mh{display:flex; align-items:center; gap:9px;}
+  .mdot{width:11px; height:11px; border-radius:50%;}
+  .mod.dyn .mdot{background:var(--dyn);} .mod.sta .mdot{background:var(--sta);}
+  .mtitle{font-size:15.5px; font-weight:800; color:var(--navy);}
+  .mdesc{font-size:12.5px; color:#52607a; font-weight:600; margin-top:6px; line-height:1.45;}
+  .mdesc b{color:var(--navy);}
+  /* 하단 강조 배너 */
+  .evolve{margin-top:20px; background:linear-gradient(90deg,var(--blue),var(--teal)); color:#fff;
+    border-radius:13px; padding:16px 26px; display:flex; align-items:center; justify-content:center; gap:13px;
+    box-shadow:0 7px 20px rgba(47,111,237,.3);}
+  .evolve .ei{font-size:22px; line-height:1;}
+  .evolve .et{font-size:19px; font-weight:800; letter-spacing:-.3px;}
+  .evolve .et b{background:rgba(255,255,255,.22); padding:3px 10px; border-radius:7px;}
+
+  /* ===== Slide 2 : 기대효과 ===== */
+  .egrid-top{display:flex; gap:18px; align-items:stretch; margin-bottom:18px;}
+  .ecard{flex:1; border:1px solid var(--line); border-top:4px solid var(--blue); border-radius:14px;
+    padding:20px 22px; background:#fbfcfe; display:flex; flex-direction:column;}
+  .ecard .en{width:34px; height:34px; flex:0 0 34px; border-radius:50%; background:var(--navy); color:#fff;
+    font-size:16px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:14px;}
+  .ecard h3{font-size:19px; color:var(--navy); font-weight:800; line-height:1.42;}
+  .ecard h3 b{color:var(--blue);}
+  .ecard .chips{display:flex; flex-wrap:wrap; gap:7px; margin-top:auto; padding-top:16px;}
+  .ecard .chips span{font-size:12px; font-weight:700; color:var(--teal); background:#e7f4f1;
+    border:1px solid #c7e4d9; border-radius:14px; padding:5px 12px;}
+
+  /* 효과3 가로 파이프라인 */
+  .ecard.p3{padding:18px 22px 20px;}
+  .p3head{display:flex; align-items:center; gap:12px;}
+  .p3head .en{margin-bottom:0;}
+  .p3head .p3title{font-size:18px; font-weight:800; color:var(--navy);}
+  .p3head .p3title b{color:var(--blue);}
+  .p3head .badge{margin-left:auto; font-size:11.5px; font-weight:800; color:#fff; letter-spacing:.5px;
+    background:linear-gradient(90deg,var(--blue),var(--teal)); padding:5px 14px; border-radius:20px;}
+  .pipeh{display:flex; align-items:center; gap:7px; margin-top:16px;}
+  .pstep{flex:1; background:var(--soft); border:1px solid #dde7f6; border-radius:12px; padding:14px 8px; text-align:center;}
+  .pstep .pi{width:40px; height:40px; margin:0 auto 9px; border-radius:11px; background:#fff; border:1px solid #d3e1fb;
+    display:flex; align-items:center; justify-content:center; font-size:20px;}
+  .pstep .pl{font-size:14.5px; font-weight:800; color:var(--navy); line-height:1.2;}
+  .pstep .ps{font-size:11px; color:var(--muted); font-weight:600; margin-top:4px;}
+  .parrow{flex:0 0 auto; color:var(--blue2); font-size:21px; font-weight:800;}
+
+  .ult{margin-top:18px; background:var(--navy); color:#fff; border-radius:12px;
+    padding:15px 24px; display:flex; align-items:center; gap:14px;}
+  .ult .ui{font-size:11px; font-weight:800; letter-spacing:.5px; color:#9fc0ff;
+    border:1px solid rgba(159,192,255,.4); padding:4px 12px; border-radius:20px; white-space:nowrap;}
+  .ult .ux{font-size:18px; font-weight:800;}
+  .ult .ux b{color:#7fe3d4;}
+
+  @media print{ @page{size:landscape; margin:0;} body{background:#fff;}
+    .deck{height:auto; overflow:visible;} .stage{height:auto; display:block; page-break-after:always;}
+    .slide{box-shadow:none; border-radius:0; transform:none !important; width:100%; height:100vh;} }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- ===== Slide 1 ===== -->
+  <div class="stage"><section class="slide">
+    <div class="kicker"><span class="step">NOW</span><span class="of">진행 현황</span></div>
+    <h2 class="head">교사의 <span class="hl">수업 준비 시간을 현저히 단축</span>하는 AI 수업자료 서비스</h2>
+    <div class="subhead">매쓰캔버스 차시 슬라이드 UI에 CBS 동적·정적 저작툴 기능을 더하는 작업을 진행 중</div>
+    <div class="rule"></div>
+
+    <span class="ptag">진행 프로젝트</span>
+
+    <div class="flow-h">
+      <!-- START -->
+      <div class="base">
+        <span class="startbadge">START</span>
+        <div class="bi">🖥️</div>
+        <div class="bt">매쓰캔버스<br><span>차시 슬라이드 UI</span></div>
+      </div>
+
+      <!-- connector -->
+      <div class="conn">
+        <span class="cplus">＋</span>
+        <span class="ctxt">저작툴<br>기능 탑재</span>
+        <span class="carrow">→</span>
+      </div>
+
+      <!-- modules with rolling carousels -->
+      <div class="mods">
+        <div class="mod dyn">
+          <div class="carousel" data-int="2400">
+            <img class="cs active" src="img/act1.jpg" alt="영어 활동형 콘텐츠 1">
+            <img class="cs" src="img/act2.jpg" alt="영어 활동형 콘텐츠 2">
+            <img class="cs" src="img/act3.jpg" alt="영어 활동형 콘텐츠 3">
+            <div class="dots"><i class="on"></i><i></i><i></i></div>
+          </div>
+          <div class="minfo">
+            <div class="mh"><span class="mdot"></span><span class="mtitle">CBS 동적 저작툴 기능</span></div>
+            <div class="mdesc"><b>조작형 활동 콘텐츠</b> 저작 및 편집 기능 탑재</div>
+          </div>
+        </div>
+
+        <div class="mod sta">
+          <div class="carousel" data-int="3000">
+            <img class="cs active" src="img/mat2.jpg" alt="수업자료 콘텐츠 2">
+            <img class="cs" src="img/eng4.jpg" alt="수업자료 콘텐츠 4">
+            <div class="dots"><i class="on"></i><i></i></div>
+          </div>
+          <div class="minfo">
+            <div class="mh"><span class="mdot"></span><span class="mtitle">CBS 정적 저작툴 기능</span></div>
+            <div class="mdesc">범용적인 <b>개념·문항·활동 콘텐츠</b> 저작 기능 탑재</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="evolve">
+      <span class="ei">🚀</span>
+      <span class="et">저작 기능이 내장된 <b>'수업 플랫폼'</b>으로 진화</span>
+    </div>
+  </section></div>
+
+  <!-- ===== Slide 2 ===== -->
+  <div class="stage"><section class="slide">
+    <div class="kicker"><span class="step">VALUE</span><span class="of">기대효과</span></div>
+    <h2 class="head">하나의 플랫폼이 만드는 <span class="hl">3가지 기대효과</span></h2>
+    <div class="subhead">완성형 콘텐츠 · 누구나 편집 · 전 과정 일원화 — 결국 교사의 수업 준비 시간을 줄입니다</div>
+    <div class="rule"></div>
+
+    <div class="egrid-top">
+      <div class="ecard">
+        <div class="en">1</div>
+        <h3>교사가 설정한 수업정보에 맞춰 <b>완성형 콘텐츠를 즉시 제공</b></h3>
+        <div class="chips"><span>AIDT</span><span>스마트 문제은행</span><span>매쓰캔버스</span><span>스마트 교과서</span></div>
+      </div>
+
+      <div class="ecard">
+        <div class="en">2</div>
+        <h3>정말 쉬운 UI의 <b>데이터 바인딩(원천DB 교체)</b>과 콘텐츠 편집으로 누구나 <b>나만의 수업자료</b>를 단시간 내 생성</h3>
+      </div>
+    </div>
+
+    <div class="ecard p3">
+      <div class="p3head">
+        <div class="en">3</div>
+        <div class="p3title">수업의 전 과정을 <b>1개 플랫폼</b>에서 일원화</div>
+        <span class="badge">ONE PLATFORM</span>
+      </div>
+      <div class="pipeh">
+        <div class="pstep"><div class="pi">🔍</div><div class="pl">콘텐츠 설정</div><div class="ps">검색</div></div>
+        <div class="parrow">→</div>
+        <div class="pstep"><div class="pi">✏️</div><div class="pl">저작</div><div class="ps">편집</div></div>
+        <div class="parrow">→</div>
+        <div class="pstep"><div class="pi">📤</div><div class="pl">배포</div><div class="ps">학생 공유</div></div>
+        <div class="parrow">→</div>
+        <div class="pstep"><div class="pi">🎓</div><div class="pl">수업 · 평가</div><div class="ps">실시간</div></div>
+        <div class="parrow">→</div>
+        <div class="pstep"><div class="pi">📊</div><div class="pl">결과 대시보드</div><div class="ps">차기 수업 설계</div></div>
+      </div>
+    </div>
+
+    <div class="ult">
+      <span class="ui">궁극적 기대효과</span>
+      <span class="ux"><b>수업 준비 시간</b>을 현저히 단축시켜, 교사의 시간을 되찾아 줍니다.</span>
+    </div>
+  </section></div>
+
+</div>
+
+<script>
+  function fitSlides(){
+    var W=1120, H=672;
+    var s=Math.min(window.innerWidth/W, window.innerHeight/H)*0.9;
+    document.querySelectorAll('.slide').forEach(function(el){ el.style.transform='scale('+s+')'; });
+  }
+  window.addEventListener('resize', fitSlides);
+  window.addEventListener('load', fitSlides);
+  fitSlides();
+
+  // 롤링 캐러셀
+  function initCarousels(){
+    document.querySelectorAll('.carousel').forEach(function(c){
+      var imgs=c.querySelectorAll('.cs'), dots=c.querySelectorAll('.dots i');
+      if(imgs.length<2) return;
+      var i=0, iv=parseInt(c.getAttribute('data-int'),10)||2500;
+      setInterval(function(){
+        imgs[i].classList.remove('active'); if(dots[i]) dots[i].classList.remove('on');
+        i=(i+1)%imgs.length;
+        imgs[i].classList.add('active'); if(dots[i]) dots[i].classList.add('on');
+      }, iv);
+    });
+  }
+  window.addEventListener('load', initCarousels);
+</script>
+</body>
+</html>
